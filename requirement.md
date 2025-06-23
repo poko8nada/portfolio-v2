@@ -20,19 +20,25 @@
   4. `package.json`のスクリプトを更新（preview/deploy）
   5. middlewareの互換性確認
 
-### 2. Basic認証の導入
-- `middleware.ts`で特定パスにBasic認証を実装
-- 認証情報は環境変数で管理し、コードにハードコーディングしない
-- Workersの`nodejs_compat`フラグが必要
-
-### 3. インデックス防止
-- 保護ページに`noindex`メタタグと`X-Robots-Tag`ヘッダーを追加
-- ルート直下の`public/robots.txt`で追加のクロール防止設定
-
-### 4. Cloudflare Workers対応
+### 2. Cloudflare Workers対応
 - Workersの環境変数（secret）を利用して認証情報を安全に管理
 - `wrangler secret put`コマンドでsecretを設定
 - `compatibility_date`を2024-09-23以降に設定
+
+### 3. Basic認証の導入
+- `middleware.ts`で`/resume`配下にBasic認証を実装（resume配下のみ認証必須）
+- 認証情報は環境変数で管理し、コードにハードコーディングしない
+- Workersの`nodejs_compat`フラグが必要
+
+### 4. resumeデータ管理
+- `resume/`ディレクトリを作成し、個人情報を含むmdファイル（履歴書・職務経歴書等）を配置
+- `.gitignore`に`resume/`を追加し、Git管理対象外とする
+- resume配下のmdは認証後のみアクセス可能
+- resume以外の一部ページ・コンポーネントでも、resume内mdの一部データをパースして利用可能にする
+
+### 5. インデックス防止
+- 保護ページに`noindex`メタタグと`X-Robots-Tag`ヘッダーを追加
+- ルート直下の`public/robots.txt`で追加のクロール防止設定
 
 ## 移行時の注意点
 - middlewareはWorkersでサポート済み
@@ -44,4 +50,5 @@
 - 強力なパスワードを使用し、定期的に変更
 - 認証情報は必ず環境変数で管理
 - Basic認証はHTTPS環境でのみ利用
+- 個人情報を含むファイルはGit管理対象外とする
 

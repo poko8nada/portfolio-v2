@@ -41,3 +41,6 @@ next-env.d.ts
 
 # cloudflare
 .wrangler/
+
+# personal
+resume/
