@@ -1,4 +1,3 @@
-import Image from 'next/image'
 import Link from 'next/link'
 import type { ClassAttributes, HTMLAttributes } from 'react'
 // import type { ExtraProps } from 'react-markdown'

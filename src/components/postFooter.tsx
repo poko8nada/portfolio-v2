@@ -1,9 +1,12 @@
-import type { Post } from '@/lib/post'
 import Link from 'next/link'
+import type { Post } from '@/lib/post'
 export default ({
   prevPost,
   nextPost,
-}: { prevPost?: Post; nextPost?: Post }) => {
+}: {
+  prevPost?: Post
+  nextPost?: Post
+}) => {
   const prevPostTitle = prevPost?.formattedData.title
   const nextPostTitle = nextPost?.formattedData.title
   const prevPostSlug = prevPost?.slug

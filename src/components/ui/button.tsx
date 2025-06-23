@@ -3,7 +3,10 @@ import Link from 'next/link'
 export default ({
   href,
   children,
-}: { href: string; children: React.ReactNode }) => {
+}: {
+  href: string
+  children: React.ReactNode
+}) => {
   return (
     <Link
       href={href}

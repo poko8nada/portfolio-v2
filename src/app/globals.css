@@ -159,15 +159,15 @@ body > * {
   background-color: #22232f !important;
 }
 .article_container pre:has(code) {
-  font-size: .9em;
+  font-size: 0.9em;
   background-color: #011627 !important;
-  padding: .75rem .5rem .5em !important;
+  padding: 0.75rem 0.5rem 0.5em !important;
   overflow-x: scroll;
   line-height: 1.5;
 }
 .article_container p:has(> em) {
   background-color: #011627 !important;
-  padding: .9rem !important;
+  padding: 0.9rem !important;
   border-radius: 8px;
   font-size: 14px;
   margin: 36px 0 !important;
@@ -191,7 +191,7 @@ body > * {
   max-width: 100% !important;
   width: fit-content !important;
   vertical-align: text-bottom;
-  margin: 0 .25em;
+  margin: 0 0.25em;
 }
 .article_container p > a {
   color: #4199ff !important;
