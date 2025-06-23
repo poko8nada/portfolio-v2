@@ -1,0 +1,40 @@
+{
+	"name": "portfolio-site-v1",
+	"version": "0.1.0",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"preprocess": "node scripts/process-markdown.js",
+		"dev": "npm run preprocess && next dev",
+		"build": "npm run preprocess && next build",
+		"start": "next start",
+		"lint": "next lint",
+		"pages:build": "npm run preprocess && npx @cloudflare/next-on-pages",
+		"preview": "npm run pages:build && wrangler pages dev",
+		"deploy": "npm run pages:build && wrangler pages deploy"
+	},
+	"dependencies": {
+		"@cloudflare/next-on-pages": "^1.13.12",
+		"@next/third-parties": "^15.1.0",
+		"@tailwindcss/postcss": "^4.0.0",
+		"clsx": "^2.1.1",
+		"gray-matter": "^4.0.3",
+		"markdown-to-jsx": "^7.7.4",
+		"next": "^15.2.4",
+		"postcss": "^8.5.1",
+		"react": "^19.1.0",
+		"react-dom": "^19.1.0",
+		"react-syntax-highlighter": "^15.6.1",
+		"tailwind-merge": "^2.6.0",
+		"tailwindcss": "^4.0.0",
+		"tailwindcss-animate": "^1.0.7"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "1.9.4",
+		"@types/node": "^20",
+		"@types/react": "^18",
+		"@types/react-dom": "^18",
+		"@types/react-syntax-highlighter": "^15.5.13",
+		"typescript": "^5"
+	}
+}

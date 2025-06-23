@@ -1,0 +1,110 @@
+[
+  {
+    "slug": "2025-06-22",
+    "formattedData": {
+      "title": "Markdownでスライド作成できるWebサービスをリリースしました",
+      "createdAt": "2025-06-22",
+      "updatedAt": "2025-06-22",
+      "thumbnail": "/images/posts/pc01.svg",
+      "isNew": true,
+      "isUpdated": false
+    },
+    "content": "\n## はじめに\nマークダウンでスライドを作成・保存・PDF出力できるWebサービス「**Markdownスライドジェネレーター**」をリリースしました。\n\nプレゼン資料の作成において、PowerPointやKeynoteなどの高機能なソフトウェアは確かに便利ですが、時にはもっとシンプルに、マークダウンで手軽にスライドを作りたい場面があります。\n\nそんなニーズがありそうだなと思ってちょっとしたWebサービスを作りました。\n\n## サービス概要\n```Link\nMarkdownスライドジェネレーター\nslide-generator.you-88451-h.workers.dev\nhttps://slide-generator.you-88451-h.workers.dev/\n```\n\nマークダウン記法を使って、ブラウザ上でスライドを作成・編集・保存できるWebサービスです。\n\n作成したスライドはリアルタイムでプレビューでき、最終的にPDFとしてダウンロードすることも可能です。\n\n## 主な機能\n\n### マークダウン記法によるスライド作成\n一般的なマークダウン記法（見出し、リスト、強調、コードブロックなど）を使ってスライドを作成できます。\n\n`---`（水平線）でページを区切ることで、複数のスライドを管理できます。\n\n### リアルタイムプレビュー\n左側の編集エリアで入力した内容が、右側のプレビューエリアにリアルタイムで反映されます。\n\n### Googleアカウント認証\nGoogleアカウントでログインすることで、作成したスライドを安全に保存・管理できます。\nデータは基本的に本人のみがアクセス可能で、第三者に公開されることはありません。\n\n### PDF出力\n完成したスライドは、ワンクリックでPDFファイルとしてダウンロードできます。  \nオフライン環境でのプレゼンテーションや、資料の共有に便利です。\n\n## 利用シーン\n\n- **技術者の勉強会やLT（Lightning Talk）**：マークダウンに慣れた開発者なら、手軽に発表資料を作成\n- **社内プレゼン**：シンプルで見やすいスライドを素早く作成\n- **教育・研修資料**：テキストベースで管理しやすく、バージョン管理も簡単\n\n## 今後の展望\n現在はversion 0.9.0として公開していますが、今後以下の機能追加を検討しています\n\n- テーマ・デザインのカスタマイズ機能\n- 画像の埋め込み機能の強化\n- エクスポート形式の追加（HTML、画像など）\n- チーム機能・共有機能\n\n## おわりに\nマークダウンに慣れ親しんだ方にとって、直感的で使いやすいスライド作成ツールを目指しました。\n\nぜひ一度お試しいただき、フィードバックをいただけると嬉しいです。\n"
+  },
+  {
+    "slug": "2025-04-24",
+    "formattedData": {
+      "title": "ブログに使えるリンクカード生成サービスver2をつくりました",
+      "createdAt": "2025-04-24",
+      "updatedAt": "2025-04-24",
+      "thumbnail": "/images/posts/pc02.svg",
+      "isNew": false,
+      "isUpdated": false
+    },
+    "content": "\n## はじめに\n\n[以前の記事](/posts/2025-03-03/)で紹介した「ブログに使えるカード風のリンクジェネレーター」をリニューアルしましたので、紹介します。\n\n## ツール紹介\n\n### 概要\n\n新しいバージョンの「リンクカード生成サービス」は、デザインと使いやすさの向上を目指しました。以下のURLからアクセスできます。\n\n```Link\nBlog Card Maker | ブログを彩る美しいリンクカード\nlink-card-generator-v2.vercel.app\nhttps://link-card-generator-v2.vercel.app\nhttps://link-card-generator-v2.vercel.app/ogp-image.png\n```\n\n### 主な特徴\n\n旧バージョンと同じようにURLを入力するだけで、リンクカードを生成します。\n\n今回はカードのレスポンシブ対応にも力を入れました。\n\nまた生成されたHTMLとCSSは、コピーボタンをクリックしていただければ、そのままペーストして利用可能です。\n\n## 技術スタック\n\n前回のバージョンと同様に、Next.jsをベースとして開発しています。\n\nサイトのコンポーネントには、扱いやすい[shadcn/ui](https://ui.shadcn.com/)を採用しました。またグリッドパターンの背景を導入したくて[Magic UI](https://magicui.design/)も使用しています。\n\n\n実は新バージョンを作るきっかけになったのは、Amazonと楽天市場のカード生成がうまくいかなかったためです。\n\nそこで、OGP情報を取得するためロジックを見直し、パッケージの変更を以下のとおりに行いました。\n\n- OGP情報取得：[jsdom](https://github.com/jsdom/jsdom)\n- HTMLパーサー：[html-react-parser](https://www.npmjs.com/package/html-react-parser)\n\nこれにより、amazonと楽天市場をはじめとして、より多くのサイトに対応できるようになりました。カード生成のスピードも向上したと思います。\n\nソースコードは下記のとおりです。\n```Link\npoko8nada/link-card-generator-v2\ngithub.com\nhttps://github.com/poko8nada/link-card-generator-v2\nhttps://opengraph.githubassets.com/b13723efae47ff8af2dc1a546b74b826a5abadd00983f8629891f35e1e2c329f/poko8nada/link-card-generator-v2\n```\n\n\n## おわりに\n今後は「カラーテーマ」や「デザインテンプレート」などを増やせればいいなと思っています。\n\nぜひ新しいバージョンを試していただき、ご意見やフィードバックをいただければ幸いです。\n\nではまた。\n"
+  },
+  {
+    "slug": "2025-04-10",
+    "formattedData": {
+      "title": "ブログ記事にラベルを追加しました",
+      "createdAt": "2025-04-10",
+      "updatedAt": "2025-04-10",
+      "thumbnail": "/images/posts/pc03.svg",
+      "isNew": false,
+      "isUpdated": false
+    },
+    "content": "\n## はじめに\n\n当ブログでは、前の記事も更新があれば、ちょこちょこ手を加えようと思い、あらかじめ記事の作成日と更新日をそれぞれ管理していました。\n\nせっかく管理しているので、新規投稿や更新を一目で分かるように、記事一覧に「New」と「Update」のラベルを追加することにします。\n\n## 実装方法\n\n### 基本的な考え方\n\nラベルの表示条件は以下のとおりです。\n\n- **New**：記事の作成日が、ビルド時点で14日以内の場合\n- **Update**：過去記事のみ。記事の更新日が、ビルド時点で14日以内の場合\n\n### 実装\n\n記事はマークダウン形式なのですが、パースする際に、各記事に対して `isNew` と `isUpdate` の2つのフラグを追加します。\n\n```javascript\nexport function getAllPosts(): Post[] {\n  ⋮\n\n  const today = new Date()\n  const twoWeeksAgo = new Date(today)\n  twoWeeksAgo.setDate(today.getDate() - 14)\n\n  const isNew = new Date(data.createdAt) > twoWeeksAgo\n  if (isNew) {\n    formattedData.isNew = true\n  }\n\n  const isUpdated = new Date(data.updatedAt) > twoWeeksAgo\n  if (isUpdated && !isNew) {\n    formattedData.isUpdated = true\n  }\n\n  ⋮\n}\n```\n\n### JSX側での表示\n\n記事一覧のコンポーネントで、フラグに応じてラベルを表示します。\n\n```jsx\nfunction PostCard({slug, formattedData}) {\n  return (\n    <article>\n      ⋮\n      {isNew && <LabelNew />}\n      {isUpdated && <LabelUpdate />}\n      ⋮\n    </article>\n  )\n}\n```\n\n### スタイリング\n\nTailwindCSSを使用し、ベースとなるスタイルは共通化しています。\n\n```jsx\nconst baseClass =\n  'absolute inline-flex items-center justify-center p-2 h-5 text-xs text-white rounded-md md:start-2 md:top-2 top-1 start-1'\nconst LabelNew = () => {\n  return <div className={`${baseClass} bg-red-500`}>new</div>\n}\nconst LabelUpdate = () => {\n  return <div className={`${baseClass} bg-blue-500`}>update</div>\n}\n\nexport { LabelNew, LabelUpdate }\n```\n\nかなりシンプルですが、見た目は以下のとおりです。\n\n![記事ラベルの表示例](/images/posts/2025-04-09_01.png)\n\n## 注意点\n\n基本的に日付の計算には注意が必要です。意図しないタイムゾーンの場合、表示結果に差が出る可能性があります。\n\nまた、本ブログはNext.js でSSGを使用しています。当たり前ですが、ビルド時点で計算されるため、その日で固定されます。\n\n私のブログは2週間に一回程度は手をいれるので、ひとまずこれで良いかなと思います。  \n気になるようなら定期的なビルドやISRの活用を検討するかもしれません。\n\n## まとめ\n\n「New」と「Update」のラベルを追加する実装方法を紹介しました。  \nシンプルな実装ですが、新着情報や更新情報が一目で分かるようになります。\n\n今後は、ラベルのアニメーション効果や、より柔軟な更新情報（n日前に更新など）の表示も検討していきたいと思います。\n\nではまた。"
+  },
+  {
+    "slug": "2025-03-03",
+    "formattedData": {
+      "title": "ブログカード風のリンクを作りました",
+      "createdAt": "2025-03-03",
+      "updatedAt": "2025-04-10",
+      "thumbnail": "/images/posts/pc02.svg",
+      "isNew": false,
+      "isUpdated": false
+    },
+    "content": "\n（25/04/10追記）  \n新バージョンをデプロイしましたので、下記サービスは終了しました。新しいサービスは[こちら](https://link-card-generator-v2.vercel.app/)\n\n\n\n\n## はじめに\n[以前の記事](/posts/2024-12-25/)で、当ブログでは「ブログカード」や「カードリンク」的な機能がなかったため、自前でそういった機能を作成したことを書きました。\n\nその流れで、より一般的に使えるwebツールがあっても良いなと思いたち、作成しましたので紹介します。\n\n## ツール紹介\n### 概要\nそういった便利なwebサービスが、すでに複数あることはもちろん承知しています。  \nですので、カードデザインなど自分なりに少しだけ独自性を出しました。\n\n（25/04/10追記）新バージョンをデプロイしましたので、下記サービスは終了しました。  \n~ブログカード風のリンクジェネレーター~  \n~https://cardlink-generator-v1.vercel.app/~  \n\n\n### 使い方\n1. URLを入力すると、自動的にリンクを生成します(失敗することもあります)。\n2. カードデザインは4種類です。お好みのデザインの「Code」タブをクリックすると、htmlコードが表示されます。\n3. コード右上の![image](/images/posts/2025-03-03_01_inline.png)マークをクリックすれば、htmlコードがクリップボードにコピーされます。\n4. そのままご自由にペーストしてご利用ください。\n\n### カスタマイズ\nそのままでも利用できますが、ヘッダーのボタンで、カードカラーのテーマを白(light)とグレー(dark)に切り替えることができます。\n\nまたトグルボタンで、それぞれのテーマでボーダーの有無を変更できます。  \nhtmlコードもそれに合わせて書き換わりますので、カスタマイズした後に改めてコピーしてください。\n\nタイトルやファビコンなどの文字列データもありますので、あわせて活用いただければと思います。\n\n## 技術スタック\n簡単に紹介します。  \nnext.jsをベースとして基本方針として追加するパッケージは最小限にとどめました。\nソースコードは下記のとおりです。\n\n```Link\npoko8nada/cardlink-generator-v1\ngithub.com\nhttps://github.com/poko8nada/cardlink-generator-v1\nhttps://opengraph.githubassets.com/4998eb64487274f971fab39fd5f327134ded4ab40565ce0728fa1312f281aede/poko8nada/cardlink-generator-v1\n```\n\n### openGraphScraper\nこのツールの根幹として、URLからOGPを取得するため、[openGraphScraper](https://www.npmjs.com/package/open-graph-scraper)を使っています。\n\n### HeroUI(ex. NextUI)\nUIコンポーネントには[HeroUI](https://heroui.com/)を使っています。  \n学習コストも低く、デザインもある程度いい感じにサイトができあがるので良いです。\n\n\n### tw-to-css\nhtmlコードにTailwindCSSをインラインCSSに展開するため、[tw-to-css](https://www.npmjs.com/package/tw-to-css)を利用しました。\n\n\n## おわりに\n実は、OGPがうまく取得できないサイトがまだちょこちょこあります。正直、完成度としては「まあまあ使えるかな」程度です。\n\nこのあたりもアップデートできればなと思います。\n\nではまた。\n"
+  },
+  {
+    "slug": "2025-01-24",
+    "formattedData": {
+      "title": "燃え尽きても世界は回ってくれている",
+      "createdAt": "2025-01-24",
+      "updatedAt": "2025-01-24",
+      "thumbnail": "/images/posts/book01.svg",
+      "isNew": false,
+      "isUpdated": false
+    },
+    "content": "## 久しぶりに本を読みました\n\n```Amazon\nなぜ私たちは燃え尽きてしまうのか\namazon.co.jp\nhttps://www.amazon.co.jp/dp/4791775910\nhttps://m.media-amazon.com/images/I/71vdZpm7AFL._SL1500_.jpg\n```\n\n読書する習慣が身についていないので、本を読むのも一苦労ですが、考えさせられる本に出会いました。  \n燃え尽き症候群、いわゆるバーンアウトについて書かれたアメリカの翻訳本です。\n\n本の紹介というより、読んで思ったことを、つらつら書きます。\n\n## 人間と仕事\n現代社会において、人生に占める「仕事」の割合は、大きいように感じます。  \n著者はアメリカの方ですが、下記のように述べます。\n\n_仕事は 「尊厳」、「人格」、「目的」の源だ、という「高貴な嘘」は、アメリカ四〇〇年の歴史のなかで育ってきた_  （p.141）\n\n「高貴な嘘」であるかはさておき、アメリカでも、「人生における仕事の価値は大きい」と信じる人は多いようです。\n\n国によって仕事の文化はさまざまですが、日本も似ていませんか。仕事を通した自己実現、自己形成は賛美の対象です。\n\nただし、現代の（労働者の）仕事は、「複雑」で、「多様」で、「自律性」や「経営者目線」を求められます。難しい。決して一筋縄ではいきません。\n\nそしてなかば強制的に、競争というレースに準じて仕事をすることになります。\n\nこの中で仕事を通じた自己形成。個人的には、「ムリゲーじゃねえか」と思ったりします。\n\n## 豊かさの代償\n人類の成長を支えているのは、科学の進歩、グローバル化、そのエンジンの役割は、資本主義に根ざした「競争」なのでしょう。\n\nただし基本的に、人間の意志、体力、根性は有限です。\n\nこのレースにフルコミットを続ければ、だれしもいつかは代償を払うときがくる。それがバーンアウトというわけです。\n\nまた、行き過ぎた個人主義や自己責任論が、このレースを助長させているようです。\n\n_アメリカ人の仕事観にしみついた個人主義... （中略） に根ざしている。アメリカ人にとっては、自分の価値を証明する仕事を見つけ、それを維持することは本人の責任なのだ_  （p.180）\n\nバーンアウトしてしまう前に、レースをやめることはできます。\n\nですが、やめてしまうと「誰かや何か」が必ずその隙間を埋めます。だから非常にやめづらい。\n\n\n## 享受したもの\nただ私が思うに、資本主義は世界全体を、豊かで自由にしたのは間違いありません。\n\n「食べたいものを食べ、行きたいところへ行き、やりたいことができる」という人は一時代より増えていそうです。\n\nもちろん時間とお金があればという話なのですが、世の中が進歩するにつれ、モノやサービスはどんどん安価になり、コモディティ化します。\n\n例えばフランス革命以前の時代と比べれば、 人類全体としては、経済的に豊かになり、考え方も、生き方もより自由になりました。\n\n私はお金もないただの一般市民ですが、大昔と比べれば、 **\"好きに生きる資本的、精神的なコスト\"** は激減しているのだろうと思います。\n\n## これからどうあろう\n人は老います。個人差がありますが、レースにコミットし続けるのは大変なことです。\n\n勝負したいなら、どんどんレースに出場すれば良いと思います。  \nそれがきつい、大変なら、「折り合い」を考えてみる。\n\nあくまで私の場合ですが、家は狭いので、ルンバがなくても困りません。  \n\nただZOZOTOWNでちょこちょこと洋服は買います。好きなので。\n\n車に前は乗っていましたが、手放しました。チャリンコ移動です。それで事足りる地域なので助かっています。\n\n料理はします。面倒くさくて、前はできませんでしたが、やってくうちにできるようになりました。  \n自分の好きなものをつくって食べられるのは良いです。\n\n家は雨漏りすることがあります。でもクーラーはちゃんとついてます。\n\nそうやって、しれっーと、コソコソっと、生きています。多くの人は多分そうです。\n\nこれで良い人生だと、決めるのは私です。\n\n## おわりに\n\n最近、グローバル資本主義に対する疲れや痛みからなのか、いくつかの国ではその反発が起きてるようです。\n\n資本主義に取って代わるものが生まれるか。生成AIは何かを解決してくれるか。イメージできませんし、全くわかりません。\n\nコロナ禍では、自由がきかないこともありました。それでも、いわゆる「普通の生活」はある程度守ってもらえた気がしています。\n\nZOOM、UberEats、NETFLIXなどのインターネット上の技術はもちろんです。  \nですが、そもそもの物流、製造、サービス、とにかく多くの人の「仕事」に支えてもらいました。ありがとうございます。\n\n今、自分が社会や人に、なにかを還元できているかというと、正直疑問です。申し訳ない。もう少し精進します。\n\nですが、とりあえず生きているので、消費者ではあります。選挙もとりあえずは行ってます。まあこんなもんでしょう。実は内心それで十分だとも思ってます。\n"
+  },
+  {
+    "slug": "2025-01-10",
+    "formattedData": {
+      "title": "GA4＋GTMでアクセスフィルタを実装しよう",
+      "createdAt": "2025-01-10",
+      "updatedAt": "2025-01-14",
+      "thumbnail": "/images/posts/pc01.svg",
+      "isNew": false,
+      "isUpdated": false
+    },
+    "content": "## はじめに\nポートフォリオサイトを新しく立ち上げたので、[GA4(グーグルアナリティクス)](https://developers.google.com/analytics/devguides/collection/ga4)と[GTM(グーグルタグマネージャー)](https://developers.google.com/tag-manager/)を導入しました。\n\n導入そのものはとても簡単だったのですが、 **特定のアクセスを除外するフィルタ設定**で少しつまずいたので、記事として残します。\n\n## なぜGTM経由で実装するのか\n### 特定のアクセスを「ホスト名」でフィルタしたい\nGA4単体では、「IPアドレス指定」による内部トラフィックの除外はあるようですが、「ホスト名」を指定してすることはできないようです。\n```Link\n[GA4] 内部トラフィックの除外 - アナリティクス ヘルプ\nsupport.google.com\nhttps://support.google.com/analytics/answer/10104470?hl=ja\n```\nデータを正しく計測するためならば、IP除外で事足りるような気もします。  \nですが、\n\n- 本番環境での発火（GA4の計測）を自前のPC環境で確認したい\n- 開発環境（localhost）では発火してほしくない\n- デプロイ先のcloudflareのプレビューURLでは発火してほしくない\n\nを同時に達成したいとなるとちょっと面倒な仕様に感じます。  \nこれを達成するためのGA4＋GTMです。\n\n### 後々を見越して…\n今後GA4以外のタグを埋め込む可能性を見越して、あらかじめGTMでタグを管理するのは大きなメリットです。\n\nまた、GA4単体での実装と労力的にも大差ないので、やっておくに越したことはありません。\n\n## 実装方法\n### 実装の流れ\n流れは下記のとおりです。\n\n1. GA4のアカウント取得とプロパティ作成\n2. GTMのアカウント取得とコンテナ作成\n3. GA4とGTMの連携\n4. **「GTMでのアクセスフィルタ設定」←これが本記事の主題**\n5. サイトにGTMを埋め込む\n\n本記事は「4」が主題ですので、それ以外は後述する記事やネットの情報をご参考ください。\n\nちなみに1〜3はgoogleのサイト上での設定です。  \n5については私の場合、ポートフォリオサイトがNext.jsですので（[サイト構成はこちら](/posts/2024-12-19)）ググったところ、下記の記事が見つかりました。\n\n4を除く1〜5の一連の流れが詳しく説明されています。大変参考になりました。  \nありがとうございました。\n```Link\n【Next.js】Google Tag Manager 経由で Analytics を導入する [Techblog#27] | Folklore\nwww.folklore.place\nhttps://www.folklore.place/techblog/2024/09/10\nhttps://asset.folklore.place/ogp/techblog/2024/09/10/thumbnail.webp\n```\n\n### GTMでのアクセスフィルタ設定\nもったいぶりましたが、4についてです。\n\n設定は簡単です。下記画像のとおり、GTMの設定にてタグの配信トリガーに例外を設定するだけでOKです。\n\n![gtm01](/images/posts/2025-01-10_01.png)\n\nではトリガーはどう作成するかというと、これも簡単です。\n1. 管理画面にて「トリガー」をクリック\n2. 新規作成し、適当な名前をつける（画像は開発環境）\n3. トリガータイプは「ページビュー」、発生場所は「一部のページビュー」をチェック\n4. イベント名は **「Page Hostname」** 、あとは条件が一致するよう、好きにゴニョゴニョするだけ\n\n![gtm02](/images/posts/2025-01-10_02.png)\n\n```Callout\nトリガーは「作っただけ」では使われていません。\n配信前に必ず、タグのトリガーにて「例外」に設定しましょう。\n```\n\n## おわりに\nこれで無事完了です。もちろん例外を増やすこともできますので、複数トリガーを作って例外に設定してください。\n\n他にも方法はあるとは思いますが、私にとってはこれが簡単でした。\n\nではまた。"
+  },
+  {
+    "slug": "2024-12-28",
+    "formattedData": {
+      "title": "Next.jsでmdファイルのホットリロードに対応しよう",
+      "createdAt": "2024-12-28",
+      "updatedAt": "2025-01-09",
+      "thumbnail": "/images/posts/pc03.svg",
+      "isNew": false,
+      "isUpdated": false
+    },
+    "content": "## はじめに\n当ブログの記事は、mdファイルで記事を管理しています。\n\nNext.jsは開発環境のホットリロードに対応しているので、記事の見た目を随時確認しながら更新する予定でした。\n\nただNext.jsでは、mdファイルの更新を検知してくれないようで、これは誤算でした。\n\n## 解決策を調査する\n一番シンプルなのは[next-remote-watch](https://github.com/hashicorp/next-remote-watch)を使うことのようです。\n\n\n私も嬉々として導入しましたが、なぜかうまく動かず……。  \n原因を調べようかとも思いましたが、時間がかかりそうで挫折してしまいました。\n\n(ですので、そもそも私の使い方が悪かったのかもしれません。)\n\nあきらめて別の方法を探していたところ、下記の記事を発見し、導入したところうまくいきました。\n```Link\nNext.jsブログのmarkdown編集時に表示更新する\nmiyaoka.dev\nhttps://miyaoka.dev/posts/2020-12-31-hmr-on-markdown\nhttps://i.imgur.com/RSiYuJBl.png\n```\n\n## 実装方法\n方法はほぼ同様なのですが、私の場合ということで念のためまとめます。\n\n### 1. expressとchokidarをインストール\nファイル監視を行う[chokidar](https://github.com/paulmillr/chokidar)と実行環境の[express](https://github.com/expressjs/express)をインストールします。\n\n```bash\nnpm i express chokidar\n```\n\n### 2. server.jsを作成\nディレクトリの直下にserver.jsを作成します。\n```\n⋮\n├src\n│ ├app\n│ ├lib\n│ │ └post.ts // 定期更新対象\n│ ├posts     // 監視対象(mdが入る)\n│ ⋮\n├server.js   // 今回のファイル\n⋮\n```\nserver.jsの内容は下記のとおりです。  \n先ほど紹介した記事のコードをほぼほぼコピペして使わせていただきました。\n\n重ねてありがとうございます。\n```js\nimport express from 'express';\nimport path from 'node:path';\nimport fs from 'node:fs';\nimport chokidar from 'chokidar';\n\nconst app = express();\n\napp.listen(4000, () => {\n  console.log('http://localhost:4000');\n  let isUpdating = false;\n  const postTs = path.join(process.cwd(), '/src/lib/post.ts');\n  console.log(postTs);\n\n  const onChangePost = () => {\n    if (isUpdating) return;\n    isUpdating = true;\n    const content = fs.readFileSync(postTs, 'utf-8');\n    fs.writeFileSync(\n      postTs,\n      `${content}\\nconsole.log('updatedAt: ${new Date().toISOString()}')`,\n    );\n    setTimeout(() => {\n      fs.writeFileSync(postTs, content);\n      isUpdating = false;\n    }, 1000);\n  };\n\n  chokidar\n    .watch(path.join(process.cwd(), '/src/posts'), { ignoreInitial: true })\n    .on('add', onChangePost)\n    .on('change', onChangePost);\n});\n```\n内容としては、chokidarを使ってsrc/posts配下にあるmdファイルを監視します。  \n変更を検知した際に、onChangePost関数を実行します。onChangePost関数は、lib/post.tsにコードを追加し、1秒後に元に戻します。\n\n### 3. package.jsonに追加する\n最後に、package.jsonに```dev:server```と```dev:next```を追加し、下記のように書き換えます。\n\n\nこれで```npm run dev```を実行すると、server.jsとnext.jsの両方が起動します。\n```json\n⋮\n\"scripts\": {\n  \"dev:next\": \"next dev\",\n  \"dev:server\": \"node server.js\",\n  \"dev\": \"npm run dev:server & npm run dev:next\",\n  ⋮\n}\n```\n\n## まとめ\nexpressとchokidarを使ってmarkdownを監視する方法をまとめました。  \n私の環境ではこれで必要十分なスピードで更新されましたので、大変満足です。\n\nではまた。\n"
+  },
+  {
+    "slug": "2024-12-25",
+    "formattedData": {
+      "title": "mdブログにカードリンクを実装してみよう",
+      "createdAt": "2024-12-25",
+      "updatedAt": "2025-01-30",
+      "thumbnail": "/images/posts/pc02.svg",
+      "isNew": false,
+      "isUpdated": false
+    },
+    "content": "## はじめに\n当ブログの記事は、mdファイルをHTMLにパースして表示しており、ブログサービスによくある「ブログカード」や「カードリンク」的な機能がありません。\n\n実装するには、はてなブログさんが提供しているパーツをそのまま利用する手もあるようですが、リンク内がiframeになってしまい扱いが若干面倒でした。\n\nですので、せっかくですし簡単な方法で実装してみました。\n\n## カードのパターンと見た目\nyoutubeやx(twitter)の埋め込みは一旦おいておき、今回用意したのは下記のシンプルな2パターンです。\n- 一般的なwebサイトへのリンク\n- Amazonの商品リンク(アフェリエイトなし)\n\n### 一般的なリンクの例\n```Link\nZenn｜エンジニアのための情報共有コミュニティ\nzenn.dev\nhttps://zenn.dev\nhttps://static.zenn.studio/images/logo-only-dark.png\n```\n```Link\nnote ――つくる、つながる、とどける。\nnote.com\nhttps://note.com\nhttps://assets.st-note.com/poc-image/manual/production/default_top_ogp_202212.png\n```\n### Amazonの商品リンクの例\n```Amazon\n呪術廻戦 30 (ジャンプコミックスDIGITAL) Kindle版\namazon.co.jp\nhttps://www.amazon.co.jp/%E5%91%AA%E8%A1%93%E5%BB%BB%E6%88%A6-30-%E3%82%B8%E3%83%A3%E3%83%B3%E3%83%97%E3%82%B3%E3%83%9F%E3%83%83%E3%82%AF%E3%82%B9DIGITAL-%E8%8A%A5%E8%A6%8B%E4%B8%8B%E3%80%85-ebook/dp/B0DLF244XT\nhttps://m.media-amazon.com/images/I/71P9jpyF+3L._SY342_.jpg\n```\n\n## 実装方法\n### 考え方とロジック\n方法としては、マークダウン記法のコードブロックを利用します。\n\nコードのシンタックスハイライトに用いられる「言語識別子」をデータとして受け取り、独自の識別子である「Link」もしくは「Amazon」である場合、分岐してコンポーネントを出し分けます。\n\n![chart](/images/posts/2024-12-25_01.png)\n\nこの方法は下記の記事が大変参考になりました。ありがとうございました。\n\n（25/01/30追記）下記リンクは削除されているようです  \n~NEXTJSのマークダウンブログにAMAZONやYOUTUBEのEmbedを表示する~\n~https://onofblog.com/post/2024-03-31-markdownembed~\n\n\nまた、独自の識別子の場合、ブロックの中は以下のとおりです。\n\n1. タイトル\n2. ホスト\n3. URL\n4. 画像\n\n~~~\n```Link  ← 独自の識別子\nZenn｜エンジニアのための情報共有コミュニティ         ← タイトル\nzenn.dev                                      ← ホスト\nhttps://zenn.dev                              ← URL\nhttps://static.zenn.studio/images/logo-only-dark.png ← 画像\n```\n~~~\n~~~\n```javascript  ← 一般的な言語識別子\nvar foo = function (bar) {\n  return bar++;\n};\n\nconsole.log(foo(5));\n```\n~~~\n\nなお[react-markdown](https://github.com/remarkjs/react-markdown)だけではシンタックスハイライト対応が不十分なので、[react-syntax-highlighter](https://github.com/react-syntax-highlighter/react-syntax-highlighter)を導入しました。\n\n下記の記事が大変参考になりました。ありがとうございました。\n\n```Link\nreact-markdownとreact-syntax-highlighterを利用して、コードブロックをカスタマイズする\nwww.newt.so\nhttps://www.newt.so/docs/tutorials/customize-code-block-using-react-markdown#2-1.%20react-syntax-highlighter%E3%82%92%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB%E3%81%99%E3%82%8B\nhttps://www.newt.so/images/docs/ogp_tutorial.jpg\n```\n\n### コードの概要\n細かな部分を省略していますが、全体のコードは以下のようになります。\n\nswitch文を使って独自の識別子の判定し、コンポーネントを出し分けます。今後youtubeやx(twitter)の埋め込みを実装する場合にも対応できます。\n\n```jsx\nexport default ({\n  children\n} => {\n  const match = ... // コードブロックの識別子を取得\n\n  const embedType = ... // 独自の識別子を取得\n  if (embedType) { // 独自の識別子の場合\n    const {\n      title,\n      host,\n      url,\n      image\n      } = getData(children); // データを取得\n\n    switch (embedType) {  // 分岐\n      case 'Link':\n        return (\n          <Link>\n            ...\n          </Link>\n        );\n      case 'Amazon':\n        return (\n          <Link>\n            ...\n          </Link>\n        );\n    }\n  }\n  return match ? ( // 一般的な識別子の場合\n    <SyntaxHighlighter> // シンタックスハイライト\n     {children}\n    </SyntaxHighlighter>\n  ) : (\n    <code>              // プレーンなcodeブロック\n      {children}\n    </code>\n  );\n};\n```\nすべてのコードを確認したい場合は、手前味噌ですが[こちら](https://github.com/poko8nada/portfolio-site-v1/blob/main/src/components/ui/post_embed/page.tsx)の私のgithubをご参照ください。\n\n## まとめ\nとても良い勉強になりました。\n\nカードリンクのデータは、実は自作の適当なスニペットを対象サイトで実行して取得しています。  \nこのあたりもサーバーサイドで実装できれば、もっと便利になるかもしれません。\n\nではまた。\n"
+  },
+  {
+    "slug": "2024-12-19",
+    "formattedData": {
+      "title": "ポートフォリオサイトをNext.jsで作りました",
+      "createdAt": "2024-12-19",
+      "updatedAt": "2025-03-24",
+      "thumbnail": "/images/posts/pc01.svg",
+      "isNew": false,
+      "isUpdated": false
+    },
+    "content": "## はじめに\n今はまだポートフォリオとはとても呼べないですが、ブログ記事はちょこちょこ更新します。\n\n近いうちに個人開発のwebサービスもリリースしていこうと思います。\n\n## このサイトの技術スタック\n### Next.js ( App Router/SSG )\nはじめてNext.jsを使ったサイトを作りました。\n\nUdemyでチュートリアル講座を1つ学んだ上で手をつけたのですが、勢いで作った割に、スタックするような場面はありませんでした。\n\nやはり日本語の情報がたくさんあるのはありがたいです。\n\n### ~CSS Modules~ → TailwindCSS\n（25/03/24修正と追記）  \nサイトデザインをもう少しシンプルにしたくなり、雑多になっていたCSSファイル管理からの脱却をかねて、CSS ModuleからTailwindCSSに乗り換えました。\n\nTailwindCSSはいろいろ賛否がありますが、とっちらかったCSSを管理するよりも、個人的には楽です。\n\n### Cloudflare Pages\n最近勢いがあるとCloudflare Pagesを使ってサイトをホスティングしました。\n\nポートフォリオのドメインを用意するのにあたり、購入と管理を簡単にできるのもポイントです。\n\nただし、ドメイン購入の際に楽天カードで決済ができず、困っていろいろとググった結果、下記の記事にたどり着きました。\n\n```Link\nstin.ink を Google Domains から Cloudflare Registrar に移管した | stin's Blog\nblog.stin.ink\nhttps://blog.stin.ink/articles/sitn-ink-from-google-to-cloudflare\nhttps://blog.stin.ink/articles/sitn-ink-from-google-to-cloudflare/opengraph-image?1ae3c2d928914beb\n```\n\nまたx(twitter)で検索すると、同様の症状の方は割といらっしゃって\n- paypalアカウントを作成して事なきを得た。\n- 楽天のサポートに電話をして、決済を通すようにした。\n\nといった情報がありました。\n\n私の場合、paypalでも解決できず、もともと持っていた別のVISAデビットカードでようやく決済できました。\n\n### 記事の管理\nローカルにmdファイルで管理しています。\n\nmdファイルをjsxにパースするライブラリとしては[react-markdown](https://github.com/remarkjs/react-markdown?tab=readme-ov-file)が有名だそうで、そのまま利用しました。\n\n### 記事のスタイリング\nスタイリングは、[github-markdown-css](https://github.com/sindresorhus/github-markdown-css/tree/main?tab=readme-ov-file)を使ってます。\n\n（25/03/24追記）  \n上記だけでは物足りなかったので、remark-gfmプラグインを導入しました。\n\n```Link\nremarkjs/remark-gfm: remark plugin to support GFM (autolink literals, footnotes, strikethrough, tables, tasklists)\ngithub.com\nhttps://github.com/remarkjs/remark-gfm\nhttps://opengraph.githubassets.com/2e555516907e2c7287206863ab6eec6dd2730b1fbd54fd8d80128a0d73b6b712/remarkjs/remark-gfm\n```\n\nこれで「取り消し線」、「表」、「タスクリスト」などをマークダウンで使えるようになりました。\n\n導入方法は、[react-markdownのプラグイン導入](https://github.com/remarkjs/react-markdown?tab=readme-ov-file#examples)に記載されています。とても簡単で助かります。\n\n## おわりに\n個人的な不満点はまだまだあるので、1つずつ解決していこうと思います。\n\nではまた。"
+  }
+]
