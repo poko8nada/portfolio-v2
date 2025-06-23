@@ -1,10 +1,9 @@
+import { notFound } from 'next/navigation'
 import PostBody from '@/components/postBody'
 import PostFooter from '@/components/postFooter'
 import PostHeader from '@/components/postHeader'
-
 import SectionBody from '@/components/sectionBody'
-import { type Post, getAllPosts, getPostsBySlug } from '@/lib/post'
-import { notFound } from 'next/navigation'
+import { getAllPosts, getPostsBySlug } from '@/lib/post'
 
 export function generateStaticParams() {
   return getAllPosts().map(({ slug }) => {
@@ -14,7 +13,9 @@ export function generateStaticParams() {
 
 export async function generateMetadata({
   params,
-}: { params: Promise<{ slug: string }> }) {
+}: {
+  params: Promise<{ slug: string }>
+}) {
   const slug = (await params).slug
 
   const post = getPostsBySlug(slug)

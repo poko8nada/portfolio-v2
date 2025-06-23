@@ -3,8 +3,6 @@ import DisplayHomeSection from '@/feature/display-home-section'
 import DisplaySns from '@/feature/display-sns'
 import DisplayToolCards from '@/feature/display-tool-cards'
 
-export const runtime = 'edge'
-
 export default function Home() {
   return (
     <>

@@ -1,7 +1,5 @@
-import SectionBody from '@/components/sectionBody'
 import Link from 'next/link'
-
-export const runtime = 'edge'
+import SectionBody from '@/components/sectionBody'
 
 export default function NotFound() {
   return (

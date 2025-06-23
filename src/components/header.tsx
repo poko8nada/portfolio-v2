@@ -6,7 +6,10 @@ const nunito = Nunito({ subsets: ['latin'] })
 export default ({
   imgSize = 120,
   fontSize = 1.5,
-}: { imgSize?: number; fontSize?: number }) => {
+}: {
+  imgSize?: number
+  fontSize?: number
+}) => {
   return (
     <header
       className={`${nunito.className} bg-bg text-3xl p-6 border-b-1 border-bg-2`}

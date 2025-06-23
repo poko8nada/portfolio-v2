@@ -5,7 +5,12 @@ const toolsCard = ({
   description,
   img,
   link,
-}: { title: string; description: string; img: string; link: string }) => {
+}: {
+  title: string
+  description: string
+  img: string
+  link: string
+}) => {
   return (
     <div className='max-w-full sm:max-w-[377px] bg-bg border-1 border-fg rounded-lg shadow-sm flex'>
       <div className='p-2 border-r-1 border-fg flex items-center w-[80px] shrink-0 justify-center'>

@@ -1,4 +1,5 @@
 import React from 'react'
+
 function processText(text: string) {
   let uniqueKey = 0
   return text.split(/(~[^~]+~)/g).map(part => {

@@ -1,7 +1,7 @@
+import Image from 'next/image'
 import PostsCard from '@/components/postsCard'
 import Button from '@/components/ui/button'
 import { getAllPosts } from '@/lib/post'
-import Image from 'next/image'
 
 export default function DisplayHomePosts() {
   const topPosts = getAllPosts().slice(0, 3)
