@@ -4,9 +4,9 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"preprocess": "node scripts/process-markdown.js",
-		"dev": "npm run preprocess && next dev",
-		"build": "npm run preprocess && next build",
+		"copy-posts": "node scripts/copy-posts-to-assets.js",
+		"dev": "npm run copy-posts && next dev",
+		"build": "npm run copy-posts && next build",
 		"start": "next start",
 		"lint": "next lint",
 		"preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",

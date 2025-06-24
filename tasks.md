@@ -3,22 +3,29 @@
 ## フェーズ0: SSG→SSR変更（Static Assets活用）
 
 ### Task0-1: Static Assets設定
-- [ ] `wrangler.jsonc`にassets設定を追加
+- [x] `wrangler.jsonc`にassets設定を追加
   - `assets.directory`を`.open-next/assets`に設定
   - `assets.binding`を`ASSETS`に設定
-- [ ] mdファイルをassets配置用ディレクトリに配布する仕組み作成
+- [x] mdファイルをassets配置用ディレクトリに配布する仕組み作成
   - `.open-next/assets/posts/`にmdファイルをコピーするスクリプト作成
 
 ### Task0-2: SSR+Static Assets対応実装
-- [ ] `src/lib/post.ts`をStatic Assets対応に書き換え
-  - `getAllPosts()`関数：`env.ASSETS.fetch()`でmdファイル一覧取得
-  - `getPostsBySlug()`関数：`env.ASSETS.fetch('/posts/xxx.md')` + gray-matterでパース
-  - File System API（fs）を完全に削除
-- [ ] `scripts/process-markdown.js`を削除（不要になるため）
-- [ ] `src/data/posts.json`を削除（不要になるため）
-- [ ] `package.json`の`preprocess`スクリプトを削除
-- [ ] `dev`スクリプトから`preprocess`を削除
-- [ ] 各ページコンポーネントでのStatic Assets対応確認
+- [x] `src/lib/post.ts`をStatic Assets対応に書き換え
+  - `getAllPostsIndex()`関数：開発環境はNode.js fs、本番環境は`env.ASSETS.fetch()`でindexファイル取得
+  - `getPostBySlug()`関数：開発環境はNode.js fs、本番環境は`env.ASSETS.fetch('/posts/xxx.md')` + gray-matterでパース
+  - File System API（fs）を完全に削除（本番環境から）
+- [x] `scripts/process-markdown.js`を削除（不要になるため）
+- [x] `src/data/posts.json`を削除（不要になるため）
+- [x] `package.json`の`preprocess`スクリプトを削除
+- [x] `dev`スクリプトを`copy-posts`に変更
+- [x] 各ページコンポーネントでのStatic Assets対応確認
+  - 投稿一覧ページ（`/posts`）: 非同期コンポーネントに変更
+  - 投稿詳細ページ（`/posts/[slug]`）: 非同期コンポーネントに変更
+  - ホームページ投稿表示部分: 非同期コンポーネントに変更
+- [x] 高度な投稿配布スクリプト実装
+  - `isPublished: false`の投稿は配布しない
+  - `version`ベースの差分更新（変更されたファイルのみ再配布）
+  - 投稿一覧用のrich indexファイル生成（title, createdAt, updatedAt, thumbnail含む）
 
 ## フェーズ1: 環境移行準備
 
