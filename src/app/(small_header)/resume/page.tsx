@@ -1,5 +1,5 @@
 import { getAllResumeData } from '@/lib/resume'
-import { SimpleMarkdown } from '@/components/simple-markdown'
+import { MarkdownForResume } from '@/components/markdown-for-resume'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -7,14 +7,14 @@ export const metadata: Metadata = {
   robots: 'noindex, nofollow, noarchive, nosnippet',
 }
 
-export default function ResumePage() {
-  const resumeData = getAllResumeData()
+export default async function ResumePage() {
+  const resumeData = await getAllResumeData()
 
   return (
     <div className='min-h-screen bg-gray-50 py-8'>
       <div className='max-w-4xl mx-auto px-4 sm:px-6 lg:px-8'>
         <div className='bg-white shadow-lg rounded-lg overflow-hidden'>
-          <div className='bg-gray-900 text-white px-6 py-4'>
+          <div className='bg-bg-2 text-white px-6 py-4'>
             <h1 className='text-2xl font-bold'>Private Area - Resume</h1>
             <p className='text-gray-300 mt-1'>Confidential Information</p>
           </div>
@@ -48,14 +48,14 @@ export default function ResumePage() {
                       </div>
                     </div>
 
-                    <SimpleMarkdown content={item.content} />
+                    <MarkdownForResume content={item.content} />
                   </div>
                 ))}
               </div>
             )}
           </div>
 
-          <div className='bg-gray-50 px-6 py-4 border-t'>
+          <div className='bg-gray-50 px-6 py-4 border-t border-gray-200'>
             <p className='text-sm text-gray-600'>
               <span className='font-medium'>⚠️ Confidential:</span>
               This information is private and not indexed by search engines.

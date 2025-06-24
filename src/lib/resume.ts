@@ -1,3 +1,4 @@
+'use server'
 import matter from 'gray-matter'
 import resumeContent from '@/content/resume/resume.md'
 import careerContent from '@/content/resume/career.md'
@@ -56,7 +57,9 @@ function processResumeContent(
 /**
  * Get resume data by slug
  */
-export function getResumeBySlug(slug: string): ResumeData | undefined {
+export async function getResumeBySlug(
+  slug: string,
+): Promise<ResumeData | undefined> {
   let content: string
 
   switch (slug) {
@@ -76,12 +79,12 @@ export function getResumeBySlug(slug: string): ResumeData | undefined {
 /**
  * Get all resume data
  */
-export function getAllResumeData(): ResumeData[] {
+export async function getAllResumeData(): Promise<ResumeData[]> {
   const slugs = ['resume', 'career']
   const results: ResumeData[] = []
 
   for (const slug of slugs) {
-    const data = getResumeBySlug(slug)
+    const data = await getResumeBySlug(slug)
     if (data) {
       results.push(data)
     }
@@ -97,14 +100,15 @@ export function getAllResumeData(): ResumeData[] {
 /**
  * Get basic profile information from resume data (for use in other components)
  */
-export function getBasicProfileInfo():
+export async function getBasicProfileInfo(): Promise<
   | {
       name?: string
       title?: string
       skills?: string[]
     }
-  | undefined {
-  const resumeData = getResumeBySlug('resume')
+  | undefined
+> {
+  const resumeData = await getResumeBySlug('resume')
   if (!resumeData) return undefined
 
   // Extract basic info from resume content
