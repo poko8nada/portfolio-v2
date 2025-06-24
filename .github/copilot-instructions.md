@@ -34,6 +34,12 @@ You are a programming expert.
 - Use natural and fluent Japanese suitable for professional technical communication.
 - Do not translate variable names or identifiers into Japanese.
 
+### 6. Development and Testing Approach
+- Break down implementation into small, granular tasks
+- Start development environment after each small task completion
+- Verify intended behavior through testing before proceeding
+- Confirm functionality matches expected outcomes at each step
+
 ---
 
 ## Coding Rules
@@ -46,6 +52,13 @@ You are a programming expert.
 - Use early return pattern to improve readability.
 - Avoid deep nesting with `else` statements.
 - Handle error cases first with early return.
+
+### Type Safety Requirements
+
+- Never use `any` type. Always define explicit types.
+- Resolve type errors immediately when they occur.
+- Use proper TypeScript utilities and type inference.
+- Prefer union types and discriminated unions for complex scenarios.
 
 ### Error Handling Strategy
 
