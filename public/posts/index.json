@@ -1,0 +1,74 @@
+[
+  {
+    "slug": "2025-06-22",
+    "title": "Markdownでスライド作成できるWebサービスをリリースしました",
+    "createdAt": "2025-06-22",
+    "updatedAt": "2025-06-22",
+    "thumbnail": "/images/posts/pc01.svg",
+    "version": 1
+  },
+  {
+    "slug": "2025-04-24",
+    "title": "ブログに使えるリンクカード生成サービスver2をつくりました",
+    "createdAt": "2025-04-24",
+    "updatedAt": "2025-04-24",
+    "thumbnail": "/images/posts/pc02.svg",
+    "version": 1
+  },
+  {
+    "slug": "2025-04-10",
+    "title": "ブログ記事にラベルを追加しました",
+    "createdAt": "2025-04-10",
+    "updatedAt": "2025-04-10",
+    "thumbnail": "/images/posts/pc03.svg",
+    "version": 1
+  },
+  {
+    "slug": "2025-03-03",
+    "title": "ブログカード風のリンクを作りました",
+    "createdAt": "2025-03-03",
+    "updatedAt": "2025-04-10",
+    "thumbnail": "/images/posts/pc02.svg",
+    "version": 2
+  },
+  {
+    "slug": "2025-01-24",
+    "title": "燃え尽きても世界は回ってくれている",
+    "createdAt": "2025-01-24",
+    "updatedAt": "2025-01-24",
+    "thumbnail": "/images/posts/book01.svg",
+    "version": 1
+  },
+  {
+    "slug": "2025-01-10",
+    "title": "GA4＋GTMでアクセスフィルタを実装しよう",
+    "createdAt": "2025-01-10",
+    "updatedAt": "2025-01-14",
+    "thumbnail": "/images/posts/pc01.svg",
+    "version": 2
+  },
+  {
+    "slug": "2024-12-28",
+    "title": "Next.jsでmdファイルのホットリロードに対応しよう",
+    "createdAt": "2024-12-28",
+    "updatedAt": "2025-01-09",
+    "thumbnail": "/images/posts/pc03.svg",
+    "version": 3
+  },
+  {
+    "slug": "2024-12-25",
+    "title": "mdブログにカードリンクを実装してみよう",
+    "createdAt": "2024-12-25",
+    "updatedAt": "2025-01-30",
+    "thumbnail": "/images/posts/pc02.svg",
+    "version": 3
+  },
+  {
+    "slug": "2024-12-19",
+    "title": "ポートフォリオサイトをNext.jsで作りました",
+    "createdAt": "2024-12-19",
+    "updatedAt": "2025-03-24",
+    "thumbnail": "/images/posts/pc01.svg",
+    "version": 3
+  }
+]

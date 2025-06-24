@@ -3,7 +3,7 @@ import DisplayHomeSection from '@/feature/display-home-section'
 import DisplaySns from '@/feature/display-sns'
 import DisplayToolCards from '@/feature/display-tool-cards'
 
-export default function Home() {
+export default async function Home() {
   return (
     <>
       <DisplayHomeSection title='about me'>

@@ -1,15 +1,15 @@
 import type { Metadata } from 'next'
 import PostsCard from '@/components/postsCard'
 import SectionBody from '@/components/sectionBody'
-import { getAllPosts } from '@/lib/post'
+import { getAllPostsIndex } from '@/lib/post'
 
 export const metadata: Metadata = {
   title: 'blog | pokoHanadaCom',
 }
 
-const allPosts = getAllPosts()
+export default async function PostsPage() {
+  const allPosts = await getAllPostsIndex()
 
-export default () => {
   return (
     <>
       <SectionBody>
@@ -19,13 +19,19 @@ export default () => {
           <p>手を動かすwebディレクターの雑記です。</p>
         </div>
         <div className='grid grid-cols-1 md:grid-cols-2 gap-8 px-14 sm:px-18 p-4'>
-          {allPosts.map(({ slug, formattedData }, index) => {
+          {allPosts.map((post, index) => {
             return (
               <PostsCard
-                key={slug}
-                slug={slug}
+                key={post.slug}
+                slug={post.slug}
                 index={index}
-                formattedData={formattedData}
+                formattedData={{
+                  title: post.title,
+                  createdAt: post.createdAt,
+                  thumbnail: post.thumbnail,
+                  isNew: post.isNew || false,
+                  isUpdated: post.isUpdated || false,
+                }}
               />
             )
           })}

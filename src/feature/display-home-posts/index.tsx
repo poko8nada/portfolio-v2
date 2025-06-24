@@ -1,19 +1,27 @@
 import Image from 'next/image'
 import PostsCard from '@/components/postsCard'
 import Button from '@/components/ui/button'
-import { getAllPosts } from '@/lib/post'
+import { getAllPostsIndex } from '@/lib/post'
 
-export default function DisplayHomePosts() {
-  const topPosts = getAllPosts().slice(0, 3)
+export default async function DisplayHomePosts() {
+  const allPosts = await getAllPostsIndex()
+  const topPosts = allPosts.slice(0, 3)
+
   return (
     <>
       <div className='grid grid-cols-1 sm:grid-cols-2 gap-4 md:px-12 p-2'>
-        {topPosts.map(({ slug, formattedData }, index) => {
+        {topPosts.map((post, index) => {
           return (
             <PostsCard
-              key={slug}
-              slug={slug}
-              formattedData={formattedData}
+              key={post.slug}
+              slug={post.slug}
+              formattedData={{
+                title: post.title,
+                createdAt: post.createdAt,
+                thumbnail: post.thumbnail,
+                isNew: post.isNew || false,
+                isUpdated: post.isUpdated || false,
+              }}
               index={index}
               isHome={true}
             />
