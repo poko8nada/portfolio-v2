@@ -14,20 +14,19 @@
 - **現在の方式**: SSG（Static Site Generation）
   - ビルド時に`scripts/process-markdown.js`でmd→JSON変換
   - `src/data/posts.json`からデータを読み込み
-- **変更後の方式**: SSR（Server-Side Rendering）+ Static Assets活用
-  - **制約**: Cloudflare WorkersではFile System APIが未サポート（⚪ coming soon）
-  - **解決策**: Cloudflare Workers Static Assetsを活用
-  - **Static Assets仕組み**:
+- **変更後の方式**: SSR（Server-Side Rendering）+ Static Assets活用（postsのみ）
+  - **Posts管理**: Cloudflare Workers Static Assetsを活用
     - `wrangler.jsonc`の`assets.directory`にmdファイルを配置
     - デプロイ時にCloudflareが自動的にassets配信ネットワークに配布
     - Worker内で`env.ASSETS.fetch()`を使用してassetsにアクセス
-    - グローバルキャッシュとtiered cachingによる高速配信
-  - **データフロー**: 
-    - 現在：md → JSON保存 → 静的読み込み
-    - 変更後：md（assets） → env.ASSETS.fetch() → gray-matter → 直接データオブジェクト
-    - メリット：中間ファイル不要、CDN配信、リアルタイム処理、キャッシュ最適化
-    - 実装：Server Components内で`env.ASSETS.fetch('/posts/xxx.md')`でmdファイル取得・パース
-  - **開発環境対応**: 開発時はNode.js fs、本番時はCloudflare ASSETS
+    - **データフロー**: md（assets） → env.ASSETS.fetch() → gray-matter → 直接データオブジェクト
+    - **開発環境対応**: 開発時はNode.js fs、本番時はCloudflare ASSETS
+  - **Resume管理**: webpack asset/source方式
+    - Markdownファイルをビルド時にJSバンドルに文字列として埋め込み
+    - import文で直接アクセス、実行時はメモリから取得
+    - Cloudflare Workersの制約（File System API未対応）を完全回避
+    - **データフロー**: md → webpack asset/source → バンドル埋め込み → import文 → 直接アクセス
+    - **セキュリティ**: public配下に配置せず、認証レイヤー通過後のみアクセス可能
   - **高度な配布機能**: `isPublished`フィルタ、version差分更新、rich indexファイル生成
 
 ### 1. Cloudflare Pages → Workers移行
@@ -51,10 +50,16 @@
 - Workersの`nodejs_compat`フラグが必要
 
 ### 4. resumeデータ管理
-- `resume/`ディレクトリを作成し、個人情報を含むmdファイル（履歴書・職務経歴書等）を配置
-- `.gitignore`に`resume/`を追加し、Git管理対象外とする
-- resume配下のmdは認証後のみアクセス可能
-- resume以外の一部ページ・コンポーネントでも、resume内mdの一部データをパースして利用可能にする
+- **webpack asset/source方式採用**: Markdownファイルをビルド時に文字列としてバンドル
+- `src/content/resume/`ディレクトリに個人情報を含むmdファイル（履歴書・職務経歴書等）を配置
+- `.gitignore`に`src/content/resume/`を追加し、Git管理対象外とする
+- **技術実装**:
+  - `next.config.ts`でwebpack asset/sourceルールを設定
+  - TypeScript型定義（`src/types/markdown.d.ts`）でmdファイルimportを対応
+  - `src/lib/resume.ts`でimport文による直接アクセス（非同期処理不要）
+- resume配下のmdは認証後のみアクセス可能（middlewareで保護）
+- resume以外のページ・コンポーネントでも、resume内mdの一部データをパースして利用可能
+- **セキュリティ**: public配下に配置せず、バンドル内蔵でStatic Assets経由の直接アクセス不可
 
 ### 5. インデックス防止
 - 保護ページに`noindex`メタタグと`X-Robots-Tag`ヘッダーを追加
@@ -67,10 +72,18 @@
 - `nodejs_compat`互換性フラグが必須
 - SSG→SSR変更により、`scripts/process-markdown.js`と`src/data/posts.json`は不要となる
 - 既存の`getAllPosts()`、`getPostsBySlug()`関数をfetch()ベースに書き換え
+- **Resume管理の技術選択**:
+  - webpack asset/source方式を採用（モダン、シンプル、セキュア）
+  - next.config.tsでMarkdownファイルの文字列化設定が必要
+  - TypeScript型定義（`*.md`ファイルのimport対応）が必要
 
 ## セキュリティ上の注意
 - 強力なパスワードを使用し、定期的に変更
 - 認証情報は必ず環境変数で管理
 - Basic認証はHTTPS環境でのみ利用
-- 個人情報を含むファイルはGit管理対象外とする
+- 個人情報を含むファイルはGit管理対象外とする（`src/content/resume/`をgitignore）
+- **Resume データの保護**:
+  - webpack asset/source方式により、バンドル内蔵でファイルシステム・Static Assets経由の直接アクセス不可
+  - middlewareによる認証レイヤーを通過したリクエストのみアクセス可能
+  - public配下に配置しないため、静的ファイル配信での意図しない露出を防止
 

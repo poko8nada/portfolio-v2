@@ -46,5 +46,5 @@ next-env.d.ts
 
 .open-next
 
-# personal
-resume/
+# personal content
+src/content/resume/

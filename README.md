@@ -1,36 +1,82 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Portfolio Site v2
 
-## Getting Started
+PokoHanadaのポートフォリオサイト - Next.js 15 + Cloudflare Workers構成
 
-First, run the development server:
+## 概要
+
+手を動かすwebディレクターのポートフォリオサイトです。技術ブログとプロフィール、スキル情報を掲載しています。
+
+## 技術構成
+
+- **Framework**: Next.js 15 (App Router)
+- **Styling**: TailwindCSS 4
+- **Deployment**: Cloudflare Workers
+- **Runtime**: @opennextjs/cloudflare
+- **Content**: Markdown (Static Assets)
+- **Authentication**: Basic認証 (Resume部のみ)
+
+## 主な機能
+
+- **ホームページ**: プロフィール、最新投稿、ツール紹介
+- **ブログシステム**: Markdown形式の投稿管理
+- **レジュメページ**: Basic認証付きプライベートページ
+- **レスポンシブデザイン**: モバイル・デスクトップ対応
+
+## 開発環境
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# 依存関係のインストール
+pnpm install
+
+# 投稿インデックス生成
+pnpm run generate-posts-index
+
+# 開発サーバー起動
+pnpm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+ブラウザで [http://localhost:3000](http://localhost:3000) を開いて確認してください。
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## デプロイメント
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### プレビュー
+```bash
+pnpm run preview
+```
 
-## Learn More
+### 本番環境デプロイ
+```bash
+pnpm run deploy
+```
 
-To learn more about Next.js, take a look at the following resources:
+## 環境変数
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Basic認証用の環境変数を設定してください：
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+# Cloudflare Workers Secrets
+wrangler secret put BASIC_AUTH_USERNAME
+wrangler secret put BASIC_AUTH_PASSWORD
+```
 
-## Deploy on Vercel
+## プロジェクト構造
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+src/
+├── app/                    # Next.js App Router
+│   ├── (header)/          # ヘッダー付きレイアウト
+│   └── (small_header)/    # 簡易ヘッダーレイアウト
+├── components/            # 再利用可能コンポーネント
+├── feature/               # 機能別コンポーネント
+├── lib/                   # ユーティリティ関数
+└── types/                 # TypeScript型定義
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+public/posts/              # ブログ投稿（Markdown）
+scripts/                   # ビルドスクリプト
+```
+
+## コンテンツ管理
+
+- **投稿追加**: `public/posts/` にMarkdownファイルを追加
+- **インデックス更新**: `pnpm run generate-posts-index`
+- **投稿公開制御**: frontmatterの `isPublished` フィールドで管理
