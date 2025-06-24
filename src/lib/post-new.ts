@@ -1,6 +1,4 @@
 import matter from 'gray-matter'
-import fs from 'node:fs'
-import path from 'node:path'
 
 export type Post = {
   slug: string
@@ -62,123 +60,7 @@ function getAssetsBinding() {
   return null
 }
 
-// 開発環境用：Node.js fsを使用してローカルファイルを読み取り
-function getAllPostsIndexDev(): PostIndex[] {
-  try {
-    const assetsIndexPath = path.join(
-      process.cwd(),
-      '.open-next/assets/posts/index.json',
-    )
-
-    // ファイルが存在しない場合は空配列を返す
-    if (!fs.existsSync(assetsIndexPath)) {
-      console.warn(
-        'Posts index file not found. Run "npm run copy-posts" first.',
-      )
-      return []
-    }
-
-    const content = fs.readFileSync(assetsIndexPath, 'utf-8')
-    const posts: PostIndex[] = JSON.parse(content)
-
-    // New/Updateラベル判定を追加
-    const today = new Date()
-    const twoWeeksAgo = new Date(today)
-    twoWeeksAgo.setDate(today.getDate() - 14)
-
-    return posts.map(post => {
-      const isNew = new Date(post.createdAt) > twoWeeksAgo
-      const isUpdated = new Date(post.updatedAt) > twoWeeksAgo && !isNew
-
-      return {
-        ...post,
-        isNew,
-        isUpdated,
-      }
-    })
-  } catch (error) {
-    console.error('Failed to load posts index (dev):', error)
-    return []
-  }
-}
-
-// 開発環境用：Node.js fsを使用してローカルファイルから投稿を読み取り
-function getPostBySlugDev(slug: string): Post | undefined {
-  try {
-    const postPath = path.join(
-      process.cwd(),
-      '.open-next/assets/posts',
-      `${slug}.md`,
-    )
-
-    // ファイルが存在しない場合は undefined を返す
-    if (!fs.existsSync(postPath)) {
-      return undefined
-    }
-
-    const mdContent = fs.readFileSync(postPath, 'utf-8')
-    const { data, content } = matter(mdContent)
-
-    // 公開チェック
-    if (
-      !data.isPublished ||
-      !data.title ||
-      !data.createdAt ||
-      !data.updatedAt
-    ) {
-      return undefined
-    }
-
-    const formattedData = {
-      title: String(data.title),
-      createdAt:
-        typeof data.createdAt === 'string'
-          ? data.createdAt.slice(0, 10)
-          : data.createdAt.toISOString().slice(0, 10),
-      updatedAt:
-        typeof data.updatedAt === 'string'
-          ? data.updatedAt.slice(0, 10)
-          : data.updatedAt.toISOString().slice(0, 10),
-      thumbnail: data.thumbnail
-        ? String(data.thumbnail)
-        : '/images/pencil01.svg',
-      isNew: false,
-      isUpdated: false,
-    }
-
-    // New/Updateラベル判定
-    const today = new Date()
-    const twoWeeksAgo = new Date(today)
-    twoWeeksAgo.setDate(today.getDate() - 14)
-
-    const isNew = new Date(formattedData.createdAt) > twoWeeksAgo
-    if (isNew) {
-      formattedData.isNew = true
-    }
-
-    const isUpdated = new Date(formattedData.updatedAt) > twoWeeksAgo
-    if (isUpdated && !isNew) {
-      formattedData.isUpdated = true
-    }
-
-    return {
-      slug,
-      formattedData,
-      content,
-    }
-  } catch (error) {
-    console.error(`Failed to load ${slug}.md (dev):`, error)
-    return undefined
-  }
-}
-
 export const getAllPostsIndex = async (): Promise<PostIndex[]> => {
-  // 開発環境では Node.js fs を使用
-  if (process.env.NODE_ENV !== 'production') {
-    return getAllPostsIndexDev()
-  }
-
-  // プロダクション環境では Cloudflare ASSETS を使用
   try {
     const ASSETS = getAssetsBinding()
     if (!ASSETS) {
@@ -218,12 +100,6 @@ export const getAllPostsIndex = async (): Promise<PostIndex[]> => {
 export const getPostBySlug = async (
   slug: string,
 ): Promise<Post | undefined> => {
-  // 開発環境では Node.js fs を使用
-  if (process.env.NODE_ENV !== 'production') {
-    return getPostBySlugDev(slug)
-  }
-
-  // プロダクション環境では Cloudflare ASSETS を使用
   try {
     const ASSETS = getAssetsBinding()
     if (!ASSETS) {
