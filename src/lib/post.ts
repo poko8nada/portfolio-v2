@@ -26,40 +26,18 @@ export type PostIndex = {
   isUpdated?: boolean
 }
 
-// Cloudflare環境への対応
-interface CloudflareProcess extends NodeJS.Process {
-  env: NodeJS.ProcessEnv & {
-    ASSETS?: {
-      fetch: (url: string) => Promise<Response>
-    }
-  }
-}
-
-interface CloudflareGlobal {
-  cloudflareEnv?: {
-    ASSETS?: {
-      fetch: (url: string) => Promise<Response>
-    }
-  }
-}
-
 function getAssetsBinding() {
-  // OpenNext for Cloudflareでは、process.env.ASSETS が利用可能
-  if (
-    typeof process !== 'undefined' &&
-    process.env &&
-    (process as CloudflareProcess).env.ASSETS
-  ) {
-    return (process as CloudflareProcess).env.ASSETS
+  try {
+    // OpenNext for Cloudflareの正しい方法
+    const { getCloudflareContext } = require('@opennextjs/cloudflare')
+    const { env } = getCloudflareContext()
+    console.log('Found Cloudflare context, ASSETS available:', !!env.ASSETS)
+    return env.ASSETS
+  } catch {
+    // 開発環境では @opennextjs/cloudflare が利用できない場合があります
+    console.log('Cloudflare context not available, using Node.js fs')
+    return null
   }
-
-  // グローバル環境からのアクセス（開発時やランタイム時）
-  const globalEnv = globalThis as unknown as CloudflareGlobal
-  if (typeof globalThis !== 'undefined' && globalEnv.cloudflareEnv?.ASSETS) {
-    return globalEnv.cloudflareEnv.ASSETS
-  }
-
-  return null
 }
 
 // 開発環境用：Node.js fsを使用してローカルファイルを読み取り
@@ -173,121 +151,118 @@ function getPostBySlugDev(slug: string): Post | undefined {
 }
 
 export const getAllPostsIndex = async (): Promise<PostIndex[]> => {
-  // 開発環境では Node.js fs を使用
-  if (process.env.NODE_ENV !== 'production') {
-    return getAllPostsIndexDev()
-  }
+  // ASSETSバインディングが利用可能かチェック
+  const ASSETS = getAssetsBinding()
 
-  // プロダクション環境では Cloudflare ASSETS を使用
-  try {
-    const ASSETS = getAssetsBinding()
-    if (!ASSETS) {
-      console.error('Cloudflare ASSETS binding not available')
-      return []
-    }
-
-    const response = await ASSETS.fetch('/posts/index.json')
-    if (!response.ok) {
-      console.error('Failed to load posts index')
-      return []
-    }
-
-    const posts: PostIndex[] = await response.json()
-
-    // New/Updateラベル判定を追加
-    const today = new Date()
-    const twoWeeksAgo = new Date(today)
-    twoWeeksAgo.setDate(today.getDate() - 14)
-
-    return posts.map(post => {
-      const isNew = new Date(post.createdAt) > twoWeeksAgo
-      const isUpdated = new Date(post.updatedAt) > twoWeeksAgo && !isNew
-
-      return {
-        ...post,
-        isNew,
-        isUpdated,
+  if (ASSETS) {
+    // Cloudflare ASSETS を使用（wrangler dev含む）
+    try {
+      // ASSETS binding requires absolute paths starting with /
+      const response = await ASSETS.fetch('/posts/index.json')
+      if (!response.ok) {
+        console.error('Failed to load posts index, status:', response.status)
+        return []
       }
-    })
-  } catch (error) {
-    console.error('Failed to load posts index:', error)
-    return []
+
+      const posts: PostIndex[] = await response.json()
+      console.log(`Successfully loaded ${posts.length} posts`)
+
+      // New/Updateラベル判定を追加
+      const today = new Date()
+      const twoWeeksAgo = new Date(today)
+      twoWeeksAgo.setDate(today.getDate() - 14)
+
+      return posts.map(post => {
+        const isNew = new Date(post.createdAt) > twoWeeksAgo
+        const isUpdated = new Date(post.updatedAt) > twoWeeksAgo && !isNew
+
+        return {
+          ...post,
+          isNew,
+          isUpdated,
+        }
+      })
+    } catch (error) {
+      console.error('Failed to load posts index:', error)
+      return []
+    }
+  } else {
+    // Node.js fs を使用（通常の npm run dev）
+    return getAllPostsIndexDev()
   }
 }
 
 export const getPostBySlug = async (
   slug: string,
 ): Promise<Post | undefined> => {
-  // 開発環境では Node.js fs を使用
-  if (process.env.NODE_ENV !== 'production') {
+  // ASSETSバインディングが利用可能かチェック
+  const ASSETS = getAssetsBinding()
+
+  if (ASSETS) {
+    // Cloudflare ASSETS を使用（wrangler dev含む）
+    try {
+      // ASSETS binding requires absolute paths starting with /
+      const response = await ASSETS.fetch(`/posts/${slug}.md`)
+      if (!response.ok) {
+        return undefined
+      }
+
+      const mdContent = await response.text()
+      const { data, content } = matter(mdContent)
+
+      // 公開チェック
+      if (
+        !data.isPublished ||
+        !data.title ||
+        !data.createdAt ||
+        !data.updatedAt
+      ) {
+        return undefined
+      }
+
+      const formattedData = {
+        title: String(data.title),
+        createdAt:
+          typeof data.createdAt === 'string'
+            ? data.createdAt.slice(0, 10)
+            : data.createdAt.toISOString().slice(0, 10),
+        updatedAt:
+          typeof data.updatedAt === 'string'
+            ? data.updatedAt.slice(0, 10)
+            : data.updatedAt.toISOString().slice(0, 10),
+        thumbnail: data.thumbnail
+          ? String(data.thumbnail)
+          : '/images/pencil01.svg',
+        isNew: false,
+        isUpdated: false,
+      }
+
+      // New/Updateラベル判定
+      const today = new Date()
+      const twoWeeksAgo = new Date(today)
+      twoWeeksAgo.setDate(today.getDate() - 14)
+
+      const isNew = new Date(formattedData.createdAt) > twoWeeksAgo
+      if (isNew) {
+        formattedData.isNew = true
+      }
+
+      const isUpdated = new Date(formattedData.updatedAt) > twoWeeksAgo
+      if (isUpdated && !isNew) {
+        formattedData.isUpdated = true
+      }
+
+      return {
+        slug,
+        formattedData,
+        content,
+      }
+    } catch (error) {
+      console.error(`Failed to load ${slug}.md:`, error)
+      return undefined
+    }
+  } else {
+    // Node.js fs を使用（通常の npm run dev）
     return getPostBySlugDev(slug)
-  }
-
-  // プロダクション環境では Cloudflare ASSETS を使用
-  try {
-    const ASSETS = getAssetsBinding()
-    if (!ASSETS) {
-      console.error('Cloudflare ASSETS binding not available')
-      return undefined
-    }
-
-    const response = await ASSETS.fetch(`/posts/${slug}.md`)
-    if (!response.ok) {
-      return undefined
-    }
-
-    const mdContent = await response.text()
-    const { data, content } = matter(mdContent)
-
-    // 公開チェック
-    if (
-      !data.isPublished ||
-      !data.title ||
-      !data.createdAt ||
-      !data.updatedAt
-    ) {
-      return undefined
-    }
-
-    const formattedData = {
-      title: String(data.title),
-      createdAt:
-        typeof data.createdAt === 'string'
-          ? data.createdAt.slice(0, 10)
-          : data.createdAt.toISOString().slice(0, 10),
-      updatedAt:
-        typeof data.updatedAt === 'string'
-          ? data.updatedAt.slice(0, 10)
-          : data.updatedAt.toISOString().slice(0, 10),
-      thumbnail: data.thumbnail
-        ? String(data.thumbnail)
-        : '/images/pencil01.svg',
-      isNew: false,
-      isUpdated: false,
-    }
-
-    // New/Updateラベル判定
-    const today = new Date()
-    const twoWeeksAgo = new Date(today)
-    twoWeeksAgo.setDate(today.getDate() - 14)
-
-    const isNew = new Date(formattedData.createdAt) > twoWeeksAgo
-    if (isNew) {
-      formattedData.isNew = true
-    }
-
-    const isUpdated = new Date(formattedData.updatedAt) > twoWeeksAgo
-    if (isUpdated && !isNew) {
-      formattedData.isUpdated = true
-    }
-
-    return {
-      slug,
-      formattedData,
-      content,
-    }
-  } catch (error) {
-    console.error(`Failed to load ${slug}.md:`, error)
-    return undefined
   }
 }

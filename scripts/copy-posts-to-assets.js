@@ -5,7 +5,7 @@ import path from 'node:path'
 import matter from 'gray-matter'
 
 const POSTS_SOURCE = path.join(process.cwd(), 'src/posts')
-const ASSETS_DESTINATION = path.join(process.cwd(), '.open-next/assets/posts')
+const ASSETS_DESTINATION = path.join(process.cwd(), 'src/public/posts')
 const VERSION_CACHE_FILE = path.join(ASSETS_DESTINATION, '.version-cache.json')
 
 /**
