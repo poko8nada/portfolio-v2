@@ -4,17 +4,16 @@ import fs from 'node:fs'
 import path from 'node:path'
 import matter from 'gray-matter'
 
-const POSTS_SOURCE = path.join(process.cwd(), 'src/posts')
-const ASSETS_DESTINATION = path.join(process.cwd(), 'src/public/posts')
-const VERSION_CACHE_FILE = path.join(ASSETS_DESTINATION, '.version-cache.json')
+const POSTS_DIRECTORY = path.join(process.cwd(), 'public/posts')
+const VERSION_CACHE_FILE = path.join(POSTS_DIRECTORY, '.version-cache.json')
 
 /**
- * 配布先ディレクトリを作成
+ * posts ディレクトリの存在確認
  */
-function ensureDestinationDirectory() {
-  if (!fs.existsSync(ASSETS_DESTINATION)) {
-    fs.mkdirSync(ASSETS_DESTINATION, { recursive: true })
-    console.log(`📁 作成: ${ASSETS_DESTINATION}`)
+function ensurePostsDirectory() {
+  if (!fs.existsSync(POSTS_DIRECTORY)) {
+    fs.mkdirSync(POSTS_DIRECTORY, { recursive: true })
+    console.log(`📁 作成: ${POSTS_DIRECTORY}`)
   }
 }
 
@@ -51,31 +50,36 @@ function formatDate(date) {
 }
 
 // 初期化
-ensureDestinationDirectory()
+ensurePostsDirectory()
 const versionCache = loadVersionCache()
 
-// src/postsからmdファイルを読み取り
-const files = fs.readdirSync(POSTS_SOURCE)
-const mdFiles = files.filter(file => file.endsWith('.md'))
+// public/postsからmdファイルを読み取り（テンプレートファイルを除外）
+const files = fs.readdirSync(POSTS_DIRECTORY)
+const mdFiles = files.filter(
+  file =>
+    file.endsWith('.md') &&
+    !file.startsWith('.') &&
+    file !== 'post-template.md',
+)
 
 console.log(`📚 処理対象: ${mdFiles.length}件のMarkdownファイル`)
 
 const processedPosts = []
-const stats = { copied: 0, skipped: 0, errors: 0 }
+const stats = { processed: 0, skipped: 0, errors: 0 }
 
 for (const file of mdFiles) {
   try {
-    const sourcePath = path.join(POSTS_SOURCE, file)
+    const filePath = path.join(POSTS_DIRECTORY, file)
     const slug = file.replace('.md', '')
 
     // ファイルの存在確認
-    if (!fs.existsSync(sourcePath)) {
+    if (!fs.existsSync(filePath)) {
       console.warn(`⚠️ ファイルが見つかりません: ${file}`)
       stats.errors++
       continue
     }
 
-    const mdContent = fs.readFileSync(sourcePath, 'utf-8')
+    const mdContent = fs.readFileSync(filePath, 'utf-8')
     const { data } = matter(mdContent)
 
     // 必須フィールドの検証
@@ -92,40 +96,20 @@ for (const file of mdFiles) {
       continue
     }
 
-    // バージョン比較
+    // バージョン確認（インデックス生成のため）
     const currentVersion = data.version || 1
     const cachedVersion = versionCache[slug] || 0
 
-    if (currentVersion <= cachedVersion) {
+    // バージョンが更新されている場合のみログ出力
+    if (currentVersion > cachedVersion) {
       console.log(
-        `⏭️  スキップ（バージョン未更新）: ${file} (v${currentVersion})`,
+        `📝 更新検知: ${file} (v${cachedVersion} → v${currentVersion})`,
       )
-      stats.skipped++
-
-      // インデックス用データは追加（既存情報を保持）
-      processedPosts.push({
-        slug,
-        title: String(data.title),
-        createdAt: formatDate(data.createdAt),
-        updatedAt: formatDate(data.updatedAt),
-        thumbnail: data.thumbnail
-          ? String(data.thumbnail)
-          : '/images/pencil01.svg',
-        version: currentVersion,
-      })
-      continue
     }
-
-    // mdファイルをコピー
-    const destPath = path.join(ASSETS_DESTINATION, file)
-    fs.copyFileSync(sourcePath, destPath)
-    console.log(
-      `✅ コピー完了: ${file} (v${cachedVersion} → v${currentVersion})`,
-    )
-    stats.copied++
 
     // バージョンキャッシュを更新
     versionCache[slug] = currentVersion
+    stats.processed++
 
     // インデックス用データを追加
     processedPosts.push({
@@ -167,7 +151,7 @@ try {
 
 // リッチインデックスを保存
 try {
-  const indexPath = path.join(ASSETS_DESTINATION, 'index.json')
+  const indexPath = path.join(POSTS_DIRECTORY, 'index.json')
   fs.writeFileSync(indexPath, JSON.stringify(processedPosts, null, 2))
   console.log('📄 リッチインデックスファイル作成: index.json')
 } catch (error) {
@@ -176,7 +160,7 @@ try {
 
 // 結果サマリー
 console.log('\n🎉 処理完了:')
-console.log(`   ✅ コピー: ${stats.copied}件`)
+console.log(`   📝 処理済み: ${stats.processed}件`)
 console.log(`   ⏭️  スキップ: ${stats.skipped}件`)
 console.log(`   ❌ エラー: ${stats.errors}件`)
 console.log(`   📚 合計インデックス: ${processedPosts.length}件`)

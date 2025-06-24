@@ -40,23 +40,31 @@ function getAssetsBinding() {
   }
 }
 
+// Cloudflare ASSETS用のベースURL取得
+function getAssetsBaseUrl(): string {
+  // Cloudflare環境では実際のホスト名は関係なく、パス部分のみが使用される
+  // 本番環境やwrangler devなど、どの環境でも動作する汎用的なURLを使用
+  if (typeof globalThis !== 'undefined' && globalThis.location) {
+    return globalThis.location.origin
+  }
+  // フォールバック: 実際には使用されないが、有効なURL形式である必要がある
+  return 'https://assets.local'
+}
+
 // 開発環境用：Node.js fsを使用してローカルファイルを読み取り
 function getAllPostsIndexDev(): PostIndex[] {
   try {
-    const assetsIndexPath = path.join(
-      process.cwd(),
-      '.open-next/assets/posts/index.json',
-    )
+    const postsIndexPath = path.join(process.cwd(), 'public/posts/index.json')
 
     // ファイルが存在しない場合は空配列を返す
-    if (!fs.existsSync(assetsIndexPath)) {
+    if (!fs.existsSync(postsIndexPath)) {
       console.warn(
-        'Posts index file not found. Run "npm run copy-posts" first.',
+        'Posts index file not found. Run "npm run generate-posts-index" first.',
       )
       return []
     }
 
-    const content = fs.readFileSync(assetsIndexPath, 'utf-8')
+    const content = fs.readFileSync(postsIndexPath, 'utf-8')
     const posts: PostIndex[] = JSON.parse(content)
 
     // New/Updateラベル判定を追加
@@ -83,11 +91,7 @@ function getAllPostsIndexDev(): PostIndex[] {
 // 開発環境用：Node.js fsを使用してローカルファイルから投稿を読み取り
 function getPostBySlugDev(slug: string): Post | undefined {
   try {
-    const postPath = path.join(
-      process.cwd(),
-      '.open-next/assets/posts',
-      `${slug}.md`,
-    )
+    const postPath = path.join(process.cwd(), 'public/posts', `${slug}.md`)
 
     // ファイルが存在しない場合は undefined を返す
     if (!fs.existsSync(postPath)) {
@@ -157,8 +161,11 @@ export const getAllPostsIndex = async (): Promise<PostIndex[]> => {
   if (ASSETS) {
     // Cloudflare ASSETS を使用（wrangler dev含む）
     try {
-      // ASSETS binding requires absolute paths starting with /
-      const response = await ASSETS.fetch('/posts/index.json')
+      // OpenNext for Cloudflare ではRequestオブジェクトが必要
+      const baseUrl = getAssetsBaseUrl()
+      const response = await ASSETS.fetch(
+        new Request(`${baseUrl}/posts/index.json`),
+      )
       if (!response.ok) {
         console.error('Failed to load posts index, status:', response.status)
         return []
@@ -201,8 +208,11 @@ export const getPostBySlug = async (
   if (ASSETS) {
     // Cloudflare ASSETS を使用（wrangler dev含む）
     try {
-      // ASSETS binding requires absolute paths starting with /
-      const response = await ASSETS.fetch(`/posts/${slug}.md`)
+      // OpenNext for Cloudflare ではRequestオブジェクトが必要
+      const baseUrl = getAssetsBaseUrl()
+      const response = await ASSETS.fetch(
+        new Request(`${baseUrl}/posts/${slug}.md`),
+      )
       if (!response.ok) {
         return undefined
       }

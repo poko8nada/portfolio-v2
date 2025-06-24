@@ -4,13 +4,13 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"copy-posts": "node scripts/copy-posts-to-assets.js",
+		"generate-posts-index": "node scripts/generate-posts-index.js",
 		"dev": "next dev",
-		"build": "next build && npm run copy-posts",
+		"build": "next build && npm run generate-posts-index",
 		"start": "next start",
 		"lint": "next lint",
-		"preview": "npm run copy-posts && opennextjs-cloudflare build && opennextjs-cloudflare preview",
-		"deploy": "npm run copy-posts && opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+		"preview": "npm run generate-posts-index && opennextjs-cloudflare build && opennextjs-cloudflare preview",
+		"deploy": "npm run generate-posts-index && opennextjs-cloudflare build && opennextjs-cloudflare deploy",
 		"cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
 	},
 	"dependencies": {
