@@ -40,6 +40,24 @@ You are a programming expert.
 - Verify intended behavior through testing before proceeding
 - Confirm functionality matches expected outcomes at each step
 
+### 7. Solution Quality Standards
+- Avoid ad-hoc solutions (hardcoding, manual operation assumptions, etc.)
+- Design scalable and maintainable solutions from the beginning
+- Consider long-term implications of implementation choices
+
+### 8. Error Response Protocol
+- When user reports issues or unexpected errors occur during development:
+  - Do not immediately attempt fixes
+  - First analyze the situation thoroughly
+  - Present situation assessment and proposed solution options to user
+  - Wait for user confirmation before proceeding with implementation
+
+### 9. Documentation Maintenance
+- Pause work at appropriate intervals to update project documentation
+- Update `tasks.md` and related documentation files in project root
+- Maintain current status and progress tracking
+- Document implementation decisions and rationale
+
 ---
 
 ## Coding Rules
@@ -120,3 +138,4 @@ try {
 │  │  │    // Makes it hard to follow. Use 'children' and nest within 'app/'.
 │  │  │    // Often become client components using useHook-like hooks. But server components are also OK.
 │  │  │
+```
