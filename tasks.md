@@ -1,33 +1,50 @@
 # 実装タスク一覧
 
-## フェーズ0: SSG→SSR変更（Static Assets活用）
+## フェーズ0: SSG→SSR変更（Static Assets活用） ✅ **完了**
 
-### Task0-1: Static Assets設定
-- [ ] `wrangler.jsonc`にassets設定を追加
+### Task0-1: Static Assets設定 ✅
+- [x] `wrangler.jsonc`にassets設定を追加
   - `assets.directory`を`.open-next/assets`に設定
   - `assets.binding`を`ASSETS`に設定
-- [ ] mdファイルをassets配置用ディレクトリに配布する仕組み作成
+- [x] mdファイルをassets配置用ディレクトリに配布する仕組み作成
   - `.open-next/assets/posts/`にmdファイルをコピーするスクリプト作成
 
-### Task0-2: SSR+Static Assets対応実装
-- [ ] `src/lib/post.ts`をStatic Assets対応に書き換え
-  - `getAllPosts()`関数：`env.ASSETS.fetch()`でmdファイル一覧取得
-  - `getPostsBySlug()`関数：`env.ASSETS.fetch('/posts/xxx.md')` + gray-matterでパース
-  - File System API（fs）を完全に削除
-- [ ] `scripts/process-markdown.js`を削除（不要になるため）
-- [ ] `src/data/posts.json`を削除（不要になるため）
-- [ ] `package.json`の`preprocess`スクリプトを削除
-- [ ] `dev`スクリプトから`preprocess`を削除
-- [ ] 各ページコンポーネントでのStatic Assets対応確認
+### Task0-2: SSR+Static Assets対応実装 ✅
+- [x] `src/lib/post.ts`をStatic Assets対応に書き換え
+  - `getAllPostsIndex()`関数：開発環境はNode.js fs、本番環境は`env.ASSETS.fetch()`でindexファイル取得
+  - `getPostBySlug()`関数：開発環境はNode.js fs、本番環境は`env.ASSETS.fetch('/posts/xxx.md')` + gray-matterでパース
+  - File System API（fs）を完全に削除（本番環境から）
+- [x] `scripts/process-markdown.js`を削除（不要になるため）
+- [x] `src/data/posts.json`を削除（不要になるため）
+- [x] `package.json`の`preprocess`スクリプトを削除
+- [x] `dev`スクリプトを`copy-posts`に変更
+- [x] 各ページコンポーネントでのStatic Assets対応確認
+  - 投稿一覧ページ（`/posts`）: 非同期コンポーネントに変更
+  - 投稿詳細ページ（`/posts/[slug]`）: 非同期コンポーネントに変更
+  - ホームページ投稿表示部分: 非同期コンポーネントに変更
+- [x] 高度な投稿配布スクリプト実装
+  - `isPublished: false`の投稿は配布しない
+  - `version`ベースの差分更新（変更されたファイルのみ再配布）
+  - 投稿一覧用のrich indexファイル生成（title, createdAt, updatedAt, thumbnail含む）
+- [x] **構成の大幅変更**: コピー処理廃止→直接管理方式への移行
+  - `src/posts/` → `public/posts/` への移行完了
+  - `copy-posts-to-assets.js` → `generate-posts-index.js` への変更
+  - `public/posts/` を直接管理、コピー処理を完全廃止
+- [x] **大規模リファクタリング実施**: `src/lib/post.ts`の徹底的な改善
+  - 重複コード約100行を削除
+  - 共通ユーティリティ関数の抽出（`validatePostData`, `formatPostMeta`, `processMarkdownContent`）
+  - ファイル取得処理の抽象化（`fetchPostContent`, `fetchPostsIndex`）
+  - メイン関数の大幅簡素化（5-6行に短縮）
+  - 型安全性の向上（`any`型を排除、`PostFrontmatter`型追加）
 
-## フェーズ1: 環境移行準備
+## フェーズ1: 環境移行準備 ✅ **完了**
 
-### Task1-1: 依存関係の変更
+### Task1-1: 依存関係の変更 ✅
 - [x] `@opennextjs/cloudflare@latest`をインストール
 - [x] `wrangler@latest`をdevDependencyとしてインストール
 - [x] `@cloudflare/next-on-pages`を削除（不要になるため）
 
-### Task1-2: 設定ファイルの更新
+### Task1-2: 設定ファイルの更新 ✅
 - [x] `wrangler.jsonc`をWorkers用に書き換え
   - `main: ".open-next/worker.js"`を追加
   - `compatibility_date: "2025-03-25"`以降に更新
@@ -35,7 +52,7 @@
   - `assets`セクションを追加（`.open-next/assets`を指定）
 - [x] `open-next.config.ts`を新規作成（defineCloudflareConfig）
 
-### Task1-3: package.jsonスクリプト更新
+### Task1-3: package.jsonスクリプト更新 ✅
 - [x] 既存のPages用スクリプトを削除
   - `pages:build`
   - 既存の`preview`
@@ -54,8 +71,7 @@
 - [ ] 認証失敗時の401レスポンス実装
 
 ### Task2-2: 環境変数設定
-- [ ] ローカル開発用: `.env.local`に認証情報追加
-- [ ] 本番環境用: `wrangler secret put`でCloudflare Workersに認証情報設定
+- [ ] `.env`に認証情報追加
 
 ## フェーズ3: Resume機能実装
 

@@ -27,6 +27,8 @@
     - 変更後：md（assets） → env.ASSETS.fetch() → gray-matter → 直接データオブジェクト
     - メリット：中間ファイル不要、CDN配信、リアルタイム処理、キャッシュ最適化
     - 実装：Server Components内で`env.ASSETS.fetch('/posts/xxx.md')`でmdファイル取得・パース
+  - **開発環境対応**: 開発時はNode.js fs、本番時はCloudflare ASSETS
+  - **高度な配布機能**: `isPublished`フィルタ、version差分更新、rich indexファイル生成
 
 ### 1. Cloudflare Pages → Workers移行
 - **現在の構成**: `@cloudflare/next-on-pages` + Pages
@@ -36,7 +38,7 @@
   2. `wrangler.jsonc`を Workers用に更新（assets配置、worker.js指定）
   3. `open-next.config.ts`を作成
   4. `package.json`のスクリプトを更新（preview/deploy）
-  5. middlewareの互換性確認
+  5. middlewareの互換性確認 ⏳
 
 ### 2. Cloudflare Workers対応
 - Workersの環境変数（secret）を利用して認証情報を安全に管理
