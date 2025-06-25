@@ -9,8 +9,6 @@ export type Post = {
     createdAt: string
     updatedAt: string
     thumbnail: string
-    isNew: boolean
-    isUpdated: boolean
   }
   content: string
 }
@@ -22,8 +20,6 @@ export type PostIndex = {
   updatedAt: string
   thumbnail: string
   version: number
-  isNew?: boolean
-  isUpdated?: boolean
 }
 
 // --- 共通ユーティリティ用型 ---
@@ -89,8 +85,6 @@ function formatPostMeta(data: PostFrontmatter) {
         ? data.updatedAt.slice(0, 10)
         : data.updatedAt.toISOString().slice(0, 10),
     thumbnail: data.thumbnail ? String(data.thumbnail) : '/images/pencil01.svg',
-    isNew: false,
-    isUpdated: false,
   }
 }
 
@@ -104,8 +98,7 @@ function processMarkdownContent(
     return undefined
   }
 
-  let formattedData = formatPostMeta(data)
-  formattedData = addNewUpdateFlags(formattedData)
+  const formattedData = formatPostMeta(data)
 
   return {
     slug,
@@ -182,31 +175,11 @@ async function fetchPostsIndex(): Promise<PostIndex[] | undefined> {
   }
 }
 
-function addNewUpdateFlags<
-  T extends {
-    createdAt: string
-    updatedAt: string
-    isNew?: boolean
-    isUpdated?: boolean
-  },
->(obj: T): T {
-  const today = new Date()
-  const twoWeeksAgo = new Date(today)
-  twoWeeksAgo.setDate(today.getDate() - 14)
-  const isNew = new Date(obj.createdAt) > twoWeeksAgo
-  const isUpdated = new Date(obj.updatedAt) > twoWeeksAgo && !isNew
-  return {
-    ...obj,
-    isNew,
-    isUpdated,
-  }
-}
-
 export const getAllPostsIndex = async (): Promise<PostIndex[]> => {
   const posts = await fetchPostsIndex()
   if (!posts) return []
 
-  return posts.map(post => addNewUpdateFlags(post))
+  return posts
 }
 
 export const getPostBySlug = async (

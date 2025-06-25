@@ -26,9 +26,6 @@ function loadVersionCache() {
     try {
       const content = fs.readFileSync(VERSION_CACHE_FILE, 'utf-8')
       versionCache = JSON.parse(content)
-      console.log(
-        `📋 バージョンキャッシュ読み込み: ${Object.keys(versionCache).length}件`,
-      )
     } catch (error) {
       console.warn('⚠️ バージョンキャッシュの読み込みに失敗:', error.message)
       console.warn('⚠️ 新しいキャッシュファイルを作成します')
@@ -61,8 +58,6 @@ const mdFiles = files.filter(
     !file.startsWith('.') &&
     file !== 'post-template.md',
 )
-
-console.log(`📚 処理対象: ${mdFiles.length}件のMarkdownファイル`)
 
 const processedPosts = []
 const stats = { processed: 0, skipped: 0, errors: 0 }
@@ -144,7 +139,6 @@ processedPosts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
 // バージョンキャッシュを保存
 try {
   fs.writeFileSync(VERSION_CACHE_FILE, JSON.stringify(versionCache, null, 2))
-  console.log('💾 バージョンキャッシュ保存完了')
 } catch (error) {
   console.error('❌ バージョンキャッシュの保存に失敗:', error.message)
 }
@@ -153,7 +147,6 @@ try {
 try {
   const indexPath = path.join(POSTS_DIRECTORY, 'index.json')
   fs.writeFileSync(indexPath, JSON.stringify(processedPosts, null, 2))
-  console.log('📄 リッチインデックスファイル作成: index.json')
 } catch (error) {
   console.error('❌ インデックスファイルの保存に失敗:', error.message)
 }

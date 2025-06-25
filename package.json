@@ -5,7 +5,9 @@
 	"type": "module",
 	"scripts": {
 		"generate-posts-index": "node scripts/generate-posts-index.js",
+		"watch-posts": "chokidar 'public/posts/**/*.md' -c 'npm run generate-posts-index'",
 		"dev": "next dev",
+		"dev:with-posts": "concurrently \"npm run dev\" \"npm run watch-posts\"",
 		"build": "next build && npm run generate-posts-index",
 		"start": "next start",
 		"lint": "next lint",
@@ -19,6 +21,7 @@
 		"@tailwindcss/postcss": "^4.0.0",
 		"clsx": "^2.1.1",
 		"gray-matter": "^4.0.3",
+		"lucide-react": "^0.523.0",
 		"markdown-to-jsx": "^7.7.4",
 		"next": "^15.2.4",
 		"postcss": "^8.5.1",
@@ -35,6 +38,8 @@
 		"@types/react": "^18",
 		"@types/react-dom": "^18",
 		"@types/react-syntax-highlighter": "^15.5.13",
+		"chokidar-cli": "^3.0.0",
+		"concurrently": "^9.2.0",
 		"typescript": "^5",
 		"wrangler": "^4.20.5"
 	}

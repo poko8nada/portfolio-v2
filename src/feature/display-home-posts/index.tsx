@@ -18,9 +18,8 @@ export default async function DisplayHomePosts() {
               formattedData={{
                 title: post.title,
                 createdAt: post.createdAt,
+                updatedAt: post.updatedAt,
                 thumbnail: post.thumbnail,
-                isNew: post.isNew || false,
-                isUpdated: post.isUpdated || false,
               }}
               index={index}
               isHome={true}

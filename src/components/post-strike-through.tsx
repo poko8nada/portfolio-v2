@@ -46,5 +46,25 @@ const StH3 = ({ children }: { children: React.ReactNode }) => {
     </h3>
   )
 }
+const A = ({
+  children,
+  ...props
+}: {
+  children: React.ReactNode
+  href?: string
+  target?: string
+  rel?: string
+}) => {
+  return (
+    <a {...props}>
+      {React.Children.map(children, child => {
+        if (typeof child === 'string') {
+          return processText(child)
+        }
+        return child
+      })}
+    </a>
+  )
+}
 
-export { StP, StH2, StH3 }
+export { StP, StH2, StH3, A }
