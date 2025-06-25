@@ -1,10 +1,6 @@
 {
   "main": ".open-next/worker.js",
-<<<<<<< HEAD
-  "name": "my-app",
-=======
   "name": "portfolio-v2",
->>>>>>> f760b2c (feat: Update project name to portfolio-v2 in package and wrangler configuration)
   "compatibility_date": "2025-03-25",
   "compatibility_flags": [
     "nodejs_compat",
