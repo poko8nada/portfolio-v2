@@ -1,6 +1,6 @@
-import { getAllResumeData } from '@/lib/resume'
-import { MarkdownForResume } from '@/components/markdown-for-resume'
 import type { Metadata } from 'next'
+import { MarkdownForResume } from '@/components/markdown-for-resume'
+import { getAllResumeData } from '@/lib/resume'
 
 export const metadata: Metadata = {
   title: 'Resume - Private Area',

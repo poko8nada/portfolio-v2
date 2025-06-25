@@ -6,8 +6,9 @@
   --color-fg: #e1e1e1;
   --color-fg-2: #959595;
   --color-pr: #4199ff;
-  --font-normal: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans",
-    Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  --font-normal:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial,
+    sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
 }
 
 .prev::before {
@@ -44,7 +45,6 @@ body {
 }
 
 body {
-  background-size: auto auto;
   background-color: #22232f;
   background-image: repeating-linear-gradient(
     45deg,
@@ -55,8 +55,9 @@ body {
   );
   background-position: center;
   background-size: cover;
-  font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN",
-    "Hiragino Sans", Meiryo, sans-serif;
+  font-family:
+    "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans",
+    Meiryo, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

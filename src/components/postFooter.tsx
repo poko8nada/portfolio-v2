@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import type { Post } from '@/lib/post'
+import type { Post } from '@/types/post'
 export default ({
   prevPost,
   nextPost,

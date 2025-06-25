@@ -1,26 +1,7 @@
-import matter from 'gray-matter'
 import fs from 'node:fs'
 import path from 'node:path'
-
-export type Post = {
-  slug: string
-  formattedData: {
-    title: string
-    createdAt: string
-    updatedAt: string
-    thumbnail: string
-  }
-  content: string
-}
-
-export type PostIndex = {
-  slug: string
-  title: string
-  createdAt: string
-  updatedAt: string
-  thumbnail: string
-  version: number
-}
+import matter from 'gray-matter'
+import type { Post, PostIndex } from '@/types/post'
 
 // --- 共通ユーティリティ用型 ---
 export type PostFrontmatter = {

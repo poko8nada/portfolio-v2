@@ -74,8 +74,6 @@ export default async function Page({
                       createdAt: prevPost.createdAt,
                       updatedAt: prevPost.updatedAt,
                       thumbnail: prevPost.thumbnail,
-                      isNew: prevPost.isNew || false,
-                      isUpdated: prevPost.isUpdated || false,
                     },
                     content: '', // PostFooterでは使用されない
                   }
@@ -90,8 +88,6 @@ export default async function Page({
                       createdAt: nextPost.createdAt,
                       updatedAt: nextPost.updatedAt,
                       thumbnail: nextPost.thumbnail,
-                      isNew: nextPost.isNew || false,
-                      isUpdated: nextPost.isUpdated || false,
                     },
                     content: '', // PostFooterでは使用されない
                   }

@@ -1,7 +1,7 @@
 'use server'
 import matter from 'gray-matter'
-import resumeContent from '@/content/resume/resume.md'
 import careerContent from '@/content/resume/career.md'
+import resumeContent from '@/content/resume/resume.md'
 
 // Resume frontmatter type
 type ResumeFrontmatter = {
