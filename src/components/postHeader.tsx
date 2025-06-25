@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import PostThumbnail from '@/components/ui/postThumbnail'
-import type { Post } from '@/lib/post'
+import type { Post } from '@/types/post'
 
 export default ({ post }: { post?: Post }) => {
   const title = post?.formattedData.title

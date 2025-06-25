@@ -1,8 +1,8 @@
 import Link from 'next/link'
 import { cn } from '@/lib/cn'
-import PostThumbnail from './ui/postThumbnail'
 import { isNewPost, isUpdatedPost } from '@/lib/date-utils'
 import { LabelNew, LabelUpdate } from './ui/labels'
+import PostThumbnail from './ui/postThumbnail'
 
 export default ({
   slug,
@@ -29,8 +29,6 @@ export default ({
     'flex w-full items-center justify-start gap-4 px-4 pt-6 pb-4 h-full group focus:outline-none'
   const textClass =
     'text-bg w-full flex flex-col h-full transition-colors duration-200'
-
-  console.log(createdAt, updatedAt, isNew, isUpdated)
 
   return (
     <article

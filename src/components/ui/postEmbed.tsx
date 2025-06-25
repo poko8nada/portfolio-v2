@@ -15,8 +15,6 @@ export default ({
   const match = /lang-(\w+)/.exec(className || '')
   const embedType = getType(match?.[1])
 
-  console.log(className)
-
   const getData = (
     children: string,
   ): {
