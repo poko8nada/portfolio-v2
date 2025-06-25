@@ -1,6 +1,6 @@
 {
   "main": ".open-next/worker.js",
-  "name": "portfolio-site-v1",
+  "name": "portfolio-v2",
   "compatibility_date": "2025-03-25",
   "compatibility_flags": [
     "nodejs_compat",
