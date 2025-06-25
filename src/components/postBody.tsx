@@ -1,6 +1,6 @@
 import Markdown from 'markdown-to-jsx'
 import Post_embed from '@/components/ui/postEmbed'
-import { StH2, StH3, StP } from './post-strike-through'
+import { StH2, StH3, StP, A } from './post-strike-through'
 
 export default ({ content }: { content: string }) => {
   return (
@@ -12,6 +12,7 @@ export default ({ content }: { content: string }) => {
             p: StP,
             h2: StH2,
             h3: StH3,
+            a: A,
           },
         }}
       >
