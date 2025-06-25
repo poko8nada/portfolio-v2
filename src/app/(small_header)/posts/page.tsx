@@ -28,9 +28,8 @@ export default async function PostsPage() {
                 formattedData={{
                   title: post.title,
                   createdAt: post.createdAt,
+                  updatedAt: post.updatedAt,
                   thumbnail: post.thumbnail,
-                  isNew: post.isNew || false,
-                  isUpdated: post.isUpdated || false,
                 }}
               />
             )
