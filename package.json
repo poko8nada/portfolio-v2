@@ -5,6 +5,7 @@
 	"type": "module",
 	"scripts": {
 		"generate-posts-index": "node scripts/generate-posts-index.js",
+		"convert-images": "node scripts/convert-images.js",
 		"watch-posts": "chokidar 'public/posts/**/*.md' -c 'npm run generate-posts-index'",
 		"dev": "next dev",
 		"dev:with-posts": "concurrently \"npm run dev\" \"npm run watch-posts\"",

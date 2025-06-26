@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
 import { MarkdownForResume } from '@/components/markdown-for-resume'
 import { getAllResumeData } from '@/lib/resume'
+import profileImageData from '@/content/resume/images/profile.json'
+import type { ImageData } from '@/types/profile'
 
 export const metadata: Metadata = {
   title: 'Resume - Private Area',
@@ -9,6 +11,7 @@ export const metadata: Metadata = {
 
 export default async function ResumePage() {
   const resumeData = await getAllResumeData()
+  const profileImage: ImageData = profileImageData
 
   return (
     <div className='min-h-screen bg-gray-50 py-8'>
@@ -19,6 +22,9 @@ export default async function ResumePage() {
             <p className='text-gray-300 mt-1 text-sm'>
               Confidential Information
             </p>
+          </div>
+          <div>
+            <img src={profileImage.src} alt='' />
           </div>
 
           <div className='p-6'>
