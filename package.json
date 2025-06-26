@@ -6,14 +6,15 @@
 	"scripts": {
 		"generate-posts-index": "node scripts/generate-posts-index.js",
 		"convert-images": "node scripts/convert-images.js",
+		"prepare-assets": "npm run convert-images && npm run generate-posts-index",
 		"watch-posts": "chokidar 'public/posts/**/*.md' -c 'npm run generate-posts-index'",
-		"dev": "next dev",
-		"dev:with-posts": "concurrently \"npm run dev\" \"npm run watch-posts\"",
-		"build": "next build && npm run generate-posts-index",
+		"dev": "npm run prepare-assets && next dev",
+		"dev:with-posts": "npm run prepare-assets && concurrently \"next dev\" \"npm run watch-posts\"",
+		"build": "npm run prepare-assets && next build",
 		"start": "next start",
 		"lint": "next lint",
-		"preview": "npm run generate-posts-index && opennextjs-cloudflare build && opennextjs-cloudflare preview",
-		"deploy": "npm run generate-posts-index && opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+		"preview": "npm run prepare-assets && opennextjs-cloudflare build && opennextjs-cloudflare preview",
+		"deploy": "npm run prepare-assets && opennextjs-cloudflare build && opennextjs-cloudflare deploy",
 		"cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
 	},
 	"dependencies": {

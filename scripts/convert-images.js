@@ -2,9 +2,10 @@
 import { readFileSync, writeFileSync } from 'node:fs'
 import { extname, basename } from 'node:path'
 
-// 画像ファイルのパス
-const imagePath = 'src/content/resume/images/profile.png'
-const outputPath = 'src/content/resume/images/profile.json'
+// コマンドライン引数からファイル名を取得（なければデフォルト）
+const inputFilename = process.argv[2] || 'profile.png'
+const imagePath = `src/content/resume/images/${inputFilename}`
+const outputPath = `src/content/resume/images/${inputFilename.replace(/\.[^.]+$/, '.json')}`
 
 // 1. バイナリデータを読み込み
 const imageBuffer = readFileSync(imagePath)
