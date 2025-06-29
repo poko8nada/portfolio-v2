@@ -90,11 +90,11 @@ export async function getAllResumeData(): Promise<ResumeData[]> {
     }
   }
 
-  return results.sort(
-    (a, b) =>
-      new Date(b.frontmatter.updatedAt).getTime() -
-      new Date(a.frontmatter.updatedAt).getTime(),
-  )
+  // 固定順序: resume → career
+  return results.sort((a, b) => {
+    const order = { resume: 0, career: 1 }
+    return order[a.frontmatter.type] - order[b.frontmatter.type]
+  })
 }
 
 /**

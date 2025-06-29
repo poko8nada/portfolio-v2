@@ -25,6 +25,11 @@ export function MarkdownForResume({ content }: SimpleMarkdownProps) {
                 className: 'text-base font-semibold mt-4 mb-2 text-gray-900',
               },
             },
+            h4: {
+              props: {
+                className: 'text-base font-semibold mt-4 mb-2 text-gray-900',
+              },
+            },
             p: {
               props: {
                 className: 'mb-2 text-sm text-gray-700',
