@@ -57,19 +57,21 @@ function convertImage(inputFilename = 'profile.png') {
   }
 }
 
-// Resume MDファイル合体機能
-function mergeResumeFiles() {
+// MD合体機能（汎用）
+function mergeMarkdownFiles(subDir, outputFileName) {
   const resumeDir = 'src/content/resume'
-  const outputPath = join(resumeDir, 'resume.md')
+  const sourceDir = join(resumeDir, subDir)
+  const outputPath = join(resumeDir, outputFileName)
 
   try {
-    // resume_*.md パターンのファイルを検索
-    const files = readdirSync(resumeDir)
-      .filter(file => file.match(/^resume_\d+_.+\.md$/))
+    // 指定パターンのファイルを検索
+    const pattern = new RegExp(`^${subDir}_\\d+_.+\\.md$`)
+    const files = readdirSync(sourceDir)
+      .filter(file => pattern.test(file))
       .sort() // ファイル名でソート（連番順）
 
     if (files.length === 0) {
-      console.log('⚠️  resume_*.md ファイルが見つかりません')
+      console.log(`⚠️  ${subDir}_*.md ファイルが見つかりません`)
       return
     }
 
@@ -78,7 +80,7 @@ function mergeResumeFiles() {
 
     // 各ファイルを読み込んで合体
     for (const file of files) {
-      const filePath = join(resumeDir, file)
+      const filePath = join(sourceDir, file)
       const fileContent = readFileSync(filePath, 'utf8')
       const parsed = matter(fileContent)
 
@@ -101,11 +103,35 @@ function mergeResumeFiles() {
     // ファイル出力
     writeFileSync(outputPath, mergedContent)
 
-    console.log(`✅ Resume files merged: ${files.join(', ')} → resume.md`)
+    console.log(
+      `✅ ${subDir.charAt(0).toUpperCase() + subDir.slice(1)} files merged: ${files.join(', ')} → ${outputFileName}`,
+    )
     console.log(`📝 合計 ${files.length} ファイルを合体しました`)
   } catch (error) {
-    console.error(`❌ Resume合体エラー: ${error.message}`)
+    console.error(`❌ ${subDir} 合体エラー: ${error.message}`)
   }
+}
+
+// Resume MDファイル合体機能（後方互換性）
+function mergeResumeFiles() {
+  mergeMarkdownFiles('resume', 'resume.md')
+}
+
+// Career MDファイル合体機能
+function mergeCareerFiles() {
+  mergeMarkdownFiles('career', 'career.md')
+}
+
+// Skills MDファイル合体機能
+function mergeSkillsFiles() {
+  mergeMarkdownFiles('skills', 'skills.md')
+}
+
+// 全MD合体機能
+function mergeAllFiles() {
+  mergeResumeFiles()
+  mergeCareerFiles()
+  mergeSkillsFiles()
 }
 
 // デバウンス付きResume合体
@@ -116,8 +142,8 @@ function debouncedMergeResume() {
   }
 
   mergeTimeout = setTimeout(() => {
-    console.log('🔄 Merging resume files...')
-    mergeResumeFiles()
+    console.log('🔄 Merging all markdown files...')
+    mergeAllFiles()
     mergeTimeout = null
   }, 3000)
 }
@@ -131,11 +157,17 @@ if (command === '--images') {
   convertImage(imageFile)
 } else if (command === '--merge') {
   mergeResumeFiles()
+} else if (command === '--merge-career') {
+  mergeCareerFiles()
+} else if (command === '--merge-skills') {
+  mergeSkillsFiles()
+} else if (command === '--merge-all') {
+  mergeAllFiles()
 } else if (command === '--merge-debounce') {
   debouncedMergeResume()
 } else if (command === '--all') {
   convertImage(imageFile)
-  mergeResumeFiles()
+  mergeAllFiles()
 } else {
   // デフォルト動作（後方互換性）
   convertImage(command || 'profile.png')
