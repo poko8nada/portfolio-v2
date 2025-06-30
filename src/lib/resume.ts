@@ -2,11 +2,12 @@
 import matter from 'gray-matter'
 import careerContent from '@/content/resume/career.md'
 import resumeContent from '@/content/resume/resume.md'
+import skillsContent from '@/content/resume/skills.md'
 
 // Resume frontmatter type
 type ResumeFrontmatter = {
   title: string
-  type: 'resume' | 'career'
+  type: 'resume' | 'career' | 'skills'
   createdAt: string
   updatedAt: string
 }
@@ -27,7 +28,7 @@ function validateResumeData(data: unknown): data is ResumeFrontmatter {
   const obj = data as Record<string, unknown>
   return (
     typeof obj.title === 'string' &&
-    (obj.type === 'resume' || obj.type === 'career') &&
+    (obj.type === 'resume' || obj.type === 'career' || obj.type === 'skills') &&
     typeof obj.createdAt === 'string' &&
     typeof obj.updatedAt === 'string'
   )
@@ -69,6 +70,9 @@ export async function getResumeBySlug(
     case 'career':
       content = careerContent
       break
+    case 'skills':
+      content = skillsContent
+      break
     default:
       return undefined
   }
@@ -80,7 +84,7 @@ export async function getResumeBySlug(
  * Get all resume data
  */
 export async function getAllResumeData(): Promise<ResumeData[]> {
-  const slugs = ['resume', 'career']
+  const slugs = ['resume', 'career', 'skills']
   const results: ResumeData[] = []
 
   for (const slug of slugs) {
@@ -90,11 +94,11 @@ export async function getAllResumeData(): Promise<ResumeData[]> {
     }
   }
 
-  return results.sort(
-    (a, b) =>
-      new Date(b.frontmatter.updatedAt).getTime() -
-      new Date(a.frontmatter.updatedAt).getTime(),
-  )
+  // 固定順序: resume → career → skills
+  return results.sort((a, b) => {
+    const order = { resume: 0, career: 1, skills: 2 }
+    return order[a.frontmatter.type] - order[b.frontmatter.type]
+  })
 }
 
 /**
