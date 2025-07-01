@@ -16,7 +16,7 @@ export default async function PostsPage() {
         <div
           style={{ marginBottom: '24px', textAlign: 'center', padding: '1rem' }}
         >
-          <p>手を動かすwebディレクターの雑記です。</p>
+          <p>Webディレクター兼、デベロッパーの雑記です。</p>
         </div>
         <div className='grid grid-cols-1 md:grid-cols-2 gap-8 px-14 sm:px-18 p-4'>
           {allPosts.map((post, index) => {
