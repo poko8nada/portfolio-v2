@@ -4,8 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Menu, MenuItem } from '@/components/ui/navbar-menu'
 import { NavIcon, type IconName } from '@/components/ui/nav-icons'
-import { ConfirmationMenuItem } from '@/components/ui/confirmation-menu-item'
-import { ConfirmationMobileMenuItem } from '@/components/ui/confirmation-mobile-menu-item'
+import { ConfirmationDialog } from '@/components/ui/confirmation-dialog'
 import { homeLayoutNavItems, getNavItemsForPage } from '@/lib/navigation'
 
 interface HeaderProps {
@@ -15,9 +14,11 @@ interface HeaderProps {
 
 export default function Header({ isHomePage = false }: HeaderProps) {
   const pathname = usePathname()
-  
+
   // ホームページかどうかでナビアイテムを切り替え
-  const navItems = isHomePage ? homeLayoutNavItems : getNavItemsForPage(pathname)
+  const navItems = isHomePage
+    ? homeLayoutNavItems
+    : getNavItemsForPage(pathname)
 
   const handleAnchorClick = (href: string) => {
     if (href.startsWith('#')) {
@@ -47,13 +48,13 @@ export default function Header({ isHomePage = false }: HeaderProps) {
         {navItems.map(item => (
           <MenuItem key={item.label}>
             {item.requiresConfirmation ? (
-              <ConfirmationMenuItem
+              <ConfirmationDialog
                 href={item.href}
                 icon={item.icon as IconName}
                 showIcon={item.showIcon}
               >
                 {item.label}
-              </ConfirmationMenuItem>
+              </ConfirmationDialog>
             ) : item.isAnchor ? (
               <button
                 type='button'
@@ -79,10 +80,13 @@ export default function Header({ isHomePage = false }: HeaderProps) {
         {navItems.map(item => (
           <MenuItem key={item.label}>
             {item.requiresConfirmation ? (
-              <ConfirmationMobileMenuItem
+              <ConfirmationDialog
                 href={item.href}
                 icon={item.icon as IconName}
-              />
+                className='text-[--color-fg] hover:text-[--color-pr]'
+              >
+                <NavIcon iconName={item.icon as IconName} />
+              </ConfirmationDialog>
             ) : item.isAnchor ? (
               <button
                 type='button'

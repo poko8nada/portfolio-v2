@@ -1,6 +1,6 @@
 import Image from 'next/image'
+import Link from 'next/link'
 import PostsCard from '@/components/postsCard'
-import Button from '@/components/ui/button'
 import { getAllPostsIndex } from '@/lib/post'
 
 export default async function DisplayHomePosts() {
@@ -28,7 +28,10 @@ export default async function DisplayHomePosts() {
         })}
       </div>
       <div className='mt-6'>
-        <Button href='/posts'>
+        <Link
+          href='/posts'
+          className='flex items-center justify-center text-pr hover:underline'
+        >
           すべての投稿を見る
           <Image
             src={'/images/arrow-next.svg'}
@@ -37,7 +40,7 @@ export default async function DisplayHomePosts() {
             alt='arrow next'
             className='inline ml-2'
           />
-        </Button>
+        </Link>
       </div>
     </>
   )
