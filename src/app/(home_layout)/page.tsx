@@ -8,7 +8,7 @@ import Image from 'next/image'
 export default async function Home() {
   return (
     <div>
-      <DisplayHomeSection title='about me' id='about'>
+      <DisplayHomeSection title='About' id='about'>
         <p className='p-1 mt-2 text-center'>こんにちは。PokoHanadaです。</p>
         <p className='p-1 mt-2 text-center'>
           Webディレクター兼、デベロッパー。
@@ -33,11 +33,11 @@ export default async function Home() {
         </div>
       </DisplayHomeSection>
 
-      <DisplayHomeSection title='recent posts' id='posts'>
+      <DisplayHomeSection title='Recent posts' id='posts'>
         <DisplayHomePosts />
       </DisplayHomeSection>
 
-      <DisplayHomeSection title='works & tools' id='works'>
+      <DisplayHomeSection title='Works & Tools' id='works'>
         <DisplayToolCards />
       </DisplayHomeSection>
     </div>

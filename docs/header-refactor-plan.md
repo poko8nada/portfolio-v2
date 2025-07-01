@@ -156,7 +156,7 @@ export const HoveredLink = ({
   return (
     <a
       {...rest}
-      className='text-[--color-fg] hover:text-[--color-pr] transition-colors duration-200'
+      className='text-fg hover:text-pr transition-colors duration-200'
     >
       {children}
     </a>
@@ -260,7 +260,7 @@ export default function MainHeader() {
           alt=""
           className="rounded-full"
         />
-        <span className="text-[--color-fg] font-medium hidden sm:block">
+        <span className="text-fg font-medium hidden sm:block">
           PokoHanadaCom
         </span>
       </div>
@@ -294,12 +294,12 @@ export default function MainHeader() {
             {item.isAnchor ? (
               <button
                 onClick={() => handleAnchorClick(item.href)}
-                className="text-[--color-fg] hover:text-[--color-pr]"
+                className="text-fg hover:text-pr"
               >
                 <NavIcon name={item.icon as any} />
               </button>
             ) : (
-              <Link href={item.href} className="text-[--color-fg] hover:text-[--color-pr]">
+              <Link href={item.href} className="text-fg hover:text-pr">
                 <NavIcon name={item.icon as any} />
               </Link>
             )}
@@ -334,7 +334,7 @@ export default function PageHeader() {
           alt=""
           className="rounded-full"
         />
-        <span className="text-[--color-fg] font-medium hidden sm:block">
+        <span className="text-fg font-medium hidden sm:block">
           PokoHanadaCom
         </span>
       </div>
@@ -356,7 +356,7 @@ export default function PageHeader() {
       <div className="md:hidden flex items-center space-x-4">
         {pagesLayoutNavItems.map((item) => (
           <MenuItem key={item.label}>
-            <Link href={item.href} className="text-[--color-fg] hover:text-[--color-pr]">
+            <Link href={item.href} className="text-fg hover:text-pr">
               <NavIcon name={item.icon as any} />
             </Link>
           </MenuItem>
@@ -452,13 +452,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 className="bg-[--color-bg]"
 
 // テキスト色
-className="text-[--color-fg]"
+className="text-fg"
 
 // ボーダー
 className="border-[--color-bg-2]"
 
 // ホバー時のプライマリカラー
-className="hover:text-[--color-pr]"
+className="hover:text-pr"
 ```
 
 #### 5-3. レスポンシブ対応詳細
@@ -473,7 +473,7 @@ className="hover:text-[--color-pr]"
 {/* モバイル: アイコンのみ表示 */}
 <div className="md:hidden flex space-x-4">
   {navItems.map((item) => (
-    <div key={item.label} className="text-[--color-fg]">
+    <div key={item.label} className="text-fg">
       <NavIcon name={item.icon} />
     </div>
   ))}
@@ -608,7 +608,7 @@ PageHeader (pages_layout用) - フローティングナビ
 2. **CSS変数の正しい使用**
    ```tsx
    // ✅ 正しい書き方
-   className="bg-[--color-bg] text-[--color-fg]"
+   className="bg-[--color-bg] text-fg"
    
    // ❌ 間違った書き方
    className="bg-color-bg text-color-fg"

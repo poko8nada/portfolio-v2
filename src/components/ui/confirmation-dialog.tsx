@@ -28,7 +28,7 @@ export const ConfirmationDialog = ({
   icon,
   showIcon,
   children,
-  className = 'text-[--color-fg] hover:text-[--color-pr] transition-colors duration-200 cursor-pointer',
+  className = 'transition-colors duration-200 cursor-pointer',
   title = '認証が必要です',
   description = 'このページにアクセスするには認証が必要です。続行しますか？',
 }: ConfirmationDialogProps) => {
@@ -52,7 +52,7 @@ export const ConfirmationDialog = ({
   return (
     <>
       <button type='button' onClick={handleClick} className={className}>
-        <span className='flex items-center space-x-1'>
+        <span className='text-fg hover:text-pr flex items-center space-x-1'>
           {showIcon && icon && <NavIcon iconName={icon} className='w-4 h-4' />}
           <span>{children}</span>
         </span>
