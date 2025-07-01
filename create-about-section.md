@@ -119,30 +119,30 @@ case 'technical-skills':
 ## 実装完了チェックリスト
 
 ### 1. resume.ts拡張完了
-- [ ] `import technicalSkillsContent from '@/content/resume/skills/skills_01_technical.md'`追加
-- [ ] `ResumeFrontmatter`のtype定義に`'technical-skills'`追加
-- [ ] `getResumeBySlug`のswitch文に`technical-skills`ケース追加
-- [ ] 動作確認: `getResumeBySlug("technical-skills")`でデータ取得可能
+- [x] `import technicalSkillsContent from '@/content/resume/skills/skills_01_technical.md'`追加
+- [x] `ResumeFrontmatter`のtype定義に`'technical-skills'`追加
+- [x] `getResumeBySlug`のswitch文に`technical-skills`ケース追加
+- [x] 動作確認: `getResumeBySlug("technical-skills")`でデータ取得可能
 
 ### 2. MarkdownForAboutコンポーネント完了
-- [ ] `src/components/markdown-for-about.tsx`作成
-- [ ] 技術スキルのカテゴリ別カード表示機能実装
-- [ ] サイトテーマ色（bg-bg, bg-bg-2, text-pr）適用
-- [ ] レスポンシブデザイン対応
+- [x] `src/components/markdown-for-about.tsx`作成
+- [x] 技術スキルのカテゴリ別カード表示機能実装
+- [x] サイトテーマ色（bg-bg, bg-bg-2, text-pr）適用
+- [x] レスポンシブデザイン対応
 
 ### 3. About Page改修完了
-- [ ] `getResumeBySlug("technical-skills")`でデータ取得
-- [ ] 簡潔な自己紹介セクション実装
-- [ ] `MarkdownForAbout`コンポーネント適用
-- [ ] レスポンシブ対応完了
+- [x] `getResumeBySlug("technical-skills")`でデータ取得
+- [x] 簡潔な自己紹介セクション実装
+- [x] `MarkdownForAbout`コンポーネント適用
+- [x] レスポンシブ対応完了
 
 ### 4. 動作確認
-- [ ] ローカル開発環境で正常表示確認
-- [ ] モバイル・タブレット表示確認
-- [ ] TypeScript型エラーなし
-- [ ] コンパイルエラーなし
+- [x] ローカル開発環境で正常表示確認
+- [x] モバイル・タブレット表示確認
+- [x] TypeScript型エラーなし
+- [x] コンパイルエラーなし
 
 ### 5. 品質確認
-- [ ] コーディング規約準拠（Result<T,E>パターン等）
-- [ ] アクセシビリティ配慮
-- [ ] パフォーマンス問題なし
+- [x] コーディング規約準拠（Result<T,E>パターン等）
+- [x] アクセシビリティ配慮
+- [x] パフォーマンス問題なし

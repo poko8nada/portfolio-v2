@@ -1,16 +1,29 @@
-export default function AboutPage() {
+import { getResumeBySlug } from '@/lib/resume'
+import { MarkdownForAbout } from '@/components/markdown-for-about'
+import SectionBody from '@/components/sectionBody'
+import SectionHeader from '@/components/sectionHeader'
+
+export default async function AboutPage() {
+  const resumeData = await getResumeBySlug('technical-skills')
+
+  if (!resumeData) {
+    return <div>Loading...</div>
+  }
+
   return (
-    <div className='py-8'>
-      <h1 className='text-3xl font-bold text-center mb-8'>About</h1>
-      <div className='prose max-w-none'>
-        <p className='text-center mb-6'>こんにちは。PokoHanadaです。</p>
-        <p className='text-center'>
+    <SectionBody>
+      <SectionHeader>About</SectionHeader>
+      <div className='text-center mb-12'>
+        <p className='mb-4'>こんにちは。PokoHanadaです。</p>
+        <p>
           Webディレクター兼、デベロッパー。
           <br />
           企画から制作管理、なんなら実装まで一貫して担当します。
         </p>
-        {/* 将来的にはより詳細なプロフィール情報を追加 */}
       </div>
-    </div>
+      <div className='w-full px-4'>
+        <MarkdownForAbout content={resumeData.content} />
+      </div>
+    </SectionBody>
   )
 }

@@ -3,11 +3,12 @@ import matter from 'gray-matter'
 import careerContent from '@/content/resume/career.md'
 import resumeContent from '@/content/resume/resume.md'
 import skillsContent from '@/content/resume/skills.md'
+import technicalSkillsContent from '@/content/resume/skills/skills_01_technical.md'
 
 // Resume frontmatter type
 type ResumeFrontmatter = {
   title: string
-  type: 'resume' | 'career' | 'skills'
+  type: 'resume' | 'career' | 'skills' | 'technical-skills'
   createdAt: string
   updatedAt: string
 }
@@ -28,7 +29,10 @@ function validateResumeData(data: unknown): data is ResumeFrontmatter {
   const obj = data as Record<string, unknown>
   return (
     typeof obj.title === 'string' &&
-    (obj.type === 'resume' || obj.type === 'career' || obj.type === 'skills') &&
+    (obj.type === 'resume' ||
+      obj.type === 'career' ||
+      obj.type === 'skills' ||
+      obj.type === 'technical-skills') &&
     typeof obj.createdAt === 'string' &&
     typeof obj.updatedAt === 'string'
   )
@@ -73,6 +77,9 @@ export async function getResumeBySlug(
     case 'skills':
       content = skillsContent
       break
+    case 'technical-skills':
+      content = technicalSkillsContent
+      break
     default:
       return undefined
   }
@@ -84,7 +91,7 @@ export async function getResumeBySlug(
  * Get all resume data
  */
 export async function getAllResumeData(): Promise<ResumeData[]> {
-  const slugs = ['resume', 'career', 'skills']
+  const slugs = ['resume', 'career', 'skills', 'technical-skills']
   const results: ResumeData[] = []
 
   for (const slug of slugs) {
@@ -96,7 +103,7 @@ export async function getAllResumeData(): Promise<ResumeData[]> {
 
   // 固定順序: resume → career → skills
   return results.sort((a, b) => {
-    const order = { resume: 0, career: 1, skills: 2 }
+    const order: Record<string, number> = { resume: 0, career: 1, skills: 2 }
     return order[a.frontmatter.type] - order[b.frontmatter.type]
   })
 }
