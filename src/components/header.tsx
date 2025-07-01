@@ -35,8 +35,8 @@ export default function Header({ isHomePage = false }: HeaderProps) {
       <div className='flex items-center space-x-2 sm:space-x-3'>
         <Image
           src='/images/profile01.png'
-          width={50}
-          height={50}
+          width={60}
+          height={60}
           alt=''
           className='rounded-full'
         />
