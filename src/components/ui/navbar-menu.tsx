@@ -29,8 +29,8 @@ export const Menu = ({
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5, ease: 'easeOut' }}
       className='fixed top-4 left-1/2 transform -translate-x-1/2 z-50 
-                 bg-[--color-bg]/90 backdrop-blur-md border border-[--color-bg-2] 
-                 rounded-full px-6 py-3 shadow-lg flex items-center space-x-6'
+                 bg-bg/90 border border-bg-2
+                 rounded-full px-3 py-3 shadow-lg flex items-center space-x-6'
     >
       {children}
     </motion.nav>

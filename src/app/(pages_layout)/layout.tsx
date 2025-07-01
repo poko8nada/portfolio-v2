@@ -1,10 +1,10 @@
-import PageHeader from '@/components/page-header'
+import Header from '@/components/header'
 import Main from '@/components/main'
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <PageHeader />
+      <Header isHomePage={false} />
       <Main>{children}</Main>
     </>
   )

@@ -1,31 +1,107 @@
-import { Nunito } from 'next/font/google'
+'use client'
+import { usePathname } from 'next/navigation'
+import Link from 'next/link'
 import Image from 'next/image'
+import { Menu, MenuItem } from '@/components/ui/navbar-menu'
+import { NavIcon, type IconName } from '@/components/ui/nav-icons'
+import { ConfirmationMenuItem } from '@/components/ui/confirmation-menu-item'
+import { ConfirmationMobileMenuItem } from '@/components/ui/confirmation-mobile-menu-item'
+import { homeLayoutNavItems, getNavItemsForPage } from '@/lib/navigation'
 
-const nunito = Nunito({ subsets: ['latin'] })
+interface HeaderProps {
+  /** ホームページ用レイアウトの場合true */
+  isHomePage?: boolean
+}
 
-export default ({
-  imgSize = 120,
-  fontSize = 1.5,
-}: {
-  imgSize?: number
-  fontSize?: number
-}) => {
+export default function Header({ isHomePage = false }: HeaderProps) {
+  const pathname = usePathname()
+  
+  // ホームページかどうかでナビアイテムを切り替え
+  const navItems = isHomePage ? homeLayoutNavItems : getNavItemsForPage(pathname)
+
+  const handleAnchorClick = (href: string) => {
+    if (href.startsWith('#')) {
+      const element = document.querySelector(href)
+      element?.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
+
   return (
-    <header
-      className={`${nunito.className} bg-bg text-3xl p-6 border-b-1 border-bg-2`}
-    >
-      <div className='flex flex-col items-center'>
+    <Menu>
+      {/* プロフィール部分 */}
+      <div className='flex items-center space-x-3'>
         <Image
           src='/images/profile01.png'
-          width={imgSize}
-          height={imgSize}
+          width={50}
+          height={50}
           alt=''
           className='rounded-full'
         />
-        <h1 className='text-center mt-4' style={{ fontSize: `${fontSize}rem` }}>
+        <span className='text-[--color-fg] font-medium hidden sm:block'>
           PokoHanadaCom
-        </h1>
+        </span>
       </div>
-    </header>
+
+      {/* デスクトップナビゲーション */}
+      <div className='hidden md:flex items-center space-x-6'>
+        {navItems.map(item => (
+          <MenuItem key={item.label}>
+            {item.requiresConfirmation ? (
+              <ConfirmationMenuItem
+                href={item.href}
+                icon={item.icon as IconName}
+                showIcon={item.showIcon}
+              >
+                {item.label}
+              </ConfirmationMenuItem>
+            ) : item.isAnchor ? (
+              <button
+                type='button'
+                onClick={() => handleAnchorClick(item.href)}
+                className='text-[--color-fg] hover:text-[--color-pr] transition-colors duration-200 cursor-pointer'
+              >
+                {item.label}
+              </button>
+            ) : (
+              <Link
+                href={item.href}
+                className='text-[--color-fg] hover:text-[--color-pr] transition-colors duration-200'
+              >
+                {item.label}
+              </Link>
+            )}
+          </MenuItem>
+        ))}
+      </div>
+
+      {/* モバイルナビゲーション */}
+      <div className='md:hidden flex items-center space-x-4'>
+        {navItems.map(item => (
+          <MenuItem key={item.label}>
+            {item.requiresConfirmation ? (
+              <ConfirmationMobileMenuItem
+                href={item.href}
+                icon={item.icon as IconName}
+              />
+            ) : item.isAnchor ? (
+              <button
+                type='button'
+                onClick={() => handleAnchorClick(item.href)}
+                className='text-[--color-fg] hover:text-[--color-pr]'
+              >
+                <NavIcon iconName={item.icon as IconName} />
+              </button>
+            ) : (
+              <Link
+                href={item.href}
+                className='text-[--color-fg] hover:text-[--color-pr] transition-colors duration-200'
+              >
+                <NavIcon iconName={item.icon as IconName} />
+              </Link>
+            )}
+          </MenuItem>
+        ))}
+      </div>
+    </Menu>
   )
 }

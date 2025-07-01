@@ -1,5 +1,11 @@
 // scripts/prepare-resume.js
-import { readFileSync, writeFileSync, readdirSync } from 'node:fs'
+import {
+  readFileSync,
+  writeFileSync,
+  readdirSync,
+  mkdirSync,
+  cpSync,
+} from 'node:fs'
 import { extname, basename, join } from 'node:path'
 import matter from 'gray-matter'
 
@@ -129,6 +135,9 @@ function mergeSkillsFiles() {
 
 // 全MD合体機能
 function mergeAllFiles() {
+  // 常にバックアップを実行
+  backupResumeFolder()
+
   mergeResumeFiles()
   mergeCareerFiles()
   mergeSkillsFiles()
@@ -143,9 +152,37 @@ function debouncedMergeResume() {
 
   mergeTimeout = setTimeout(() => {
     console.log('🔄 Merging all markdown files...')
+    // バックアップしてから合体
+    backupResumeFolder()
     mergeAllFiles()
     mergeTimeout = null
   }, 3000)
+}
+
+// バックアップ機能
+function backupResumeFolder() {
+  const sourceDir = 'src/content/resume'
+  const backupDir =
+    '/Users/yuyahanada/Desktop/_works/_01docs/portfolio-v2-resume-backup'
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-')
+  const timestampedBackupDir = `${backupDir}-${timestamp}`
+
+  try {
+    // バックアップディレクトリを作成（再帰的）
+    mkdirSync(timestampedBackupDir, { recursive: true })
+
+    // resumeフォルダ全体をコピー
+    cpSync(sourceDir, timestampedBackupDir, { recursive: true })
+
+    // 最新のバックアップとしてもコピー（タイムスタンプなし）
+    mkdirSync(backupDir, { recursive: true })
+    cpSync(sourceDir, backupDir, { recursive: true })
+
+    console.log(`✅ Resume backup created: ${timestampedBackupDir}`)
+    console.log(`✅ Latest backup updated: ${backupDir}`)
+  } catch (error) {
+    console.error(`❌ バックアップエラー: ${error.message}`)
+  }
 }
 
 // コマンドライン処理
@@ -156,15 +193,21 @@ const imageFile = args[1]
 if (command === '--images') {
   convertImage(imageFile)
 } else if (command === '--merge') {
+  backupResumeFolder()
   mergeResumeFiles()
 } else if (command === '--merge-career') {
+  backupResumeFolder()
   mergeCareerFiles()
 } else if (command === '--merge-skills') {
+  backupResumeFolder()
   mergeSkillsFiles()
 } else if (command === '--merge-all') {
+  backupResumeFolder()
   mergeAllFiles()
 } else if (command === '--merge-debounce') {
   debouncedMergeResume()
+} else if (command === '--backup') {
+  backupResumeFolder()
 } else if (command === '--all') {
   convertImage(imageFile)
   mergeAllFiles()

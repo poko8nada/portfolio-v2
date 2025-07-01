@@ -10,6 +10,7 @@
 		"merge-career": "node scripts/prepare-resume.js --merge-career",
 		"merge-skills": "node scripts/prepare-resume.js --merge-skills",
 		"merge-all-resume": "node scripts/prepare-resume.js --merge-all",
+		"backup-resume": "node scripts/prepare-resume.js --backup",
 		"prepare-resume": "node scripts/prepare-resume.js --all",
 		"watch-resume": "chokidar 'src/content/resume/resume/*.md' 'src/content/resume/career/*.md' 'src/content/resume/skills/*.md' -c 'node scripts/prepare-resume.js --merge-debounce'",
 		"prepare-assets": "npm run prepare-resume && npm run generate-posts-index",

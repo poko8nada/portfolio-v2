@@ -1,10 +1,10 @@
-import MainHeader from '@/components/main-header'
+import Header from '@/components/header'
 import Main from '@/components/main'
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <MainHeader />
+      <Header isHomePage={true} />
       <Main>{children}</Main>
     </>
   )
