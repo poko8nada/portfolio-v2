@@ -1,43 +1,52 @@
-import Markdown from 'markdown-to-jsx'
+import type { FC } from 'react'
+import { jetbrainsMono } from './fonts/jetbrains-mono'
 
 type SimpleMarkdownProps = {
   content: string
 }
 
-export function MarkdownForAbout({ content }: SimpleMarkdownProps) {
+// Markdownをh2ごとにグループ化し、liを抽出
+function parseSkillsBySection(content: string) {
+  const lines = content.split('\n')
+  const sections: { title: string; items: string[] }[] = []
+  let currentSection: { title: string; items: string[] } | null = null
+  for (const line of lines) {
+    const h2 = line.match(/^##\s+(.+)/)
+    if (h2) {
+      if (currentSection) sections.push(currentSection)
+      currentSection = { title: h2[1], items: [] }
+      continue
+    }
+    const li = line.match(/^- \*\*(.+?)\*\*/)
+    if (li && currentSection) {
+      currentSection.items.push(li[1])
+    }
+  }
+  if (currentSection) sections.push(currentSection)
+  return sections
+}
+
+export const MarkdownForAbout: FC<SimpleMarkdownProps> = ({ content }) => {
+  const sections = parseSkillsBySection(content)
   return (
-    <div className='prose prose-invert max-w-none'>
-      <Markdown
-        options={{
-          overrides: {
-            h2: {
-              props: {
-                className:
-                  'text-xl font-bold mt-8 mb-4 text-fg border-b-2 border-pr pb-2',
-              },
-            },
-            h3: {
-              props: {
-                className: 'text-lg font-semibold mt-6 mb-3 text-fg-2',
-              },
-            },
-            ul: {
-              props: {
-                className:
-                  'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 list-none p-0',
-              },
-            },
-            li: {
-              props: {
-                className:
-                  'bg-bg-2 p-4 rounded-lg text-center hover:bg-pr hover:text-white transition-all duration-200 cursor-pointer',
-              },
-            },
-          },
-        }}
-      >
-        {content}
-      </Markdown>
+    <div className='grid grid-cols-1 md:grid-cols-2 gap-y-20 md:gap-x-10 w-full'>
+      {sections.map(section => (
+        <section key={section.title} className='flex flex-col'>
+          <h2 className='text-base font-mono font-extralight mb-7 pl-1 uppercase text-pr/80 tracking-widest opacity-90'>
+            {section.title}
+          </h2>
+          <ul className='flex flex-wrap gap-x-3 gap-y-4'>
+            {section.items.map(skill => (
+              <li
+                key={skill}
+                className={`${jetbrainsMono.className} rounded-full bg-white/5 border border-white/15 px-4 py-1.5 text-fg text-sm font-light tracking-tight select-none opacity-90`}
+              >
+                {skill}
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
     </div>
   )
 }

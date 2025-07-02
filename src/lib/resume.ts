@@ -78,7 +78,20 @@ export async function getResumeBySlug(
       content = skillsContent
       break
     case 'technical-skills':
+      // 整形処理を追加
       content = technicalSkillsContent
+      // h1除去＆liのコロン以降カット
+      content = content
+        .split('\n')
+        .filter(line => !/^# /.test(line)) // h1除去
+        .map(line => {
+          if (/^- \*\*.+\*\*:/.test(line)) {
+            // liのコロン以降カット
+            return line.replace(/(:.*$)/, '')
+          }
+          return line
+        })
+        .join('\n')
       break
     default:
       return undefined
