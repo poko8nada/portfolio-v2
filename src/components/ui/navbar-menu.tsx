@@ -1,12 +1,8 @@
 'use client'
-import type React from 'react'
 import { motion } from 'motion/react'
+import type React from 'react'
 
-export const MenuItem = ({
-  children,
-}: {
-  children: React.ReactNode
-}) => {
+export const MenuItem = ({ children }: { children: React.ReactNode }) => {
   return (
     <motion.div
       whileHover={{ scale: 1.05 }}
@@ -18,11 +14,7 @@ export const MenuItem = ({
   )
 }
 
-export const Menu = ({
-  children,
-}: {
-  children: React.ReactNode
-}) => {
+export const Menu = ({ children }: { children: React.ReactNode }) => {
   return (
     <motion.nav
       initial={{ y: -100, opacity: 0 }}

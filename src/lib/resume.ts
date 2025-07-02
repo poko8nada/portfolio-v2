@@ -2,8 +2,8 @@
 import matter from 'gray-matter'
 import careerContent from '@/content/resume/career.md'
 import resumeContent from '@/content/resume/resume.md'
-import skillsContent from '@/content/resume/skills.md'
 import technicalSkillsContent from '@/content/resume/skills/skills_01_technical.md'
+import skillsContent from '@/content/resume/skills.md'
 
 // Resume frontmatter type
 type ResumeFrontmatter = {

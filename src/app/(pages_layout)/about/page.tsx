@@ -1,7 +1,6 @@
-import { getResumeBySlug } from '@/lib/resume'
 import { MarkdownForAbout } from '@/components/markdown-for-about'
 import SectionBody from '@/components/sectionBody'
-import SectionHeader from '@/components/sectionHeader'
+import { getResumeBySlug } from '@/lib/resume'
 
 export default async function AboutPage() {
   const resumeData = await getResumeBySlug('technical-skills')
@@ -12,14 +11,17 @@ export default async function AboutPage() {
 
   return (
     <SectionBody>
-      <SectionHeader>About</SectionHeader>
-      <div className='text-center mb-12'>
-        <p className='mb-4'>こんにちは。PokoHanadaです。</p>
-        <p>
-          Webディレクター兼、デベロッパー。
-          <br />
-          企画から制作管理、なんなら実装まで一貫して担当します。
-        </p>
+      <div className='mt-16 mb-22 px-4 sm:px-0 w-full'>
+        <div className='w-full text-center'>
+          <p className='mb-10 text-lg md:text-xl text-fg'>
+            こんにちは。PokoHanadaです。
+          </p>
+          <p className='text-base md:text-md leading-relaxed text-fg/90'>
+            Webディレクター／デベロッパーとして、企画・設計から実装・運用まで一貫して担当。
+            <br className='hidden sm:inline' />
+            技術力と多様な業界経験、チームワーク・課題解決力を活かし、価値あるWeb体験をつくります。
+          </p>
+        </div>
       </div>
       <div className='w-full px-4'>
         <MarkdownForAbout content={resumeData.content} />

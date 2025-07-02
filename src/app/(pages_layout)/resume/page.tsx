@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { MarkdownForResume } from '@/components/markdown-for-resume'
-import { getAllResumeData } from '@/lib/resume'
 import profileImageData from '@/content/resume/images/profile.json'
+import { getAllResumeData } from '@/lib/resume'
 import type { ImageData } from '@/types/profile'
 
 export const metadata: Metadata = {

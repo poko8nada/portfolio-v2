@@ -1,10 +1,10 @@
 import {
-  Home,
-  User,
   FileText,
+  Home,
   Lock,
-  Wrench,
   type LucideIcon,
+  User,
+  Wrench,
 } from 'lucide-react'
 
 export type IconName = 'Home' | 'User' | 'FileText' | 'Lock' | 'Wrench'

@@ -1,7 +1,10 @@
 export default ({
   children,
   id,
-}: { children: React.ReactNode; id?: string }) => {
+}: {
+  children: React.ReactNode
+  id?: string
+}) => {
   return (
     <section
       id={id}

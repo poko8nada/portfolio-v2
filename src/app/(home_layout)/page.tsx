@@ -1,9 +1,9 @@
+import Image from 'next/image'
+import Link from 'next/link'
 import DisplayHomePosts from '@/feature/display-home-posts'
 import DisplayHomeSection from '@/feature/display-home-section'
 import DisplaySns from '@/feature/display-sns'
 import DisplayToolCards from '@/feature/display-tool-cards'
-import Link from 'next/link'
-import Image from 'next/image'
 
 export default async function Home() {
   return (
