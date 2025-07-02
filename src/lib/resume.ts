@@ -2,12 +2,13 @@
 import matter from 'gray-matter'
 import careerContent from '@/content/resume/career.md'
 import resumeContent from '@/content/resume/resume.md'
+import technicalSkillsContent from '@/content/resume/skills/skills_01_technical.md'
 import skillsContent from '@/content/resume/skills.md'
 
 // Resume frontmatter type
 type ResumeFrontmatter = {
   title: string
-  type: 'resume' | 'career' | 'skills'
+  type: 'resume' | 'career' | 'skills' | 'technical-skills'
   createdAt: string
   updatedAt: string
 }
@@ -28,7 +29,10 @@ function validateResumeData(data: unknown): data is ResumeFrontmatter {
   const obj = data as Record<string, unknown>
   return (
     typeof obj.title === 'string' &&
-    (obj.type === 'resume' || obj.type === 'career' || obj.type === 'skills') &&
+    (obj.type === 'resume' ||
+      obj.type === 'career' ||
+      obj.type === 'skills' ||
+      obj.type === 'technical-skills') &&
     typeof obj.createdAt === 'string' &&
     typeof obj.updatedAt === 'string'
   )
@@ -73,6 +77,22 @@ export async function getResumeBySlug(
     case 'skills':
       content = skillsContent
       break
+    case 'technical-skills':
+      // 整形処理を追加
+      content = technicalSkillsContent
+      // h1除去＆liのコロン以降カット
+      content = content
+        .split('\n')
+        .filter(line => !/^# /.test(line)) // h1除去
+        .map(line => {
+          if (/^- \*\*.+\*\*:/.test(line)) {
+            // liのコロン以降カット
+            return line.replace(/(:.*$)/, '')
+          }
+          return line
+        })
+        .join('\n')
+      break
     default:
       return undefined
   }
@@ -96,7 +116,7 @@ export async function getAllResumeData(): Promise<ResumeData[]> {
 
   // 固定順序: resume → career → skills
   return results.sort((a, b) => {
-    const order = { resume: 0, career: 1, skills: 2 }
+    const order: Record<string, number> = { resume: 0, career: 1, skills: 2 }
     return order[a.frontmatter.type] - order[b.frontmatter.type]
   })
 }
@@ -106,10 +126,10 @@ export async function getAllResumeData(): Promise<ResumeData[]> {
  */
 export async function getBasicProfileInfo(): Promise<
   | {
-      name?: string
-      title?: string
-      skills?: string[]
-    }
+    name?: string
+    title?: string
+    skills?: string[]
+  }
   | undefined
 > {
   const resumeData = await getResumeBySlug('resume')

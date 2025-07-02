@@ -1,31 +1,115 @@
+'use client'
 import { Nunito } from 'next/font/google'
 import Image from 'next/image'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { ConfirmationDialog } from '@/components/ui/confirmation-dialog'
+import { type IconName, NavIcon } from '@/components/ui/nav-icons'
+import { Menu, MenuItem } from '@/components/ui/navbar-menu'
+import { getNavItemsForPage, homeLayoutNavItems } from '@/lib/navigation'
 
+interface HeaderProps {
+  /** ホームページ用レイアウトの場合true */
+  isHomePage?: boolean
+}
 const nunito = Nunito({ subsets: ['latin'] })
 
-export default ({
-  imgSize = 120,
-  fontSize = 1.5,
-}: {
-  imgSize?: number
-  fontSize?: number
-}) => {
+export default function Header({ isHomePage = false }: HeaderProps) {
+  const pathname = usePathname()
+
+  // ホームページかどうかでナビアイテムを切り替え
+  const navItems = isHomePage
+    ? homeLayoutNavItems
+    : getNavItemsForPage(pathname)
+
+  const handleAnchorClick = (href: string) => {
+    if (href.startsWith('#')) {
+      const element = document.querySelector(href)
+      element?.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
+
   return (
-    <header
-      className={`${nunito.className} bg-bg text-3xl p-6 border-b-1 border-bg-2`}
-    >
-      <div className='flex flex-col items-center'>
+    <Menu>
+      {/* プロフィール部分 */}
+      <div className='flex items-center space-x-2 sm:space-x-3'>
         <Image
           src='/images/profile01.png'
-          width={imgSize}
-          height={imgSize}
+          width={60}
+          height={60}
           alt=''
           className='rounded-full'
         />
-        <h1 className='text-center mt-4' style={{ fontSize: `${fontSize}rem` }}>
+        <span
+          className={`${nunito.className} text-fg font-bold text-md sm:text-xl`}
+        >
           PokoHanadaCom
-        </h1>
+        </span>
       </div>
-    </header>
+
+      {/* デスクトップナビゲーション */}
+      <div className='hidden md:flex items-center space-x-4 '>
+        {navItems.map(item => (
+          <MenuItem key={item.label}>
+            {item.requiresConfirmation ? (
+              <ConfirmationDialog
+                href={item.href}
+                icon={item.icon as IconName}
+                showIcon={item.showIcon}
+              >
+                {item.label}
+              </ConfirmationDialog>
+            ) : item.isAnchor ? (
+              <button
+                type='button'
+                onClick={() => handleAnchorClick(item.href)}
+                className='text-fg hover:text-pr transition-colors duration-200 cursor-pointer'
+              >
+                {item.label}
+              </button>
+            ) : (
+              <Link
+                href={item.href}
+                className='text-fg hover:text-pr transition-colors duration-200'
+              >
+                {item.label}
+              </Link>
+            )}
+          </MenuItem>
+        ))}
+      </div>
+
+      {/* モバイルナビゲーション */}
+      <div className='md:hidden flex items-center space-x-3'>
+        {navItems.map(item => (
+          <MenuItem key={item.label}>
+            {item.requiresConfirmation ? (
+              <ConfirmationDialog
+                href={item.href}
+                icon={item.icon as IconName}
+                className='text-fg hover:text-pr cursor-pointer'
+              >
+                <NavIcon iconName={item.icon as IconName} />
+              </ConfirmationDialog>
+            ) : item.isAnchor ? (
+              <button
+                type='button'
+                onClick={() => handleAnchorClick(item.href)}
+                className='text-fg hover:text-pr cursor-pointer'
+              >
+                <NavIcon iconName={item.icon as IconName} />
+              </button>
+            ) : (
+              <Link
+                href={item.href}
+                className='text-fg hover:text-pr cursor-pointer transition-colors duration-200'
+              >
+                <NavIcon iconName={item.icon as IconName} />
+              </Link>
+            )}
+          </MenuItem>
+        ))}
+      </div>
+    </Menu>
   )
 }

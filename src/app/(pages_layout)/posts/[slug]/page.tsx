@@ -59,43 +59,41 @@ export default async function Page({
   const nextPost = allPosts[postIndex + 1]
 
   return (
-    <>
-      <SectionBody>
-        <PostHeader post={post} />
-        <PostBody content={content as string} />
-        {allPosts.length <= 1 ? null : (
-          <PostFooter
-            prevPost={
-              prevPost
-                ? {
-                    slug: prevPost.slug,
-                    formattedData: {
-                      title: prevPost.title,
-                      createdAt: prevPost.createdAt,
-                      updatedAt: prevPost.updatedAt,
-                      thumbnail: prevPost.thumbnail,
-                    },
-                    content: '', // PostFooterでは使用されない
-                  }
-                : undefined
-            }
-            nextPost={
-              nextPost
-                ? {
-                    slug: nextPost.slug,
-                    formattedData: {
-                      title: nextPost.title,
-                      createdAt: nextPost.createdAt,
-                      updatedAt: nextPost.updatedAt,
-                      thumbnail: nextPost.thumbnail,
-                    },
-                    content: '', // PostFooterでは使用されない
-                  }
-                : undefined
-            }
-          />
-        )}
-      </SectionBody>
-    </>
+    <SectionBody>
+      <PostHeader post={post} />
+      <PostBody content={content as string} />
+      {allPosts.length <= 1 ? null : (
+        <PostFooter
+          prevPost={
+            prevPost
+              ? {
+                  slug: prevPost.slug,
+                  formattedData: {
+                    title: prevPost.title,
+                    createdAt: prevPost.createdAt,
+                    updatedAt: prevPost.updatedAt,
+                    thumbnail: prevPost.thumbnail,
+                  },
+                  content: '', // PostFooterでは使用されない
+                }
+              : undefined
+          }
+          nextPost={
+            nextPost
+              ? {
+                  slug: nextPost.slug,
+                  formattedData: {
+                    title: nextPost.title,
+                    createdAt: nextPost.createdAt,
+                    updatedAt: nextPost.updatedAt,
+                    thumbnail: nextPost.thumbnail,
+                  },
+                  content: '', // PostFooterでは使用されない
+                }
+              : undefined
+          }
+        />
+      )}
+    </SectionBody>
   )
 }
