@@ -104,7 +104,7 @@ export async function getResumeBySlug(
  * Get all resume data
  */
 export async function getAllResumeData(): Promise<ResumeData[]> {
-  const slugs = ['resume', 'career', 'skills', 'technical-skills']
+  const slugs = ['resume', 'career', 'skills']
   const results: ResumeData[] = []
 
   for (const slug of slugs) {
@@ -126,10 +126,10 @@ export async function getAllResumeData(): Promise<ResumeData[]> {
  */
 export async function getBasicProfileInfo(): Promise<
   | {
-      name?: string
-      title?: string
-      skills?: string[]
-    }
+    name?: string
+    title?: string
+    skills?: string[]
+  }
   | undefined
 > {
   const resumeData = await getResumeBySlug('resume')

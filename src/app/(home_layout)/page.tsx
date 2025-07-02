@@ -13,7 +13,7 @@ export default async function Home() {
         <p className='p-1 mt-2 text-center'>
           Webディレクター兼、デベロッパー。
           <br />
-          企画から制作管理、なんなら実装まで一貫して担当します。
+          企画・設計から実装・運用まで一貫して担当いたします。
         </p>
         <DisplaySns />
         <div className='mt-6'>
@@ -21,7 +21,7 @@ export default async function Home() {
             href='/about'
             className='flex items-center justify-center text-pr hover:underline'
           >
-            詳しい経歴を見る
+            スキル一覧はこちらから
             <Image
               src={'/images/arrow-next.svg'}
               width={16}

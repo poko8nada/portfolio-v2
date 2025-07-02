@@ -22,7 +22,7 @@ export const Menu = ({ children }: { children: React.ReactNode }) => {
       transition={{ duration: 0.5, ease: 'easeOut' }}
       className='fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-[max-content]
                  bg-bg/90 border border-bg-2
-                 rounded-full px-3 py-3 shadow-lg flex items-center gap-4 sm:gap-8 justify-between'
+                 rounded-full pl-3 pr-4 py-3 shadow-lg flex items-center gap-4 sm:gap-8 justify-between'
     >
       {children}
     </motion.nav>
