@@ -25,6 +25,7 @@ export const homeLayoutNavItems: NavItem[] = [
 
 // 全ページメニュー（現在のページを除外するベース）
 export const allNavItems: NavItem[] = [
+  { label: 'Contact', href: '/contact', isAnchor: false, icon: 'FileText' },
   { label: 'Home', href: '/', isAnchor: false, icon: 'Home' },
   { label: 'Posts', href: '/posts', isAnchor: false, icon: 'FileText' },
   { label: 'Works', href: '/#works', isAnchor: false, icon: 'Wrench' },
@@ -47,6 +48,8 @@ export function getNavItemsForPage(currentPath: string): NavItem[] {
     if (currentPath.startsWith('/posts') && item.href === '/posts') return false
     if (currentPath.startsWith('/about') && item.href === '/about') return false
     if (currentPath.startsWith('/resume') && item.href === '/resume')
+      return false
+    if (currentPath.startsWith('/contact') && item.href === '/contact')
       return false
     return true
   })
