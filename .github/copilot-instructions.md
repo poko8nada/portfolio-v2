@@ -60,6 +60,48 @@ You are a programming expert.
 
 ---
 
+## Git Workflow Rules
+
+### Commit Message Format
+```
+<type>: <description>
+```
+
+### Commit Types
+- **feat**: Add new features
+- **refactor**: Code restructuring and improvements
+- **fix**: Bug fixes
+- **update**: Update existing functionality
+- **style**: Styling and visual adjustments
+- **chore**: Maintenance and housekeeping tasks
+- **WIP**: Work in progress
+
+### Commit Message Guidelines
+- Use English for all commit messages
+- Use imperative mood (Add, Update, Implement, Fix, etc.)
+- Start description with lowercase letter
+- No period at the end
+- Be specific and concise about what was changed
+- Include component or file names when relevant
+- Use "and" to connect multiple related changes in one commit
+
+### Examples
+```
+feat: implement contact form and related refactorings
+refactor: enhance resume merging functionality and add skills support
+fix: update profile image dimensions in header component
+chore: update project files
+style: adjust typography for improved readability
+```
+
+### Branch Strategy
+- Use feature branches for new development
+- Follow naming convention: `feature/<feature-name>`
+- Merge to `develop` branch for integration
+- Use pull requests for code review process
+
+---
+
 ## Coding Rules
 
 - Use Next.js 15+ with App Router.
