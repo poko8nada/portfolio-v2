@@ -1,114 +1,90 @@
 # お問い合わせフォーム実装計画
 
-## 実装指示書（Gemini CLI用）
-
-### プロジェクト概要
+## プロジェクト概要
 - **フレームワーク**: Next.js 15.2.4 (App Router)
 - **デプロイ環境**: Cloudflare Workers (OpenNext v1.3.1)
 - **既存設定**: shadcn/ui, Tailwind CSS 4.0, TypeScript
-- **プロジェクトルート**: `portfolio-v2/`
-
-### 実装状況
-**✅ 実装完了済み** - Next.js + OpenNext + Cloudflare Workersを使用したお問い合わせフォームは実装済みです。
 
 ## 技術スタック
-
-### フロントエンド
-- **フォーム**: shadcn/ui Form + React Hook Form（既存UI体系に合わせる）
-- **バリデーション**: Zod（型安全性確保）
-- **スパム対策**: Cloudflare Turnstile
-- **UI状態管理**: 送信中・成功・失敗状態の明確な表示
-
-### バックエンド
-- **処理方式**: Server Actions（Next.js 15のベストプラクティス）
+- **フォーム**: shadcn/ui Form + React Hook Form + Zod
 - **メール送信**: Resend API
-- **エラーハンドリング**: Result型パターン（プロジェクトルール準拠）
-- **レート制限**: Cloudflare Workers機能活用
+- **スパム対策**: Cloudflare Turnstile
+- **処理方式**: Server Actions（Next.js 15）
+- **エラーハンドリング**: Result型パターン
 
-## 実装状況確認
+## 実装ステータス
 
-### ✅ 実装完了済み項目
+### ✅ 実装完了済み
+- Server Action（メール送信・Turnstile検証）
+- Zod バリデーション
+- 基本的なフォーム機能
+- Turnstile統合
+- エラーハンドリング
 
-1. **基盤準備**
-   - パッケージインストール完了
-   - 型定義ファイル作成済み（`src/types/contact.ts`）
-   - 設定ファイル作成済み（`src/config/contact.ts`）
+### ⚠️ 修正が必要
+- shadcn/ui Form未使用（現在は生HTMLを使用）
+- ページ形式からダイアログ形式への変更
 
-2. **Server Action実装**
-   - `src/feature/contact/send-contact-email.ts`実装済み
-   - Resend APIでのメール送信機能実装済み
-   - Turnstile トークン検証実装済み
-   - Zodバリデーション実装済み
-   - Result型パターンでのエラーハンドリング実装済み
+### 📋 設定が必要
+- 環境変数設定
+- Resendドメイン設定
+- Turnstile設定
 
-3. **UI実装**
-   - `src/components/contact-form.tsx`実装済み
-   - `src/feature/contact/contact-form-feature.tsx`実装済み
-   - 全フォームフィールド実装済み
-   - UI状態管理実装済み
-   - Turnstile統合実装済み
+## 実装計画
 
-4. **ページ統合**
-   - `src/app/(pages_layout)/contact/page.tsx`実装済み
-   - ナビゲーション統合済み
+### Phase 1: 基本修正
+1. **shadcn/ui Form導入**
+   ```bash
+   npx shadcn@latest add form
+   npx shadcn@latest add input
+   npx shadcn@latest add textarea
+   ```
 
-### ⚠️ 設定が必要な項目
+2. **contact-form.tsx修正**
+   - HTML inputからshadcn/ui Formコンポーネントへ変更
+   - 統一されたスタイルとバリデーション表示を適用
 
-1. **環境変数の設定**
-   - `RESEND_API_KEY`
-   - `TURNSTILE_SECRET_KEY`
-   - `TURNSTILE_SITE_KEY`
+### Phase 2: ダイアログ化
+1. **ナビゲーション設定変更**
+   - 全ページでContact常時表示
+   - ダイアログトリガー用フラグ追加
 
-2. **Resendドメイン設定**
-   - CloudflareでのDNSレコード設定
-   - Resendでのドメイン認証
+2. **ダイアログコンポーネント作成**
+   - `ContactDialog`コンポーネント
+   - 既存`ContactFormFeature`をダイアログ内に統合
 
-## 必須ファイル構成
+3. **Header統合**
+   - ダイアログトリガー処理追加
 
-**作成必須ファイル**:
+## 実装詳細
+
+### ファイル構成
 ```
 portfolio-v2/src/
-├── app/(pages_layout)/contact/
-│   └── page.tsx                  # お問い合わせページ（Server Component）
 ├── components/
-│   └── contact-form.tsx          # フォームUIコンポーネント（Client Component）
-├── config/
-│   └── contact.ts                # Zodスキーマと設定
+│   ├── ui/
+│   │   ├── form.tsx           # 新規：shadcn/ui form
+│   │   ├── input.tsx          # 新規：shadcn/ui input
+│   │   └── textarea.tsx       # 新規：shadcn/ui textarea
+│   ├── contact-dialog.tsx     # 新規：ダイアログ統合
+│   ├── contact-form.tsx       # 修正：shadcn/ui Form使用
+│   └── header.tsx             # 修正：ダイアログトリガー
 ├── feature/contact/
-│   ├── contact-form-feature.tsx  # フォーム機能統合（Client Component）
-│   └── send-contact-email.ts     # Server Action（'use server'）
-└── types/
-    └── contact.ts                # TypeScript型定義
+│   ├── contact-form-feature.tsx  # 既存：変更なし
+│   └── send-contact-email.ts     # 既存：変更なし
+├── lib/
+│   └── navigation.ts          # 修正：Contact常時表示
+├── config/
+│   └── contact.ts             # 既存：変更なし
+├── types/
+│   └── contact.ts             # 既存：変更なし
+└── app/(pages_layout)/contact/
+    └── page.tsx               # 修正：ダイアログ使用
 ```
 
-**プロジェクトルール準拠**:
-- `app/` 配下はServer Component優先
-- `feature/` で機能をまとめる
-- `components/` はロジックなしUI専用
-
-## セキュリティ考慮事項
-
-1. **入力検証**
-   - 全フィールドでXSS対策
-   - SQLインジェクション対策（該当する場合）
-   - ファイルアップロード制限
-
-2. **レート制限**
-   - IP単位での送信制限
-   - セッション単位での制限
-
-3. **スパム対策**
-   - Cloudflare Turnstile必須
-   - ハニーポット実装検討
-
-4. **データ保護**
-   - 送信データの暗号化
-   - ログに機密情報を含めない
-
-## 必須実装コード例
-
-### 1. 型定義（src/types/contact.ts）
+### 型定義
 ```typescript
+// src/types/contact.ts
 export type ContactFormData = {
   name: string
   email: string
@@ -129,8 +105,9 @@ export type ContactError =
   | 'UNKNOWN_ERROR'
 ```
 
-### 2. Zodスキーマ（src/config/contact.ts）
+### 設定
 ```typescript
+// src/config/contact.ts
 import { z } from 'zod'
 
 export const contactSchema = z.object({
@@ -140,10 +117,7 @@ export const contactSchema = z.object({
   message: z.string().min(10, 'メッセージは10文字以上で入力してください').max(1000),
   turnstileToken: z.string().min(1, 'セキュリティ認証が必要です')
 })
-```
 
-### 3. エラーメッセージ日本語化
-```typescript
 export const ERROR_MESSAGES = {
   VALIDATION_ERROR: '入力内容に誤りがあります。再度確認してください。',
   TURNSTILE_ERROR: 'セキュリティ認証に失敗しました。ページを再読み込みしてください。',
@@ -153,92 +127,124 @@ export const ERROR_MESSAGES = {
 } as const
 ```
 
-## テスト計画
+### 実装例
 
-1. **フォームバリデーション**
-   - 必須フィールドテスト
-   - 形式チェック（メールアドレス等）
-   - 文字数制限テスト
+#### 1. 修正されたContactForm
+```typescript
+// src/components/contact-form.tsx
+'use client'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Button } from '@/components/ui/button'
+import { contactSchema } from '@/config/contact'
 
-2. **送信処理**
-   - 正常ケース
-   - エラーケース（ネットワーク、API障害）
-   - Turnstile認証失敗
+export function ContactForm({ onSubmitAction, isSubmitting, siteKey }: Props) {
+  const form = useForm<ContactFormData>({
+    resolver: zodResolver(contactSchema),
+  })
 
-3. **セキュリティ**
-   - XSS攻撃テスト
-   - レート制限テスト
-   - スパム送信テスト
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmitAction)} className='space-y-6'>
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>名前</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        {/* 他のフィールドも同様 */}
+      </form>
+    </Form>
+  )
+}
+```
 
-## パフォーマンス最適化
+#### 2. ダイアログコンポーネント
+```typescript
+// src/components/contact-dialog.tsx
+'use client'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { ContactFormFeature } from '@/feature/contact/contact-form-feature'
 
-1. **フォーム最適化**
-   - 遅延読み込み（Turnstile）
-   - デバウンス処理（バリデーション）
+interface ContactDialogProps {
+  children: React.ReactNode
+  className?: string
+}
 
-2. **サーバー最適化**
-   - レスポンス圧縮
-   - キャッシュ戦略
+export function ContactDialog({ children, className }: ContactDialogProps) {
+  return (
+    <Dialog>
+      <DialogTrigger className={className}>
+        {children}
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[600px]">
+        <DialogHeader>
+          <DialogTitle>お問い合わせ</DialogTitle>
+        </DialogHeader>
+        <ContactFormFeature />
+      </DialogContent>
+    </Dialog>
+  )
+}
+```
+
+#### 3. ナビゲーション設定
+```typescript
+// src/lib/navigation.ts
+export const allNavItems: NavItem[] = [
+  { label: 'Contact', href: '/contact', isAnchor: false, icon: 'Mail', isDialog: true },
+  { label: 'Home', href: '/', isAnchor: false, icon: 'Home' },
+  // ... 他のアイテム
+]
+```
+
+## 環境設定
+
+### 必須環境変数
+```env
+# .dev.vars
+RESEND_API_KEY=re_your_api_key_here
+TURNSTILE_SECRET_KEY=your_cloudflare_turnstile_secret
+TURNSTILE_SITE_KEY=your_cloudflare_turnstile_site_key
+```
+
+### セットアップ手順
+1. Resendでドメイン設定
+2. Cloudflare TurnstileでサイトキーとシークレットキーKey取得
+3. 環境変数設定
+4. 開発サーバー起動: `pnpm dev`
 
 ## 実装チェックリスト
 
-### ✅ 実装完了済み
-- [x] パッケージインストール完了
-- [x] `src/types/contact.ts`作成済み
-- [x] `src/config/contact.ts`作成済み
-- [x] `src/feature/contact/send-contact-email.ts`作成済み
-- [x] Resend APIメール送信機能実装済み
-- [x] Turnstile検証機能実装済み
-- [x] Result型エラーハンドリング実装済み
-- [x] `src/components/contact-form.tsx`作成済み
-- [x] `src/feature/contact/contact-form-feature.tsx`作成済み
-- [x] フォームバリデーション実装済み
-- [x] 全UI状態の表示実装済み
-- [x] `src/app/(pages_layout)/contact/page.tsx`作成済み
-- [x] `/contact`ページアクセス可能
+### Phase 1: 基本修正
+- [ ] shadcn/ui form, input, textarea追加
+- [ ] ContactFormをshadcn/ui Form対応に修正
+- [ ] バリデーション表示確認
 
-### ⚠️ 設定・テストが必要な項目
-- [ ] 環境変数の設定（`.dev.vars`）
-- [ ] Resendドメイン設定とDNS認証
-- [ ] Cloudflare Turnstile設定
-- [ ] メール送信テスト実行
-- [ ] エラーハンドリング動作確認
+### Phase 2: ダイアログ化
+- [ ] ContactDialogコンポーネント作成
+- [ ] navigation.tsにisDialogフラグ追加
+- [ ] Header統合（ダイアログトリガー）
+- [ ] /contactページでもダイアログ使用
 
-## 設定・運用手順
+### Phase 3: 最終確認
+- [ ] 全ページでContact表示確認
+- [ ] モバイル・デスクトップ対応確認
+- [ ] フォーム送信テスト
+- [ ] エラーハンドリング確認
 
-### 必須設定手順
-
-1. **環境変数設定**
-   - `.dev.vars`ファイルに以下を追加：
-   ```
-   RESEND_API_KEY=re_your_api_key_here
-   TURNSTILE_SECRET_KEY=your_cloudflare_turnstile_secret
-   TURNSTILE_SITE_KEY=your_cloudflare_turnstile_site_key
-   ```
-
-2. **Resendドメイン設定**
-   - Resendでドメイン追加
-   - CloudflareでMX・TXTレコード設定
-   - ドメイン認証完了
-
-3. **Cloudflare Turnstile設定**
-   - Turnstileサイト作成
-   - サイトキー・シークレットキー取得
-
-### テスト・確認手順
-```bash
-# 開発サーバー起動
-cd portfolio-v2
-pnpm dev
-
-# 本番環境プレビュー
-pnpm preview
-
-# 本番デプロイ
-pnpm deploy
-```
-
-### 実装済み機能の確認
-- 既存実装は`src/components/ui/`配下のデザインシステムに準拠
-- 日本語メッセージ・エラーハンドリング実装済み
-- レスポンシブ対応・アクセシビリティ対応済み
+## 実装の優先度
+1. **Critical**: shadcn/ui Form導入
+2. **High**: ダイアログ化
+3. **Medium**: UX改善
+4. **Low**: 細かな調整
