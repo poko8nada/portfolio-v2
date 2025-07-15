@@ -60,7 +60,7 @@ export async function sendContactEmail(
     // 管理者への通知メール
     await resend.emails.send({
       from: 'notification@pokohanada.com',
-      to: 'poko.hanada@gmail.com', // 自分のメールアドレス
+      to: process.env.MY_GMAIL_ADDRESS as string,
       subject: `【pokoHanadaCom】新規お問い合わせ: ${subject}`,
       html: `<p>新しいお問い合わせがありました。</p><hr /><p><strong>名前:</strong> ${name}</p><p><strong>メールアドレス:</strong> ${email}</p><p><strong>件名:</strong> ${subject}</p><p><strong>メッセージ:</strong></p><p>${message.replace(/\n/g, '<br>')}</p>`,
       text: `新しいお問い合わせがありました。\n\n---\n名前: ${name}\nメールアドレス: ${email}\n件名: ${subject}\nメッセージ:\n${message}`,
