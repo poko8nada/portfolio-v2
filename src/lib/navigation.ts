@@ -13,14 +13,7 @@ export const homeLayoutNavItems: NavItem[] = [
   { label: 'About', href: '#about', isAnchor: true, icon: 'User' },
   { label: 'Posts', href: '#posts', isAnchor: true, icon: 'FileText' },
   { label: 'Works', href: '#works', isAnchor: true, icon: 'Wrench' },
-  {
-    label: 'Resume',
-    href: '/resume',
-    isAnchor: false,
-    icon: 'Lock',
-    showIcon: true,
-    requiresConfirmation: true,
-  },
+
   { label: 'Contact', href: '/contact', isAnchor: false, icon: 'Mail' },
 ]
 
@@ -30,14 +23,7 @@ export const allNavItems: NavItem[] = [
   { label: 'Posts', href: '/posts', isAnchor: false, icon: 'FileText' },
   { label: 'Works', href: '/#works', isAnchor: false, icon: 'Wrench' },
   { label: 'About', href: '/about', isAnchor: false, icon: 'User' },
-  {
-    label: 'Resume',
-    href: '/resume',
-    isAnchor: false,
-    icon: 'Lock',
-    showIcon: true,
-    requiresConfirmation: true,
-  },
+
   { label: 'Contact', href: '/contact', isAnchor: false, icon: 'Mail' },
 ]
 
