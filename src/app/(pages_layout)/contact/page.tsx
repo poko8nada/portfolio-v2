@@ -1,7 +1,8 @@
 import type { Metadata } from 'next'
 import SectionBody from '@/components/sectionBody'
 import SectionHeader from '@/components/sectionHeader'
-import { ContactFormFeature } from '@/feature/contact/contact-form-feature'
+
+import { ContactDialog } from '@/components/contact-dialog'
 
 export const metadata: Metadata = {
   title: 'Contact | pokoHanadaCom',
@@ -29,8 +30,10 @@ export default function ContactPage() {
   return (
     <SectionBody>
       <SectionHeader>お問い合わせ</SectionHeader>
-      <div className='w-full max-w-2xl rounded-lg bg-bg-2 p-8 shadow-lg'>
-        <ContactFormFeature siteKey={turnstileSiteKey} />
+      <div className='w-full max-w-2xl rounded-lg bg-bg-2 p-8 shadow-lg flex justify-center'>
+        <ContactDialog className='w-full' siteKey={turnstileSiteKey}>
+          <span className='w-full'>フォームを開く</span>
+        </ContactDialog>
       </div>
     </SectionBody>
   )

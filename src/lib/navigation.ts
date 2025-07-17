@@ -6,6 +6,7 @@ export interface NavItem {
   icon?: string // モバイル用アイコン
   showIcon?: boolean // ラベルにアイコンを表示するか
   requiresConfirmation?: boolean // クリック前に確認が必要か
+  isDialog?: boolean // ダイアログトリガーかどうか
 }
 
 // ホームページ用ナビゲーション（すべてアンカーリンク）
@@ -21,11 +22,11 @@ export const homeLayoutNavItems: NavItem[] = [
     showIcon: true,
     requiresConfirmation: true,
   },
+  { label: 'Contact', href: '/contact', isAnchor: false, icon: 'Mail', isDialog: true },
 ]
 
 // 全ページメニュー（現在のページを除外するベース）
 export const allNavItems: NavItem[] = [
-  { label: 'Contact', href: '/contact', isAnchor: false, icon: 'FileText' },
   { label: 'Home', href: '/', isAnchor: false, icon: 'Home' },
   { label: 'Posts', href: '/posts', isAnchor: false, icon: 'FileText' },
   { label: 'Works', href: '/#works', isAnchor: false, icon: 'Wrench' },
@@ -38,6 +39,7 @@ export const allNavItems: NavItem[] = [
     showIcon: true,
     requiresConfirmation: true,
   },
+  { label: 'Contact', href: '/contact', isAnchor: false, icon: 'Mail', isDialog: true },
 ]
 
 // 現在のページパスに基づいて適切なナビアイテムを返す
@@ -49,8 +51,7 @@ export function getNavItemsForPage(currentPath: string): NavItem[] {
     if (currentPath.startsWith('/about') && item.href === '/about') return false
     if (currentPath.startsWith('/resume') && item.href === '/resume')
       return false
-    if (currentPath.startsWith('/contact') && item.href === '/contact')
-      return false
+
     return true
   })
 }

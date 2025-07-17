@@ -126,10 +126,10 @@ export async function getAllResumeData(): Promise<ResumeData[]> {
  */
 export async function getBasicProfileInfo(): Promise<
   | {
-    name?: string
-    title?: string
-    skills?: string[]
-  }
+      name?: string
+      title?: string
+      skills?: string[]
+    }
   | undefined
 > {
   const resumeData = await getResumeBySlug('resume')

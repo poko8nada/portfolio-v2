@@ -17,22 +17,35 @@
 ### ✅ 実装完了済み
 - Server Action（メール送信・Turnstile検証）
 - Zod バリデーション
-- 基本的なフォーム機能
-- Turnstile統合
-- エラーハンドリング
-
-### ⚠️ 修正が必要
-- shadcn/ui Form未使用（現在は生HTMLを使用）
-- ページ形式からダイアログ形式への変更
+- shadcn/ui Form統合
+- ContactDialogコンポーネント実装
+- ナビゲーション統合（全ページ対応）
+- ダークテーマ対応
+- React Hook Form制御エラー修正
+- アイコンマッピング修正
+- HTML5バリデーション無効化（noValidate追加）
+- エラーメッセージスタイル統一
+- エラー時のUI色調整（red-400統一）
+- ダイアログ高さ固定化対応
 
 ### 📋 設定が必要
-- 環境変数設定
+- 環境変数設定（TURNSTILE_SITE_KEY, RESEND_API_KEY）
 - Resendドメイン設定
 - Turnstile設定
 
-## 実装計画
+### ⚠️ 既知の問題
+- メールアドレス入力欄のオートフィル背景色（白色表示）
+- オートフィル対策とオートコンプリート機能のトレードオフ
 
-### Phase 1: 基本修正
+### 🔧 追加実装済み
+- ContactDialog（ダイアログ形式）
+- 全ページナビゲーションでContact表示
+- モバイル・デスクトップ対応
+- プロジェクトテーマに合わせたスタイル調整
+
+## 実装計画（完了済み）
+
+### ✅ Phase 1: 基本修正（完了）
 1. **shadcn/ui Form導入**
    ```bash
    npx shadcn@latest add form
@@ -41,20 +54,48 @@
    ```
 
 2. **contact-form.tsx修正**
-   - HTML inputからshadcn/ui Formコンポーネントへ変更
-   - 統一されたスタイルとバリデーション表示を適用
+   - ✅ HTML inputからshadcn/ui Formコンポーネントへ変更済み
+   - ✅ 統一されたスタイルとバリデーション表示適用済み
+   - ✅ React Hook Formの制御エラー修正済み
 
-### Phase 2: ダイアログ化
+### ✅ Phase 2: ダイアログ化（完了）
 1. **ナビゲーション設定変更**
-   - 全ページでContact常時表示
-   - ダイアログトリガー用フラグ追加
+   - ✅ 全ページでContact常時表示（最後に配置）
+   - ✅ ダイアログトリガー用isDialogフラグ追加済み
 
 2. **ダイアログコンポーネント作成**
-   - `ContactDialog`コンポーネント
-   - 既存`ContactFormFeature`をダイアログ内に統合
+   - ✅ `ContactDialog`コンポーネント実装済み
+   - ✅ `ContactFormFeature`をダイアログ内に統合済み
+   - ✅ ダークテーマ対応済み
 
 3. **Header統合**
-   - ダイアログトリガー処理追加
+   - ✅ ダイアログトリガー処理追加済み
+   - ✅ siteKey プロパティ対応済み
+
+### ✅ Phase 3: 追加修正（完了）
+1. **アイコン修正**
+   - ✅ Mail iconをIconMapに追加
+   - ✅ Contact専用アイコン設定
+
+2. **レイアウト統合**
+   - ✅ home_layout と pages_layout 両対応
+   - ✅ siteKey環境変数の適切な受け渡し
+
+### ✅ Phase 4: UI/UXバリデーション修正（完了）
+1. **バリデーション体験向上**
+   - ✅ HTML5バリデーション無効化（noValidate属性追加）
+   - ✅ Zodカスタムエラーメッセージ優先表示
+   - ✅ 日本語エラーメッセージ統一
+
+2. **エラー表示スタイル統一**
+   - ✅ エラーメッセージ色: `text-red-400`
+   - ✅ エラー時ラベル色: `text-red-400`
+   - ✅ エラー時フォーム外枠色: `border-red-400`
+   - ✅ エラーメッセージサイズ調整: `text-xs`
+
+3. **ダイアログ高さ安定化**
+   - ✅ エラーメッセージ用固定高さ確保: `min-h-[1rem]`
+   - ✅ 高さ変動によるレイアウトシフト防止
 
 ## 実装詳細
 
@@ -212,7 +253,6 @@ export const allNavItems: NavItem[] = [
 
 ### 必須環境変数
 ```env
-# .dev.vars
 RESEND_API_KEY=re_your_api_key_here
 TURNSTILE_SECRET_KEY=your_cloudflare_turnstile_secret
 TURNSTILE_SITE_KEY=your_cloudflare_turnstile_site_key
@@ -226,25 +266,49 @@ TURNSTILE_SITE_KEY=your_cloudflare_turnstile_site_key
 
 ## 実装チェックリスト
 
-### Phase 1: 基本修正
-- [ ] shadcn/ui form, input, textarea追加
-- [ ] ContactFormをshadcn/ui Form対応に修正
-- [ ] バリデーション表示確認
+### ✅ Phase 1: 基本修正（完了）
+- [x] shadcn/ui form, input, textarea追加
+- [x] ContactFormをshadcn/ui Form対応に修正
+- [x] バリデーション表示確認
+- [x] React Hook Form制御エラー修正
 
-### Phase 2: ダイアログ化
-- [ ] ContactDialogコンポーネント作成
-- [ ] navigation.tsにisDialogフラグ追加
-- [ ] Header統合（ダイアログトリガー）
-- [ ] /contactページでもダイアログ使用
+### ✅ Phase 2: ダイアログ化（完了）
+- [x] ContactDialogコンポーネント作成
+- [x] navigation.tsにisDialogフラグ追加
+- [x] Header統合（ダイアログトリガー）
+- [x] /contactページでもダイアログ使用
+- [x] ダークテーマ対応
 
-### Phase 3: 最終確認
-- [ ] 全ページでContact表示確認
-- [ ] モバイル・デスクトップ対応確認
-- [ ] フォーム送信テスト
+### ✅ Phase 3: 最終確認（完了）
+- [x] 全ページでContact表示確認
+- [x] モバイル・デスクトップ対応確認
+- [x] アイコンマッピング修正
+- [x] ナビゲーション順序調整（Contact最後）
+
+### ✅ Phase 4: UI/UXバリデーション修正（完了）
+- [x] HTML5バリデーション無効化（noValidate）
+- [x] Zodエラーメッセージ優先表示
+- [x] エラー状態色統一（red-400）
+- [x] ダイアログ高さ固定化
+- [x] エラーメッセージサイズ調整
+
+### 📋 残作業
+- [ ] フォーム送信テスト（環境変数設定後）
 - [ ] エラーハンドリング確認
 
-## 実装の優先度
-1. **Critical**: shadcn/ui Form導入
-2. **High**: ダイアログ化
-3. **Medium**: UX改善
-4. **Low**: 細かな調整
+## 実装状況サマリー
+- **実装完了**: コア機能・UI統合・ダイアログ化・バリデーション改善
+- **次のステップ**: 環境変数設定・動作テスト
+- **技術課題**: 主要課題解決済み
+- **UI/UX**: ダークテーマ対応・エラー表示統一完了
+- **残課題**: メールアドレス入力欄オートフィル背景色のみ
+
+## 今後の作業
+1. **環境変数設定**: TURNSTILE_SITE_KEY, RESEND_API_KEY
+2. **動作テスト**: フォーム送信・メール配信確認
+3. **本番確認**: Cloudflare Workers環境での動作確認
+
+## 技術的な決定事項
+- **バリデーション**: HTML5標準バリデーションを無効化してZodカスタムメッセージを優先
+- **エラー表示**: `red-400`色で統一し、視認性を向上
+- **レイアウト**: エラーメッセージ用固定高さでダイアログの安定性を確保

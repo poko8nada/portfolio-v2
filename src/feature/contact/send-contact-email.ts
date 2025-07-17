@@ -1,8 +1,7 @@
 'use server'
 
 import { Resend } from 'resend'
-import { z } from 'zod'
-import { contactSchema, ERROR_MESSAGES } from '@/config/contact'
+import { contactSchema } from '@/config/contact'
 import type { ContactError, ContactResult } from '@/types/contact'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
@@ -16,9 +15,9 @@ async function verifyTurnstile(token: string): Promise<boolean> {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
       body: `secret=${encodeURIComponent(
-        process.env.TURNSTILE_SECRET_KEY || ''
+        process.env.TURNSTILE_SECRET_KEY || '',
       )}&response=${encodeURIComponent(token)}`,
-    }
+    },
   )
   const data = await response.json()
   return data.success
@@ -29,16 +28,15 @@ function handleResult(ok: false, error: ContactError): ContactResult {
   return { ok, error }
 }
 
-export async function sendContactEmail(
-  data: unknown
-): Promise<ContactResult> {
+export async function sendContactEmail(data: unknown): Promise<ContactResult> {
   // 1. Zodバリデーション
   const validationResult = contactSchema.safeParse(data)
   if (!validationResult.success) {
     console.error('Validation failed:', validationResult.error.flatten())
     return handleResult(false, 'VALIDATION_ERROR')
   }
-  const { name, email, subject, message, turnstileToken } = validationResult.data
+  const { name, email, subject, message, turnstileToken } =
+    validationResult.data
 
   // 2. Turnstileトークン検証
   const isTurnstileValid = await verifyTurnstile(turnstileToken)
