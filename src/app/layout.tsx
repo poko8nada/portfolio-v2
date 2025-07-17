@@ -26,15 +26,22 @@ export const metadata: Metadata = {
   },
 }
 
+import Header from '@/components/header'
+import Main from '@/components/main'
+
 export default function RootLayout({
   children,
+  modal,
 }: Readonly<{
   children: React.ReactNode
+  modal: React.ReactNode
 }>) {
   return (
     <html lang='ja'>
       <body>
-        {children}
+        <Header />
+        <Main>{children}</Main>
+        {modal}
         <Footer />
         <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID as string} />
       </body>

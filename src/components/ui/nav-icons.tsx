@@ -3,11 +3,12 @@ import {
   Home,
   Lock,
   type LucideIcon,
+  Mail,
   User,
   Wrench,
 } from 'lucide-react'
 
-export type IconName = 'Home' | 'User' | 'FileText' | 'Lock' | 'Wrench'
+export type IconName = 'Home' | 'User' | 'FileText' | 'Lock' | 'Wrench' | 'Mail'
 
 export const IconMap: Record<IconName, LucideIcon> = {
   Home,
@@ -15,6 +16,7 @@ export const IconMap: Record<IconName, LucideIcon> = {
   FileText,
   Lock,
   Wrench,
+  Mail,
 }
 
 export function getIcon(iconName: IconName): LucideIcon {

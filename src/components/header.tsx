@@ -8,16 +8,13 @@ import { type IconName, NavIcon } from '@/components/ui/nav-icons'
 import { Menu, MenuItem } from '@/components/ui/navbar-menu'
 import { getNavItemsForPage, homeLayoutNavItems } from '@/lib/navigation'
 
-interface HeaderProps {
-  /** ホームページ用レイアウトの場合true */
-  isHomePage?: boolean
-}
 const nunito = Nunito({ subsets: ['latin'] })
 
-export default function Header({ isHomePage = false }: HeaderProps) {
+export default function Header() {
   const pathname = usePathname()
 
-  // ホームページかどうかでナビアイテムを切り替え
+  // パス判定でナビアイテムを切り替え
+  const isHomePage = pathname === '/'
   const navItems = isHomePage
     ? homeLayoutNavItems
     : getNavItemsForPage(pathname)

@@ -25,6 +25,7 @@
   left: -16px;
   border-radius: 1px;
 }
+
 .next::after {
   content: "";
   width: 10px;
@@ -184,6 +185,7 @@ body > * {
   padding-left: 1em;
   list-style: circle;
 }
+
 .article_container ol {
   padding-left: 1em;
   list-style: auto;
@@ -193,6 +195,7 @@ body > * {
   padding: 0 !important;
   background-color: #22232f !important;
 }
+
 .article_container pre:has(code) {
   font-size: 0.9em;
   background-color: #011627 !important;
@@ -200,6 +203,7 @@ body > * {
   overflow-x: scroll;
   line-height: 1.5;
 }
+
 .article_container p:has(> em) {
   background-color: #011627 !important;
   padding: 0.9rem !important;
@@ -207,6 +211,7 @@ body > * {
   font-size: 14px;
   margin: 36px 0 !important;
 }
+
 .article_container p:has(> img) {
   margin-bottom: 46px !important;
   padding: 0 !important;
@@ -221,6 +226,7 @@ body > * {
   width: 100% !important;
   margin: 0 auto;
 }
+
 .article_container img[src*="inline"] {
   display: inline-block !important;
   max-width: 100% !important;
@@ -228,6 +234,7 @@ body > * {
   vertical-align: text-bottom;
   margin: 0 0.25em;
 }
+
 .article_container p > a {
   color: #4199ff !important;
 }
@@ -308,6 +315,7 @@ body > * {
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }

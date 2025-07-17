@@ -21,6 +21,7 @@ export const homeLayoutNavItems: NavItem[] = [
     showIcon: true,
     requiresConfirmation: true,
   },
+  { label: 'Contact', href: '/contact', isAnchor: false, icon: 'Mail' },
 ]
 
 // 全ページメニュー（現在のページを除外するベース）
@@ -37,6 +38,7 @@ export const allNavItems: NavItem[] = [
     showIcon: true,
     requiresConfirmation: true,
   },
+  { label: 'Contact', href: '/contact', isAnchor: false, icon: 'Mail' },
 ]
 
 // 現在のページパスに基づいて適切なナビアイテムを返す
@@ -48,6 +50,7 @@ export function getNavItemsForPage(currentPath: string): NavItem[] {
     if (currentPath.startsWith('/about') && item.href === '/about') return false
     if (currentPath.startsWith('/resume') && item.href === '/resume')
       return false
+
     return true
   })
 }
