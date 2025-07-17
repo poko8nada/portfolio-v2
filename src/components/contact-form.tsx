@@ -39,7 +39,11 @@ export function ContactForm({ onSubmitAction, isSubmitting, siteKey }: Props) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmitAction)} className='space-y-6' noValidate>
+      <form
+        onSubmit={form.handleSubmit(onSubmitAction)}
+        className='space-y-6'
+        noValidate
+      >
         <FormField
           control={form.control}
           name='name'

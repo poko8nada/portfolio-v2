@@ -6,7 +6,6 @@ export interface NavItem {
   icon?: string // モバイル用アイコン
   showIcon?: boolean // ラベルにアイコンを表示するか
   requiresConfirmation?: boolean // クリック前に確認が必要か
-  isDialog?: boolean // ダイアログトリガーかどうか
 }
 
 // ホームページ用ナビゲーション（すべてアンカーリンク）
@@ -22,7 +21,7 @@ export const homeLayoutNavItems: NavItem[] = [
     showIcon: true,
     requiresConfirmation: true,
   },
-  { label: 'Contact', href: '/contact', isAnchor: false, icon: 'Mail', isDialog: true },
+  { label: 'Contact', href: '/contact', isAnchor: false, icon: 'Mail' },
 ]
 
 // 全ページメニュー（現在のページを除外するベース）
@@ -39,7 +38,7 @@ export const allNavItems: NavItem[] = [
     showIcon: true,
     requiresConfirmation: true,
   },
-  { label: 'Contact', href: '/contact', isAnchor: false, icon: 'Mail', isDialog: true },
+  { label: 'Contact', href: '/contact', isAnchor: false, icon: 'Mail' },
 ]
 
 // 現在のページパスに基づいて適切なナビアイテムを返す
