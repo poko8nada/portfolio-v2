@@ -23,7 +23,7 @@ export function Modal({ children }: ModalProps) {
 
   return (
     <Dialog defaultOpen={true} open={true} onOpenChange={handleOpenChange}>
-      <DialogContent className='sm:max-w-[600px]'>
+      <DialogContent className='sm:max-w-[600px] bg-bg-2 border-gray-600 text-fg'>
         <DialogHeader>
           <DialogTitle>お問い合わせ</DialogTitle>
         </DialogHeader>

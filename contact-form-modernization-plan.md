@@ -218,14 +218,14 @@ export function Modal({ children }: { children: React.ReactNode }) {
 ## 実装スケジュール
 
 ### Week 1: 基盤構築
-- [ ] Phase 1: ルートレイアウト・デフォルトスロット
-- [ ] Phase 2: ページ構造作成
-- [ ] 動作確認・調整
+- [x] Phase 1: ルートレイアウト・デフォルトスロット
+- [x] Phase 2: ページ構造作成
+- [x] 動作確認・調整
 
 ### Week 2: 機能実装
-- [ ] Phase 3: State管理実装
-- [ ] Phase 4: ナビゲーション統合
-- [ ] Phase 5: 最終調整・テスト
+- [x] Phase 3: State管理実装
+- [x] Phase 4: ナビゲーション統合
+- [x] Phase 5: 最終調整・テスト
 
 ## 期待される効果
 
@@ -256,18 +256,18 @@ export function Modal({ children }: { children: React.ReactNode }) {
 ## 実装完了後の確認項目
 
 ### 機能確認
-- [ ] `/contact`直接アクセス (通常ページ)
-- [ ] Linkからのアクセス (モーダル)
-- [ ] ブラウザ戻るボタンでモーダル閉じる
-- [ ] フォーム入力途中でリロード → 内容復元
-- [ ] フォーム送信成功 → sessionStorageクリア
+- [x] `/contact`直接アクセス (通常ページ)
+- [x] Linkからのアクセス (モーダル)
+- [x] ブラウザ戻るボタンでモーダル閉じる
+- [x] フォーム入力途中でリロード → 内容復元
+- [x] フォーム送信成功 → sessionStorageクリア
 
 ### 品質確認
-- [ ] TypeScript型エラーなし
-- [ ] レスポンシブ対応
-- [ ] アクセシビリティ
-- [ ] パフォーマンス
-- [ ] SEO対応
+- [x] TypeScript型エラーなし
+- [x] レスポンシブ対応
+- [x] アクセシビリティ
+- [x] パフォーマンス
+- [x] SEO対応
 
 ---
 

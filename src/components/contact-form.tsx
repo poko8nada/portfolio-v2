@@ -2,6 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Turnstile } from '@marsidev/react-turnstile'
+import { useCallback, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import type { z } from 'zod'
 import { Button } from '@/components/ui/button'
@@ -23,9 +24,17 @@ type Props = {
   onSubmitAction: (data: ContactFormData) => void
   isSubmitting: boolean
   siteKey: string
+  defaultValues?: Partial<ContactFormData>
+  onFormChange?: (data: Partial<ContactFormData>) => void
 }
 
-export function ContactForm({ onSubmitAction, isSubmitting, siteKey }: Props) {
+export function ContactForm({
+  onSubmitAction,
+  isSubmitting,
+  siteKey,
+  defaultValues,
+  onFormChange,
+}: Props) {
   const form = useForm<ContactFormData>({
     resolver: zodResolver(contactSchema),
     defaultValues: {
@@ -36,6 +45,35 @@ export function ContactForm({ onSubmitAction, isSubmitting, siteKey }: Props) {
       turnstileToken: '',
     },
   })
+
+  // defaultValuesが変更されたときにフォームをリセット
+  useEffect(() => {
+    if (defaultValues) {
+      // 現在のturnstileTokenを保持してリセット
+      const currentToken = form.getValues('turnstileToken')
+      form.reset({
+        name: defaultValues.name || '',
+        email: defaultValues.email || '',
+        subject: defaultValues.subject || '',
+        message: defaultValues.message || '',
+        turnstileToken: currentToken || '',
+      })
+    }
+  }, [defaultValues, form])
+
+  // フォーム変更時のハンドラー
+  const handleFieldChange = useCallback(
+    (fieldName: keyof ContactFormData, value: string) => {
+      if (onFormChange) {
+        const currentValues = form.getValues()
+        const updatedValues = { ...currentValues, [fieldName]: value }
+        // turnstileTokenを除外
+        const { turnstileToken, ...formData } = updatedValues
+        onFormChange(formData)
+      }
+    },
+    [form, onFormChange],
+  )
 
   return (
     <Form {...form}>
@@ -51,7 +89,13 @@ export function ContactForm({ onSubmitAction, isSubmitting, siteKey }: Props) {
             <FormItem>
               <FormLabel>名前</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input
+                  {...field}
+                  onChange={e => {
+                    field.onChange(e)
+                    handleFieldChange('name', e.target.value)
+                  }}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -64,7 +108,14 @@ export function ContactForm({ onSubmitAction, isSubmitting, siteKey }: Props) {
             <FormItem>
               <FormLabel>メールアドレス</FormLabel>
               <FormControl>
-                <Input type='email' {...field} />
+                <Input
+                  type='email'
+                  {...field}
+                  onChange={e => {
+                    field.onChange(e)
+                    handleFieldChange('email', e.target.value)
+                  }}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -77,7 +128,13 @@ export function ContactForm({ onSubmitAction, isSubmitting, siteKey }: Props) {
             <FormItem>
               <FormLabel>件名</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input
+                  {...field}
+                  onChange={e => {
+                    field.onChange(e)
+                    handleFieldChange('subject', e.target.value)
+                  }}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -90,7 +147,14 @@ export function ContactForm({ onSubmitAction, isSubmitting, siteKey }: Props) {
             <FormItem>
               <FormLabel>メッセージ</FormLabel>
               <FormControl>
-                <Textarea rows={6} {...field} />
+                <Textarea
+                  rows={6}
+                  {...field}
+                  onChange={e => {
+                    field.onChange(e)
+                    handleFieldChange('message', e.target.value)
+                  }}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
