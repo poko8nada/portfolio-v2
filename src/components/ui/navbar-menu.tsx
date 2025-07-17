@@ -28,19 +28,3 @@ export const Menu = ({ children }: { children: React.ReactNode }) => {
     </motion.nav>
   )
 }
-
-export const HoveredLink = ({
-  children,
-  ...rest
-}: React.AnchorHTMLAttributes<HTMLAnchorElement> & {
-  children: React.ReactNode
-}) => {
-  return (
-    <a
-      {...rest}
-      className='text-fg hover:text-pr transition-colors duration-200'
-    >
-      {children}
-    </a>
-  )
-}

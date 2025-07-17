@@ -1,12 +1,14 @@
 'use client'
 import { Nunito } from 'next/font/google'
 import Image from 'next/image'
-import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { ConfirmationDialog } from '@/components/ui/confirmation-dialog'
-import { type IconName, NavIcon } from '@/components/ui/nav-icons'
+import { NavItem } from '@/components/ui/nav-item'
 import { Menu, MenuItem } from '@/components/ui/navbar-menu'
-import { getNavItemsForPage, homeLayoutNavItems } from '@/lib/navigation'
+import {
+  allNavItems,
+  homeLayoutNavItems,
+  isCurrentPage,
+} from '@/lib/navigation'
 
 const nunito = Nunito({ subsets: ['latin'] })
 
@@ -15,9 +17,7 @@ export default function Header() {
 
   // パス判定でナビアイテムを切り替え
   const isHomePage = pathname === '/'
-  const navItems = isHomePage
-    ? homeLayoutNavItems
-    : getNavItemsForPage(pathname)
+  const navItems = isHomePage ? homeLayoutNavItems : allNavItems
 
   const handleAnchorClick = (href: string) => {
     if (href.startsWith('#')) {
@@ -45,67 +45,41 @@ export default function Header() {
       </div>
 
       {/* デスクトップナビゲーション */}
-      <div className='hidden md:flex items-center space-x-4 '>
-        {navItems.map(item => (
-          <MenuItem key={item.label}>
-            {item.requiresConfirmation ? (
-              <ConfirmationDialog
-                href={item.href}
-                icon={item.icon as IconName}
-                showIcon={item.showIcon}
-              >
-                {item.label}
-              </ConfirmationDialog>
-            ) : item.isAnchor ? (
-              <button
-                type='button'
-                onClick={() => handleAnchorClick(item.href)}
-                className='text-fg hover:text-pr transition-colors duration-200 cursor-pointer'
-              >
-                {item.label}
-              </button>
-            ) : (
-              <Link
-                href={item.href}
-                className='text-fg hover:text-pr transition-colors duration-200'
-              >
-                {item.label}
-              </Link>
-            )}
-          </MenuItem>
-        ))}
+      <div className='hidden md:flex items-center space-x-6'>
+        {navItems.map(item => {
+          const isActive = isCurrentPage(item.href, pathname)
+          return (
+            <MenuItem key={item.label}>
+              <NavItem
+                item={item}
+                isActive={isActive}
+                isMobile={false}
+                onClick={
+                  item.isAnchor ? () => handleAnchorClick(item.href) : undefined
+                }
+              />
+            </MenuItem>
+          )
+        })}
       </div>
 
       {/* モバイルナビゲーション */}
       <div className='md:hidden flex items-center space-x-3'>
-        {navItems.map(item => (
-          <MenuItem key={item.label}>
-            {item.requiresConfirmation ? (
-              <ConfirmationDialog
-                href={item.href}
-                icon={item.icon as IconName}
-                className='text-fg hover:text-pr cursor-pointer'
-              >
-                <NavIcon iconName={item.icon as IconName} />
-              </ConfirmationDialog>
-            ) : item.isAnchor ? (
-              <button
-                type='button'
-                onClick={() => handleAnchorClick(item.href)}
-                className='text-fg hover:text-pr cursor-pointer'
-              >
-                <NavIcon iconName={item.icon as IconName} />
-              </button>
-            ) : (
-              <Link
-                href={item.href}
-                className='text-fg hover:text-pr cursor-pointer transition-colors duration-200'
-              >
-                <NavIcon iconName={item.icon as IconName} />
-              </Link>
-            )}
-          </MenuItem>
-        ))}
+        {navItems.map(item => {
+          const isActive = isCurrentPage(item.href, pathname)
+          return (
+            <MenuItem key={item.label}>
+              <NavItem
+                item={item}
+                isActive={isActive}
+                isMobile={true}
+                onClick={
+                  item.isAnchor ? () => handleAnchorClick(item.href) : undefined
+                }
+              />
+            </MenuItem>
+          )
+        })}
       </div>
     </Menu>
   )
