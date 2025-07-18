@@ -1,8 +1,7 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Turnstile } from '@marsidev/react-turnstile'
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import type { z } from 'zod'
 import { Button } from '@/components/ui/button'
@@ -17,6 +16,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { contactSchema } from '@/config/contact'
+import { LazyTurnstile } from './lazy-turnstile'
 
 export type ContactFormData = z.infer<typeof contactSchema>
 
@@ -74,6 +74,8 @@ export function ContactForm({
     },
     [form, onFormChange],
   )
+
+  const [turnstileReady, setTurnstileReady] = useState(false);
 
   return (
     <Form {...form}>
@@ -165,16 +167,20 @@ export function ContactForm({
           name='turnstileToken'
           render={() => (
             <FormItem>
-              <div className='flex justify-center h-16'>
-                <Turnstile
-                  siteKey={siteKey}
-                  onSuccess={token => {
-                    form.setValue('turnstileToken', token)
-                    form.trigger('turnstileToken')
-                  }}
-                  options={{ theme: 'dark' }}
-                />
-              </div>
+              <LazyTurnstile
+                siteKey={siteKey}
+                onSuccessAction={token => {
+                  form.setValue('turnstileToken', token)
+                  form.trigger('turnstileToken')
+                  setTurnstileReady(true)
+                }}
+                onErrorAction={() => {
+                  form.setError('turnstileToken', {
+                    message: 'セキュリティ認証に失敗しました'
+                  })
+                  setTurnstileReady(false)
+                }}
+              />
               <FormMessage />
             </FormItem>
           )}
@@ -182,10 +188,14 @@ export function ContactForm({
         <div className='text-center'>
           <Button
             type='submit'
-            disabled={isSubmitting}
+            disabled={isSubmitting || !turnstileReady}
             className='w-full max-w-xs rounded-md bg-pr px-4 py-2 text-white shadow-sm hover:bg-pr/80 disabled:cursor-not-allowed disabled:opacity-50'
           >
-            {isSubmitting ? '送信中...' : '送信'}
+            {isSubmitting
+              ? '送信中...'
+              : !turnstileReady
+                ? 'セキュリティ認証を完了してください'
+                : '送信'}
           </Button>
         </div>
       </form>
