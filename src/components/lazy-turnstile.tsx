@@ -5,11 +5,11 @@ import { useState } from 'react'
 
 type Props = {
   siteKey: string
-  onSuccess: (token: string) => void
-  onError?: () => void
+  onSuccessAction: (token: string) => void
+  onErrorAction?: () => void
 }
 
-export function LazyTurnstile({ siteKey, onSuccess, onError }: Props) {
+export function LazyTurnstile({ siteKey, onSuccessAction, onErrorAction }: Props) {
   const [shouldRender, setShouldRender] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
@@ -37,8 +37,8 @@ export function LazyTurnstile({ siteKey, onSuccess, onError }: Props) {
     <div className='flex justify-center h-16'>
       <Turnstile
         siteKey={siteKey}
-        onSuccess={onSuccess}
-        onError={onError}
+        onSuccess={onSuccessAction}
+        onError={onErrorAction}
         options={{ theme: 'dark' }}
       />
     </div>

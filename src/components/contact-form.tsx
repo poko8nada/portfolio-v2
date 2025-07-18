@@ -75,6 +75,8 @@ export function ContactForm({
     [form, onFormChange],
   )
 
+  const [turnstileReady, setTurnstileReady] = useState(false);
+
   return (
     <Form {...form}>
       <form
@@ -160,12 +162,6 @@ export function ContactForm({
             </FormItem>
           )}
         />
-        {/* 状態管理追加 */}
-        {/*
-          turnstileReady: Turnstile認証完了でtrue
-        */}
-        const [turnstileReady, setTurnstileReady] = useState(false)
-
         <FormField
           control={form.control}
           name='turnstileToken'
@@ -173,12 +169,12 @@ export function ContactForm({
             <FormItem>
               <LazyTurnstile
                 siteKey={siteKey}
-                onSuccess={token => {
+                onSuccessAction={token => {
                   form.setValue('turnstileToken', token)
                   form.trigger('turnstileToken')
                   setTurnstileReady(true)
                 }}
-                onError={() => {
+                onErrorAction={() => {
                   form.setError('turnstileToken', {
                     message: 'セキュリティ認証に失敗しました'
                   })
