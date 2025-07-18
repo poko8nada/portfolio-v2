@@ -2,6 +2,7 @@
 
 import { Turnstile } from '@marsidev/react-turnstile'
 import { useState } from 'react'
+import { ShieldCheckIcon } from '@heroicons/react/24/solid'
 
 type Props = {
   siteKey: string
@@ -24,10 +25,11 @@ export function LazyTurnstile({ siteKey, onSuccessAction, onErrorAction }: Props
         <button
           type='button'
           onClick={handleLoadTurnstile}
-          className='px-4 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-600 transition-colors'
+          className='w-full max-w-xs flex items-center justify-center gap-2 rounded-md bg-green-700 px-4 py-2 text-white font-semibold shadow-lg border-1 border-white/80 outline-none focus-visible:ring-1 focus-visible:ring-white-300 hover:bg-green-800 transition-all disabled:cursor-not-allowed disabled:opacity-50'
           disabled={isLoading}
         >
-          {isLoading ? 'セキュリティ認証読み込み中...' : 'セキュリティ認証を開始'}
+          <ShieldCheckIcon className='w-5 h-5 text-white' />
+          {isLoading ? '認証を読み込み中...' : 'セキュリティ認証を開始する'}
         </button>
       </div>
     )
