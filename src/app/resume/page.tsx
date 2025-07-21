@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic"
+
 import type { Metadata } from 'next'
 import { MarkdownForResume } from '@/components/markdown-for-resume'
 import profileImageData from '@/content/resume/images/profile.json'
@@ -16,12 +18,12 @@ export default async function ResumePage() {
   const latestUpdated =
     resumeData.length > 0
       ? new Date(
-          Math.max(
-            ...resumeData.map(item =>
-              new Date(item.frontmatter.updatedAt).getTime(),
-            ),
+        Math.max(
+          ...resumeData.map(item =>
+            new Date(item.frontmatter.updatedAt).getTime(),
           ),
-        )
+        ),
+      )
       : null
 
   return (
