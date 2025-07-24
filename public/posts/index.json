@@ -1,5 +1,13 @@
 [
   {
+    "slug": "2025-07-25",
+    "title": "Cloudflare PagesからCloudflare Workers＋open-nextへ移行した話",
+    "createdAt": "2025-07-25",
+    "updatedAt": "2025-07-25",
+    "thumbnail": "/images/posts/design01.svg",
+    "version": 1
+  },
+  {
     "slug": "2025-06-22",
     "title": "Markdownでスライド作成できるWebサービスをリリースしました",
     "createdAt": "2025-06-22",
@@ -67,8 +75,8 @@
     "slug": "2024-12-19",
     "title": "ポートフォリオサイトをNext.jsで作りました",
     "createdAt": "2024-12-19",
-    "updatedAt": "2025-06-25",
+    "updatedAt": "2025-07-24",
     "thumbnail": "/images/posts/pc01.svg",
-    "version": 4
+    "version": 5
   }
 ]

@@ -8,5 +8,3 @@ Disallow: /resume
 # Common files to disallow
 Disallow: /_next/
 Disallow: /api/
-
-Sitemap: https://your-domain.com/sitemap.xml
