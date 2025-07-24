@@ -49,13 +49,11 @@ body {
 
 body {
   background-color: #22232f;
-  background-image: repeating-linear-gradient(
-    45deg,
-    transparent,
-    transparent 7px,
-    #323343 7px,
-    #323343 9px
-  );
+  background-image: repeating-linear-gradient(45deg,
+      transparent,
+      transparent 7px,
+      #323343 7px,
+      #323343 9px);
   background-position: center;
   background-size: cover;
   font-family:
@@ -65,7 +63,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-body > * {
+body>* {
   color: #e1e1e1;
 }
 
@@ -115,27 +113,27 @@ body > * {
   overflow: hidden;
 }
 
-.article_container > div > :first-child {
+.article_container>div> :first-child {
   margin-top: 0 !important;
 }
 
-.article_container > div * {
+.article_container>div * {
   font-size: var(--article-basic-font-size);
 }
 
-@media (width <= 40rem) {
-  .article_container > div * {
+@media (width <=40rem) {
+  .article_container>div * {
     font-size: calc(var(--article-basic-font-size) * 0.95);
   }
 }
 
-.article_container > div > h1,
-.article_container > div > h2 {
+.article_container>div>h1,
+.article_container>div>h2 {
   font-size: calc(var(--article-basic-font-size) * 1.4);
 }
 
-.article_container > div > h1::after,
-.article_container > div > h2::after {
+.article_container>div>h1::after,
+.article_container>div>h2::after {
   content: "";
   display: block;
   width: 100%;
@@ -144,28 +142,28 @@ body > * {
   opacity: 0.8;
 }
 
-.article_container > div > h3,
-.article_container > div > h4,
-.article_container > div > h5,
-.article_container > div > h6 {
+.article_container>div>h3,
+.article_container>div>h4,
+.article_container>div>h5,
+.article_container>div>h6 {
   font-size: calc(var(--article-basic-font-size) * 1.1);
 }
 
-.article_container > div > h1,
-.article_container > div > h2,
-.article_container > div > h3,
-.article_container > div > h4,
-.article_container > div > h5,
-.article_container > div > h6 {
+.article_container>div>h1,
+.article_container>div>h2,
+.article_container>div>h3,
+.article_container>div>h4,
+.article_container>div>h5,
+.article_container>div>h6 {
   margin: 60px 0 16px !important;
   font-weight: bold !important;
 }
 
-.article_container > div > h1 + h2,
-.article_container > div > h2 + h3,
-.article_container > div > h3 + h4,
-.article_container > div > h4 + h5,
-.article_container > div > h5 + h6 {
+.article_container>div>h1+h2,
+.article_container>div>h2+h3,
+.article_container>div>h3+h4,
+.article_container>div>h4+h5,
+.article_container>div>h5+h6 {
   margin: 16px 0 !important;
 }
 
@@ -177,7 +175,7 @@ body > * {
 .article_container pre,
 .article_container blockquote,
 .article_container figure,
-.article_container > div > hr {
+.article_container>div>hr {
   margin-bottom: 22px !important;
 }
 
@@ -221,7 +219,7 @@ body > * {
   display: block !important;
 }
 
-.article_container p > img {
+.article_container p>img {
   max-width: 640px !important;
   width: 100% !important;
   margin: 0 auto;
@@ -235,8 +233,10 @@ body > * {
   margin: 0 0.25em;
 }
 
-.article_container p > a {
+.article_container p>a,
+.article_container li>a {
   color: #4199ff !important;
+  text-decoration: underline !important;
 }
 
 @theme inline {
