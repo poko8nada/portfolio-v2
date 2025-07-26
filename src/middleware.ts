@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server'
 
 // /resumeパスにのみBasic認証を適用
 export const config = {
-  matcher: ['/resume/:path*', '/api/resume/:path*'],
+  matcher: ['/resume/:path*', '/api/resume/:path*', '/api/proxy-image'],
 }
 
 function isBasicAuthValid(request: NextRequest): boolean {
