@@ -11,156 +11,84 @@
 - コンテンツの更新のたびにデプロイが必要であり、コンテンツとコードの分離ができていない
 - 画像の直リンクや保存もできれば防ぎたい
 
-## 現状の構成 (2025/01/26時点)
+## 現状の構成 (2025/07/26時点)
 
 - **対象ページ**: `/resume`
 - **認証**: Next.js Middleware (`src/middleware.ts`) によるBasic認証
-- **デプロイ環境**: Cloudflare Workers + OpenNext構成
-- **コンテンツ**:
-  - ローカルのMarkdownファイル (`src/content/resume/**/*.md`) を直接import
-  - ビルドスクリプト (`scripts/prepare-resume.js`) で結合・処理
-  - アプリケーションにバンドルして配信
-- **画像**:
-  - ローカルの画像ファイル (`src/content/resume/images/*`) をbase64形式でJSONに変換
-  - `profile.json` として処理済み
-  - `draggable="false"` のみ実装済み
+- **コンテンツ**: ローカルのMarkdownファイル (`src/content/resume/**/*.md`) を、ビルドスクリプト (`scripts/prepare-resume.js`) を使って結合・処理し、アプリケーションにバンドル。
+- **画像**: ローカルの画像ファイル (`src/content/resume/images/*`) を直接参照。`draggable="false"` のみ実装済み。
 
 ## 理想の構成案
 
-### 保存先
+### 保存・バージョン管理
 
-- Markdown・画像は Cloudflare R2 に保存
-- R2バケットは public にせず、アクセス制御を Workers 経由で行う
-- アップロードは Wrangler CLI または R2 ダッシュボードから行う
+- **保存先**: Markdown・画像はすべてCloudflare R2に保存する。
+- **バージョン管理**: ファイル名にタイムスタンプを付与することで、簡易的なバージョン管理を実現する。
+  - 命名規則: `[元のファイル名]_[YYYYMMDDHHMMSS].[拡張子]` (例: `resume_20250726103000.md`)
+  - アップロードは常に新しいタイムスタンプでの「追加」とし、既存ファイルの上書きは行わない。
+- **ロールバック**: 誤ったファイルをアップロードした場合、そのファイルをR2から削除するだけで、APIは自動的に一つ前のバージョンを最新として配信する。
 
 ### 公開方法
 
-- Git にはテンプレートコードのみ含め、R2のコンテンツは含めない
-- Next.js (OpenNext) + Cloudflare Workers で秘匿ページを動的生成
-- Basic認証によってページ全体を保護
+- **動的取得**: Next.jsのAPI Routeが、R2から最新バージョンのコンテンツを動的に取得して配信する。
+  - APIはR2内のファイルをプレフィックスで検索し、タイムスタンプが最も新しいものを「最新」と判断する。
+- **認証**: ページ (`/resume`) とAPI (`/api/resume/*`, `/api/proxy-image`) の両方を、Next.js MiddlewareによるBasic認証で保護する。
 
 ### 画像表示の扱い
 
-- R2の画像には直接アクセスできないようにする（privateバケット）
-- Next.js 経由で `/api/proxy-image?path=...` などのプロキシAPIを実装
-- プロキシAPI側で Referer チェックや認証情報により、外部からの直接アクセスを制限
-- `<img>` タグには以下のダウンロード抑止策を実装
-  - `draggable="false"`
-  - `onContextMenu={e => e.preventDefault()}`
+- **プロキシ経由**: 画像は `/api/proxy-image` というAPI経由で配信する。
+- **アクセス制御**: プロキシAPIはRefererヘッダをチェックし、自サイトからのリクエストのみを許可することで、画像の直リンクを防ぐ。
+- **ダウンロード抑止**: `<img>` タグに `draggable="false"` と `onContextMenu={e => e.preventDefault()}` を設定し、簡易的な保存抑止を行う。
 
 ---
 
 ## R2移行に向けた実装タスク
 
-現状の構成から理想の構成へ移行するための具体的なタスクです。
-
 ### 1. R2バケットの準備と設定
+- [x] `wrangler r2 bucket create portfolio-resume-assets` でプライベートなR2バケットを作成済み。
+- [x] `wrangler.jsonc` にR2バケットのバインディング (`PORTFOLIO_ASSETS`) を設定済み。
 
-**実装内容：**
-- [x] `wrangler r2 bucket create portfolio-resume-assets` でプライベートなR2バケットを作成
-- [x] `wrangler.jsonc` にR2バケットのバインディング設定を追加
-- [x] バインディング名: `PORTFOLIO_ASSETS`、バケット名: `portfolio-resume-assets`
-
-### 2. コンテンツ取得APIの実装
+### 2. コンテンツ取得APIの実装 (バージョン管理対応)
 
 **実装ファイル:** `src/app/api/resume/[slug]/route.ts`
 
-**実装内容：**
-- [x] Cloudflare Workers環境でR2バケットにアクセスするAPI Route作成
-- [x] `getCloudflareContext()` を使ってR2バインディングを取得
-- [x] スラグに対応するMarkdownファイルを `resume/${slug}.md` から取得
-- [x] エラーハンドリングとレスポンス形式の統一
-- [x] Basic認証ミドルウェアの対象に含める（matcher更新）
+- [ ] `R2.list()` を使用して、指定された `slug` のプレフィックスを持つファイルのリストを取得する。
+- [ ] ファイルリストをタイムスタンプ部分で降順ソートし、最新バージョンのファイルキーを特定する。
+- [ ] 最新のファイルを取得し、その内容をレスポンスとして返す。
+- [ ] 開発環境 (`pnpm dev`) では、ローカルの `src/content/resume/[slug].md` を直接読み込むフォールバック処理を実装する。
 
-### 3. 画像プロキシAPIの実装
+### 3. 画像プロキシAPIの実装 (バージョン管理対応)
 
 **実装ファイル:** `src/app/api/proxy-image/route.ts`
 
-**実装内容：**
-- [x] `path` クエリパラメータで指定された画像をR2から取得
-- [x] Refererヘッダによるアクセス制限（自サイトからのみ許可）
-- [x] 適切なContent-Typeヘッダーとキャッシュ設定
-- [x] 画像が存在しない場合の404ハンドリング
-- [x] Basic認証ミドルウェアの対象に含める
+- [ ] コンテンツ取得APIと同様に、`R2.list()` を使って最新バージョンの画像を取得するロジックを実装する。
+- [ ] Refererヘッダによるアクセス制限を維持する。
+- [ ] 開発環境では、ローカルの `src/content/resume/images/` から画像を読み込むフォールバック処理を実装する。
 
 ### 4. フロントエンドのリファクタリング
 
-#### 4.1 `src/lib/resume.ts` の修正
-- [ ] ローカルimportを削除し、内部API (`/api/resume/[slug]`) 経由でコンテンツ取得
-- [ ] Server-to-server通信でBasic認証ヘッダーを付与
-- [ ] 環境に応じたbaseURL設定（開発環境 vs 本番環境）
-- [ ] エラーハンドリングとフォールバック処理
+- [ ] `src/lib/resume.ts`: ローカルimportを削除し、内部API (`/api/resume/[slug]`) 経由でコンテンツを取得するように変更する。
+- [ ] `src/app/resume/page.tsx`: `<img>` タグの `src` をプロキシAPI経由に変更し、`onContextMenu` イベントハンドラを追加する。
+- [ ] `src/components/markdown-for-resume.tsx`: Markdown内の相対パス画像もプロキシ経由で表示されるように修正する。
 
-#### 4.2 `src/app/resume/page.tsx` の修正
-- [ ] プロフィール画像を `/api/proxy-image?path=profile.jpg` に変更
-- [ ] 画像タグに `onContextMenu` イベントハンドラーを追加
-- [ ] ローカルJSONファイルへの依存を削除
+### 5. コンテンツ移行とアップロードスクリプトの作成
 
-#### 4.3 `src/components/markdown-for-resume.tsx` の修正
-- [ ] Markdown内の画像URLを自動的にプロキシAPI経由に変換
-- [ ] 画像タグのセキュリティ設定（draggable=false, onContextMenu）
-- [ ] 外部URL（http/https）は直接表示、相対パスはプロキシ経由
-
-### 5. コンテンツのR2への移行
-
-**実装手順：**
-- [ ] 現在の `src/content/resume/` 以下のMarkdownファイルをR2にアップロード
-- [ ] 画像ファイルの準備（JSONから元画像への復元 or 新規画像準備）
-- [ ] アップロード用スクリプトの作成（`scripts/upload-to-r2.js`）
-- [ ] バッチアップロードのテストと手順書作成
+- [ ] `scripts/upload-resume.js` を新規作成する。このスクリプトは、`src/content/resume` 内のファイルを、タイムスタンプを付与してR2にアップロードする。
+- [ ] 作成したスクリプトを実行し、初期コンテンツをR2にアップロードする。
 
 ### 6. 旧コンテンツの削除とGit管理からの除外
 
-- [ ] `src/content/` ディレクトリを削除
-- [ ] `.gitignore` に `src/content/` を追加
-- [ ] `src/lib/resume.ts` から古いimport文を削除
-- [ ] `scripts/prepare-resume.js` を削除（不要になる）
+- [ ] `src/content/` ディレクトリを削除する。
+- [ ] `.gitignore` に `src/content/` を追加する。
+- [ ] 不要になった `scripts/prepare-resume.js` を削除する。
 
 ### 7. middlewareの更新
 
-**実装内容：**
-- [ ] Basic認証の対象パスを拡張: `/resume/*`, `/api/resume/*`, `/api/proxy-image`
-- [ ] 新しいAPI Routeが適切に保護されていることを確認
+- [x] Basic認証の対象パスに `/api/resume/*` と `/api/proxy-image` を追加済み。
 
 ### 8. デプロイと動作確認
 
-**確認項目：**
-- [ ] `/resume` ページへのアクセス時にBasic認証が要求されるか
-- [ ] 認証後、R2から取得したコンテンツが正しく表示されるか
-- [ ] 画像がプロキシ経由で表示され、直接保存が困難になっているか
-- [ ] API Routeへの直接アクセスでも認証が要求されるか
-- [ ] Refererチェックが正常に動作するか
-
-## 今後の改善案
-
-### セキュリティ強化
-- [ ] トークンベース認証の導入検討
-- [ ] IP制限の追加
-- [ ] アクセスログの記録と分析
-
-### パフォーマンス向上
-- [ ] R2からのコンテンツキャッシュ戦略
-- [ ] 画像の最適化・圧縮
-- [ ] CDN経由での配信最適化
-
-### 運用性向上
-- [ ] コンテンツ更新用の管理画面開発
-- [ ] 自動バックアップ機能
-- [ ] コンテンツのバージョン管理システム
-
-## 技術的な考慮事項
-
-### Cloudflare Workers特有の制約
-- Node.js APIの一部が使用不可（ファイルシステムアクセスなど）
-- R2バインディングを通じたオブジェクトストレージアクセス
-- エッジ環境での実行時間制限
-
-### セキュリティ設計
-- Basic認証 + Refererチェックの多層防御
-- プライベートR2バケットによるコンテンツ保護
-- 画像の直接ダウンロード防止策
-
-### 運用とメンテナンス
-- コンテンツとコードの完全分離
-- Wrangler CLIを使った効率的なコンテンツ管理
-- 環境変数による設定の外部化
+- [ ] `/resume` ページで、R2から取得した最新のコンテンツが表示されるか。
+- [ ] 画像がプロキシ経由で表示され、右クリック保存ができないようになっているか。
+- [ ] R2に新しいバージョンのファイルをアップロード後、ページをリロードすると内容が更新されるか。
+- [ ] R2から最新ファイルを削除後、ページをリロードすると一つ前のバージョンが表示されるか（ロールバックの確認）。
