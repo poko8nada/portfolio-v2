@@ -5,9 +5,34 @@ import { NextResponse } from 'next/server'
 
 export const dynamic = 'force-dynamic'
 
-const ALLOWED_REFERER = process.env.NODE_ENV === 'development'
-  ? 'http://localhost:3000'
-  : 'https://pokohanada.com';
+/**
+ * Validates if the referer is from an allowed host.
+ * In development, it allows localhost with any port.
+ * In production, it strictly checks against the deployed domain.
+ * @param {string | null} referer - The referer header from the request.
+ * @returns {boolean} - True if the referer is allowed, false otherwise.
+ */
+function isRefererAllowed(referer: string | null): boolean {
+  if (!referer) {
+    return false
+  }
+
+  try {
+    const refererUrl = new URL(referer)
+    const hostname = refererUrl.hostname
+
+    if (process.env.NODE_ENV === 'development') {
+      // For `pnpm dev` (e.g., localhost:3000) and `pnpm preview` (e.g., localhost:8787)
+      return hostname === 'localhost'
+    }
+
+    // For production
+    return hostname === 'pokohanada.com' || hostname.endsWith('.pokohanada.com')
+  } catch (_error) {
+    return false
+  }
+}
+
 
 function getContentType(filename: string): string {
   const extension = filename.split('.').pop()?.toLowerCase();
@@ -67,7 +92,7 @@ async function getImageFromLocal(imagePath: string) {
 export async function GET(request: Request) {
   // 1. Refererチェック
   const referer = request.headers.get('referer');
-  if (!referer || !referer.startsWith(ALLOWED_REFERER)) {
+  if (!isRefererAllowed(referer)) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   }
 
@@ -99,7 +124,7 @@ export async function GET(request: Request) {
 
     imageData = await object.arrayBuffer()
 
-  } catch (e) {
+  } catch (_e) {
     // getCloudflareContextが失敗した場合、ローカル開発環境とみなす
     console.log(`Cloudflare context not found, falling back to local file system for image \"${imagePath}\"...`)
     const buffer = await getImageFromLocal(imagePath)

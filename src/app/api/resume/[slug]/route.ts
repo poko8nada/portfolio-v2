@@ -45,7 +45,7 @@ async function getResumeFromLocal(slug: string) {
 }
 
 export async function GET(
-  request: Request,
+  _request: Request,
   { params }: { params: { slug: string } },
 ) {
   const { slug } = params
@@ -62,7 +62,7 @@ export async function GET(
     console.log(`Fetching latest version of \"${slug}\" from R2...`)
     body = await getResumeFromR2(slug, PORTFOLIO_ASSETS)
 
-  } catch (e) {
+  } catch (_e) {
     // getCloudflareContextが失敗した場合、ローカル開発環境とみなす
     console.log(`Cloudflare context not found, falling back to local file system for \"${slug}"...`)
     body = await getResumeFromLocal(slug)

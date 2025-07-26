@@ -2,9 +2,7 @@ export const dynamic = "force-dynamic"
 
 import type { Metadata } from 'next'
 import { MarkdownForResume } from '@/components/markdown-for-resume'
-import profileImageData from '@/content/resume/images/profile.json'
 import { getAllResumeData } from '@/lib/resume'
-import type { ImageData } from '@/types/profile'
 
 export const metadata: Metadata = {
   title: 'Resume - Private Area',
@@ -13,7 +11,6 @@ export const metadata: Metadata = {
 
 export default async function ResumePage() {
   const resumeData = await getAllResumeData()
-  const profileImage: ImageData = profileImageData
 
   const latestUpdated =
     resumeData.length > 0
@@ -58,7 +55,7 @@ export default async function ResumePage() {
             '
           >
             <img
-              src={profileImage.src}
+              src='/api/proxy-image?path=profile.png'
               alt='プロフィール写真'
               className='object-cover w-full h-full'
               draggable={false}

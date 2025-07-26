@@ -34,11 +34,18 @@
   - APIはR2内のファイルをプレフィックスで検索し、タイムスタンプが最も新しいものを「最新」と判断する。
 - **認証**: ページ (`/resume`) とAPI (`/api/resume/*`, `/api/proxy-image`) の両方を、Next.js MiddlewareによるBasic認証で保護する。
 
-### 画像表示の扱い
+### コンテンツ表示とインタラクション制御
 
-- **プロキシ経由**: 画像は `/api/proxy-image` というAPI経由で配信する。
-- **アクセス制御**: プロキシAPIはRefererヘッダをチェックし、自サイトからのリクエストのみを許可することで、画像の直リンクを防ぐ。
-- **ダウンロード抑止**: `<img>` タグに `draggable="false"` と `onContextMenu={e => e.preventDefault()}` を設定し、簡易的な保存抑止を行う。
+- **コンポーネント構成**:
+  - `src/app/resume/page.tsx` (Server Component): データ取得とページの骨格レイアウトを担当。
+  - `src/feature/display-resume.tsx` (Client Component): 取得したデータを元にコンテンツ全体を描画し、インタラクションを制御する。
+  - `src/components/profile-image.tsx` (Client Component): プロフィール画像をプロキシ経由で表示し、インタラクションを制御する。
+- **プロキシ経由の画像表示**: 画像は `/api/proxy-image` というAPI経由で配信する。
+  - プロキシAPIはRefererヘッダをチェックし、自サイトからのリクエストのみを許可することで、画像の直リンクを防ぐ。
+- **ダウンロード・選択抑止**: `display-resume.tsx` コンポーネント全体で、以下の操作を無効化し、簡易的なコンテンツ保護を行う。
+  - 右クリックによるコンテキストメニュー表示
+  - ドラッグ＆ドロップ操作
+  - テキスト選択
 
 ---
 
@@ -67,20 +74,32 @@
 
 ### 4. フロントエンドのリファクタリング
 
-- [ ] `src/lib/resume.ts`: ローカルimportを削除し、内部API (`/api/resume/[slug]`) 経由でコンテンツを取得するように変更する。
-- [ ] `src/app/resume/page.tsx`: `<img>` タグの `src` をプロキシAPI経由に変更し、`onContextMenu` イベントハンドラを追加する。
-- [ ] `src/components/markdown-for-resume.tsx`: Markdown内の相対パス画像もプロキシ経由で表示されるように修正する。
+- [x] `src/lib/resume.ts`: ローカルimportを削除し、内部API (`/api/resume/[slug]`) 経由でコンテンツを取得するように変更する。
+- [ ] `src/components/profile-image.tsx` を新規作成する。
+  - [ ] プロキシAPI経由でプロフィール画像を表示し、右クリック等を無効化する。
+- [ ] `src/feature/display-resume.tsx` を新規作成する。
+  - [ ] propsとしてデータを受け取り、レジュメコンテンツ全体を描画する。
+  - [ ] `profile-image.tsx` コンポーネントをインポートして使用する。
+  - [ ] コンポーネント全体で右クリック、ドラッグ、テキスト選択を無効化する。
+- [ ] `src/app/resume/page.tsx` をリファクタリングする。
+  - [ ] データ取得処理は残し、描画部分を `display-resume.tsx` に移譲する。
+- [ ] `src/components/markdown-for-resume.tsx` を更新する。
+  - [ ] Markdown内の相対パス画像をプロキシAPI経由で表示するよう修正する。
 
 ### 5. コンテンツ移行とアップロードスクリプトの作成
 
 - [ ] `scripts/upload-resume.js` を新規作成する。このスクリプトは、`src/content/resume` 内のファイルを、タイムスタンプを付与してR2にアップロードする。
 - [ ] 作成したスクリプトを実行し、初期コンテンツをR2にアップロードする。
 
-### 6. 旧コンテンツの削除とGit管理からの除外
+### 6. 旧コンテンツと不要コードの削除
 
-- [ ] `src/content/` ディレクトリを削除する。
-- [ ] `.gitignore` に `src/content/` を追加する。
-- [ ] 不要になった `scripts/prepare-resume.js` を削除する。
+- [ ] `src/content/` ディレクトリを削除し、`.gitignore` に追加する。
+- [ ] 不要になった以下のファイル・関数・型定義を削除する。
+  - `scripts/prepare-resume.js`
+  - `src/lib/resume.ts` 内の `getBasicProfileInfo` 関数
+  - `src/content/resume/images/profile.json`
+  - `src/types/profile.d.ts`
+  - `src/types/markdown.d.ts` 内の `ImageData` 型
 
 ### 7. middlewareの更新
 
@@ -89,6 +108,6 @@
 ### 8. デプロイと動作確認
 
 - [ ] `/resume` ページで、R2から取得した最新のコンテンツが表示されるか。
-- [ ] 画像がプロキシ経由で表示され、右クリック保存ができないようになっているか。
+- [ ] ページ全体で右クリック、ドラッグ、テキスト選択ができないようになっているか。
 - [ ] R2に新しいバージョンのファイルをアップロード後、ページをリロードすると内容が更新されるか。
 - [ ] R2から最新ファイルを削除後、ページをリロードすると一つ前のバージョンが表示されるか（ロールバックの確認）。
