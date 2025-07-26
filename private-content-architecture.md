@@ -57,20 +57,20 @@
 ### 1. R2バケットの準備と設定
 
 **実装内容：**
-- [ ] `wrangler r2 bucket create portfolio-resume-assets` でプライベートなR2バケットを作成
-- [ ] `wrangler.jsonc` にR2バケットのバインディング設定を追加
-- [ ] バインディング名: `PORTFOLIO_ASSETS`、バケット名: `portfolio-resume-assets`
+- [x] `wrangler r2 bucket create portfolio-resume-assets` でプライベートなR2バケットを作成
+- [x] `wrangler.jsonc` にR2バケットのバインディング設定を追加
+- [x] バインディング名: `PORTFOLIO_ASSETS`、バケット名: `portfolio-resume-assets`
 
 ### 2. コンテンツ取得APIの実装
 
 **実装ファイル:** `src/app/api/resume/[slug]/route.ts`
 
 **実装内容：**
-- [ ] Cloudflare Workers環境でR2バケットにアクセスするAPI Route作成
-- [ ] `getCloudflareContext()` を使ってR2バインディングを取得
-- [ ] スラグに対応するMarkdownファイルを `resume/${slug}.md` から取得
-- [ ] エラーハンドリングとレスポンス形式の統一
-- [ ] Basic認証ミドルウェアの対象に含める（matcher更新）
+- [x] Cloudflare Workers環境でR2バケットにアクセスするAPI Route作成
+- [x] `getCloudflareContext()` を使ってR2バインディングを取得
+- [x] スラグに対応するMarkdownファイルを `resume/${slug}.md` から取得
+- [x] エラーハンドリングとレスポンス形式の統一
+- [x] Basic認証ミドルウェアの対象に含める（matcher更新）
 
 ### 3. 画像プロキシAPIの実装
 
