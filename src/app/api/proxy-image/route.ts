@@ -1,6 +1,6 @@
-import { getCloudflareContext } from '@opennextjs/cloudflare'
 import fs from 'node:fs/promises'
 import path from 'node:path'
+import { getCloudflareContext } from '@opennextjs/cloudflare'
 import { NextResponse } from 'next/server'
 
 export const dynamic = 'force-dynamic'
@@ -33,23 +33,22 @@ function isRefererAllowed(referer: string | null): boolean {
   }
 }
 
-
 function getContentType(filename: string): string {
-  const extension = filename.split('.').pop()?.toLowerCase();
+  const extension = filename.split('.').pop()?.toLowerCase()
   switch (extension) {
     case 'jpg':
     case 'jpeg':
-      return 'image/jpeg';
+      return 'image/jpeg'
     case 'png':
-      return 'image/png';
+      return 'image/png'
     case 'gif':
-      return 'image/gif';
+      return 'image/gif'
     case 'svg':
-      return 'image/svg+xml';
+      return 'image/svg+xml'
     case 'webp':
-      return 'image/webp';
+      return 'image/webp'
     default:
-      return 'application/octet-stream';
+      return 'application/octet-stream'
   }
 }
 
@@ -78,7 +77,11 @@ async function getImageFromR2(imagePath: string, r2Bucket: R2Bucket) {
  */
 async function getImageFromLocal(imagePath: string) {
   try {
-    const filePath = path.join(process.cwd(), 'src/content/resume/images', imagePath)
+    const filePath = path.join(
+      process.cwd(),
+      'src/content/resume/images',
+      imagePath,
+    )
     const buffer = await fs.readFile(filePath)
     return buffer
   } catch (error: unknown) {
@@ -91,24 +94,29 @@ async function getImageFromLocal(imagePath: string) {
 
 export async function GET(request: Request) {
   // 1. Refererチェック
-  const referer = request.headers.get('referer');
+  const referer = request.headers.get('referer')
   if (!isRefererAllowed(referer)) {
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
 
   // 2. クエリパラメータから画像パスを取得
-  const { searchParams } = new URL(request.url);
-  const imagePath = searchParams.get('path');
+  const { searchParams } = new URL(request.url)
+  const imagePath = searchParams.get('path')
 
   if (!imagePath) {
-    return NextResponse.json({ error: 'Image path is required' }, { status: 400 });
+    return NextResponse.json(
+      { error: 'Image path is required' },
+      { status: 400 },
+    )
   }
 
   let imageData: ArrayBuffer | Uint8Array | null = null
 
   try {
     // Cloudflare環境かどうかを判定
-    const { env } = getCloudflareContext<CloudflareEnv & Record<string, unknown>>()
+    const { env } = getCloudflareContext<
+      CloudflareEnv & Record<string, unknown>
+    >()
     const { PORTFOLIO_ASSETS } = env
 
     if (!PORTFOLIO_ASSETS) {
@@ -119,25 +127,26 @@ export async function GET(request: Request) {
     const object = await getImageFromR2(imagePath, PORTFOLIO_ASSETS)
 
     if (object === null) {
-      return NextResponse.json({ error: 'Image not found' }, { status: 404 });
+      return NextResponse.json({ error: 'Image not found' }, { status: 404 })
     }
 
     imageData = await object.arrayBuffer()
-
   } catch (_e) {
     // getCloudflareContextが失敗した場合、ローカル開発環境とみなす
-    console.log(`Cloudflare context not found, falling back to local file system for image \"${imagePath}\"...`)
+    console.log(
+      `Cloudflare context not found, falling back to local file system for image \"${imagePath}\"...`,
+    )
     const buffer = await getImageFromLocal(imagePath)
     if (buffer === null) {
-      return NextResponse.json({ error: 'Image not found' }, { status: 404 });
+      return NextResponse.json({ error: 'Image not found' }, { status: 404 })
     }
     imageData = buffer
   }
 
   // レスポンスを返す
-  const headers = new Headers();
-  headers.set('Content-Type', getContentType(imagePath));
-  headers.set('Cache-Control', 'public, max-age=604800, immutable'); // 7日間キャッシュ
+  const headers = new Headers()
+  headers.set('Content-Type', getContentType(imagePath))
+  headers.set('Cache-Control', 'public, max-age=604800, immutable') // 7日間キャッシュ
 
-  return new Response(imageData, { headers });
+  return new Response(imageData, { headers })
 }

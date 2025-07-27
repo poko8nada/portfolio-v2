@@ -1,6 +1,6 @@
-import { getCloudflareContext } from '@opennextjs/cloudflare'
 import fs from 'node:fs/promises'
 import path from 'node:path'
+import { getCloudflareContext } from '@opennextjs/cloudflare'
 import { NextResponse } from 'next/server'
 
 export const dynamic = 'force-dynamic'
@@ -34,7 +34,11 @@ async function getResumeFromR2(slug: string, r2Bucket: R2Bucket) {
 async function getResumeFromLocal(slug: string) {
   try {
     // タイムスタンプなしの固定ファイル名を読む
-    const filePath = path.join(process.cwd(), 'src/content/resume', `${slug}.md`)
+    const filePath = path.join(
+      process.cwd(),
+      'src/content/resume',
+      `${slug}.md`,
+    )
     return await fs.readFile(filePath, 'utf-8')
   } catch (error: unknown) {
     if (error instanceof Error && 'code' in error && error.code === 'ENOENT') {
@@ -53,7 +57,9 @@ export async function GET(
 
   try {
     // Cloudflare環境かどうかを判定
-    const { env } = getCloudflareContext<CloudflareEnv & Record<string, unknown>>()
+    const { env } = getCloudflareContext<
+      CloudflareEnv & Record<string, unknown>
+    >()
     const { PORTFOLIO_ASSETS } = env
 
     if (!PORTFOLIO_ASSETS) {
@@ -61,10 +67,11 @@ export async function GET(
     }
     console.log(`Fetching latest version of \"${slug}\" from R2...`)
     body = await getResumeFromR2(slug, PORTFOLIO_ASSETS)
-
   } catch (_e) {
     // getCloudflareContextが失敗した場合、ローカル開発環境とみなす
-    console.log(`Cloudflare context not found, falling back to local file system for \"${slug}"...`)
+    console.log(
+      `Cloudflare context not found, falling back to local file system for \"${slug}"...`,
+    )
     body = await getResumeFromLocal(slug)
   }
 

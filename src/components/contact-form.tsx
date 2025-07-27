@@ -75,7 +75,7 @@ export function ContactForm({
     [form, onFormChange],
   )
 
-  const [turnstileReady, setTurnstileReady] = useState(false);
+  const [turnstileReady, setTurnstileReady] = useState(false)
 
   return (
     <Form {...form}>
@@ -176,7 +176,7 @@ export function ContactForm({
                 }}
                 onErrorAction={() => {
                   form.setError('turnstileToken', {
-                    message: 'セキュリティ認証に失敗しました'
+                    message: 'セキュリティ認証に失敗しました',
                   })
                   setTurnstileReady(false)
                 }}
