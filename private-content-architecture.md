@@ -38,11 +38,11 @@
 
 - **コンポーネント構成**:
   - `src/app/resume/page.tsx` (Server Component): データ取得とページの骨格レイアウトを担当。
-  - `src/feature/display-resume.tsx` (Client Component): 取得したデータを元にコンテンツ全体を描画し、インタラクションを制御する。
+  - `src/feature/display-resume/index.tsx` (Client Component): 取得したデータを元にコンテンツ全体を描画し、インタラクションを制御する。
   - `src/components/profile-image.tsx` (Client Component): プロフィール画像をプロキシ経由で表示し、インタラクションを制御する。
 - **プロキシ経由の画像表示**: 画像は `/api/proxy-image` というAPI経由で配信する。
   - プロキシAPIはRefererヘッダをチェックし、自サイトからのリクエストのみを許可することで、画像の直リンクを防ぐ。
-- **ダウンロード・選択抑止**: `display-resume.tsx` コンポーネント全体で、以下の操作を無効化し、簡易的なコンテンツ保護を行う。
+- **ダウンロード・選択抑止**: `display-resume/index.tsx` コンポーネント全体で、以下の操作を無効化し、簡易的なコンテンツ保護を行う。
   - 右クリックによるコンテキストメニュー表示
   - ドラッグ＆ドロップ操作
   - テキスト選択
@@ -52,6 +52,7 @@
 ## R2移行に向けた実装タスク
 
 ### 1. R2バケットの準備と設定
+
 - [x] `wrangler r2 bucket create portfolio-resume-assets` でプライベートなR2バケットを作成済み。
 - [x] `wrangler.jsonc` にR2バケットのバインディング (`PORTFOLIO_ASSETS`) を設定済み。
 
@@ -74,17 +75,17 @@
 
 ### 4. フロントエンドのリファクタリング
 
-- [x] `src/lib/resume.ts`: ローカルimportを削除し、内部API (`/api/resume/[slug]`) 経由でコンテンツを取得するように変更する。
-- [ ] `src/components/profile-image.tsx` を新規作成する。
-  - [ ] プロキシAPI経由でプロフィール画像を表示し、右クリック等を無効化する。
-- [ ] `src/feature/display-resume.tsx` を新規作成する。
-  - [ ] propsとしてデータを受け取り、レジュメコンテンツ全体を描画する。
-  - [ ] `profile-image.tsx` コンポーネントをインポートして使用する。
-  - [ ] コンポーネント全体で右クリック、ドラッグ、テキスト選択を無効化する。
-- [ ] `src/app/resume/page.tsx` をリファクタリングする。
-  - [ ] データ取得処理は残し、描画部分を `display-resume.tsx` に移譲する。
-- [ ] `src/components/markdown-for-resume.tsx` を更新する。
-  - [ ] Markdown内の相対パス画像をプロキシAPI経由で表示するよう修正する。
+- [x] `src/lib/resume.ts`: ローカルimportを削除し、内部API (`/api/resume/[slug]`) 経でコンテンツを取得するように変更する。
+- [x] `src/components/profile-image.tsx` を新規作成する。
+  - [x] プロキシAPI経由でプロフィール画像を表示し、右クリック等を無効化する。
+- [x] `src/feature/display-resume/index.tsx` を新規作成する。
+  - [x] propsとしてデータを受け取り、レジュメコンテンツ全体を描画する。
+  - [x] `profile-image.tsx` コンポーネントをインポートして使用する。
+  - [x] コンポーネント全体で右クリック、ドラッグ、テキスト選択を無効化する。
+- [x] `src/app/resume/page.tsx` をリファクタリングする。
+  - [x] データ取得処理は残し、描画部分を `display-resume/index.tsx` に移譲する。
+- [x] `src/components/markdown-for-resume.tsx` を更新する。
+  - [x] Markdown内の相対パス画像をプロキシAPI経由で表示するよう修正する。
 
 ### 5. コンテンツ移行とアップロードスクリプトの作成
 

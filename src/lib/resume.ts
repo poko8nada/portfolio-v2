@@ -26,9 +26,7 @@ function validateResumeData(data: unknown): data is ResumeFrontmatter {
   const obj = data as Record<string, unknown>
   return (
     typeof obj.title === 'string' &&
-    (obj.type === 'resume' ||
-      obj.type === 'career' ||
-      obj.type === 'skills') &&
+    (obj.type === 'resume' || obj.type === 'career' || obj.type === 'skills') &&
     typeof obj.createdAt === 'string' &&
     typeof obj.updatedAt === 'string'
   )
@@ -82,14 +80,14 @@ function constructBaseUrl(host: string | null): string {
   return `${protocol}://${host}`
 }
 
-
 /**
  * Fetch content from internal API with Basic auth
  */
 async function fetchContentFromAPI(slug: string): Promise<string | null> {
   try {
     const requestHeaders = await headers()
-    const host = requestHeaders.get('x-forwarded-host') || requestHeaders.get('host')
+    const host =
+      requestHeaders.get('x-forwarded-host') || requestHeaders.get('host')
     const baseUrl = constructBaseUrl(host)
 
     // Basic認証の認証情報を取得
@@ -100,12 +98,14 @@ async function fetchContentFromAPI(slug: string): Promise<string | null> {
       throw new Error('Basic auth credentials not found')
     }
 
-    const credentials = Buffer.from(`${username}:${password}`).toString('base64')
+    const credentials = Buffer.from(`${username}:${password}`).toString(
+      'base64',
+    )
 
     const response = await fetch(`${baseUrl}/api/resume/${slug}`, {
       cache: 'no-store', // Always fetch fresh data
       headers: {
-        'Authorization': `Basic ${credentials}`,
+        Authorization: `Basic ${credentials}`,
       },
     })
 
@@ -164,10 +164,10 @@ export async function getAllResumeData(): Promise<ResumeData[]> {
  */
 export async function getBasicProfileInfo(): Promise<
   | {
-    name?: string
-    title?: string
-    skills?: string[]
-  }
+      name?: string
+      title?: string
+      skills?: string[]
+    }
   | undefined
 > {
   const resumeData = await getResumeBySlug('resume')
