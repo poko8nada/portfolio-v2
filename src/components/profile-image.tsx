@@ -22,7 +22,7 @@ export function ProfileImage() {
       '
     >
       <img
-        src='/api/proxy-image?path=profile.png'
+        src='/api/proxy-image?path=images/profile.png'
         alt='プロフィール写真'
         className='object-cover w-full h-full'
         draggable={false}

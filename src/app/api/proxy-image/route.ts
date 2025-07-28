@@ -1,14 +1,11 @@
-import fs from 'node:fs/promises'
-import path from 'node:path'
-import { getCloudflareContext } from '@opennextjs/cloudflare'
+import { AwsClient } from 'aws4fetch'
 import { NextResponse } from 'next/server'
 
 export const dynamic = 'force-dynamic'
 
 /**
  * Validates if the referer is from an allowed host.
- * In development, it allows localhost with any port.
- * In production, it strictly checks against the deployed domain.
+ * Allows localhost for local development and preview, and a specific domain for production.
  * @param {string | null} referer - The referer header from the request.
  * @returns {boolean} - True if the referer is allowed, false otherwise.
  */
@@ -21,18 +18,22 @@ function isRefererAllowed(referer: string | null): boolean {
     const refererUrl = new URL(referer)
     const hostname = refererUrl.hostname
 
-    if (process.env.NODE_ENV === 'development') {
-      // For `pnpm dev` (e.g., localhost:3000) and `pnpm preview` (e.g., localhost:8787)
-      return hostname === 'localhost'
-    }
-
-    // For production
-    return hostname === 'pokohanada.com' || hostname.endsWith('.pokohanada.com')
+    return (
+      hostname === 'localhost' || // Local development and preview
+      hostname.endsWith('.workers.dev') || // Cloudflare preview URLs
+      hostname === 'pokohanada.com' || // Production domain
+      hostname.endsWith('.pokohanada.com') // Production subdomains
+    )
   } catch (_error) {
     return false
   }
 }
 
+/**
+ * Determines the MIME type of a file based on its extension.
+ * @param {string} filename - The name of the file.
+ * @returns {string} The corresponding Content-Type.
+ */
 function getContentType(filename: string): string {
   const extension = filename.split('.').pop()?.toLowerCase()
   switch (extension) {
@@ -53,53 +54,110 @@ function getContentType(filename: string): string {
 }
 
 /**
- * R2から最新バージョンの画像を取得する
+ * Extracts object keys from the XML response of the S3 ListObjectsV2 API.
+ * @param {string} xmlText - The XML response as a string.
+ * @returns {string[]} An array of object keys.
  */
-async function getImageFromR2(imagePath: string, r2Bucket: R2Bucket) {
-  const prefix = `resume/images/${imagePath}`
-  const list = await r2Bucket.list({ prefix })
+function getKeysFromXml(xmlText: string): string[] {
+  const keys: string[] = []
+  const keyRegex = /<Key>(.*?)<\/Key>/g
+  const matches = xmlText.matchAll(keyRegex)
 
-  if (list.objects.length === 0) {
-    return null
+  for (const match of matches) {
+    if (match[1]) {
+      keys.push(match[1])
+    }
   }
-
-  // タイムスタンプで降順ソートして最新のファイルを見つける
-  const latestObject = list.objects.sort((a, b) =>
-    b.key.localeCompare(a.key),
-  )[0]
-
-  const object = await r2Bucket.get(latestObject.key)
-  return object
+  return keys
 }
 
 /**
- * ローカルファイルシステムから画像を取得する (開発環境用フォールバック)
+ * Fetches the latest version of an image from R2 using aws4fetch.
+ * @param {string} imagePath - The relative path of the image (e.g., "images/profile.png").
+ * @returns {Promise<ArrayBuffer | null>} The image data as an ArrayBuffer, or null if not found.
  */
-async function getImageFromLocal(imagePath: string) {
-  try {
-    const filePath = path.join(
-      process.cwd(),
-      'src/content/resume/images',
-      imagePath,
-    )
-    const buffer = await fs.readFile(filePath)
-    return buffer
-  } catch (error: unknown) {
-    if (error instanceof Error && 'code' in error && error.code === 'ENOENT') {
-      return null // ファイルが存在しない場合はnull
-    }
-    throw error // その他のエラーは再スロー
+async function getImageDataFromR2(
+  imagePath: string,
+): Promise<ArrayBuffer | null> {
+  const {
+    R2_BUCKET_NAME,
+    R2_ACCESS_KEY_ID,
+    R2_SECRET_ACCESS_KEY,
+    CLOUDFLARE_ACCOUNT_ID,
+  } = process.env
+
+  if (
+    !R2_BUCKET_NAME ||
+    !R2_ACCESS_KEY_ID ||
+    !R2_SECRET_ACCESS_KEY ||
+    !CLOUDFLARE_ACCOUNT_ID
+  ) {
+    console.error('[API-ProxyImage] Missing required R2 environment variables.')
+    throw new Error('Server configuration error: Missing R2 credentials.')
   }
+
+  const aws = new AwsClient({
+    accessKeyId: R2_ACCESS_KEY_ID,
+    secretAccessKey: R2_SECRET_ACCESS_KEY,
+    region: 'auto',
+  })
+
+  // Correctly build the prefix to account for timestamps
+  const lastDotIndex = imagePath.lastIndexOf('.')
+  if (lastDotIndex === -1) {
+    console.error(
+      `[API-ProxyImage] Invalid imagePath (no extension): ${imagePath}`,
+    )
+    return null
+  }
+  const basePath = imagePath.substring(0, lastDotIndex)
+  const prefix = `resume/${basePath}_` // e.g., "images/profile.png" -> "resume/images/profile_"
+  const r2Host = `${CLOUDFLARE_ACCOUNT_ID}.r2.cloudflarestorage.com`
+
+  // 1. List objects to find the latest version
+  const listUrl = `https://${r2Host}/${R2_BUCKET_NAME}/?list-type=2&prefix=${encodeURIComponent(prefix)}`
+  const listResponse = await aws.fetch(listUrl)
+
+  if (!listResponse.ok) {
+    console.error(
+      `[API-ProxyImage] Failed to list objects: ${listResponse.status} ${listResponse.statusText}`,
+    )
+    return null
+  }
+
+  const xmlText = await listResponse.text()
+  const objectKeys = getKeysFromXml(xmlText)
+
+  if (objectKeys.length === 0) {
+    console.log(`[API-ProxyImage] No objects found with prefix: ${prefix}`)
+    return null
+  }
+
+  // 2. Sort keys to find the most recent file
+  const latestKey = objectKeys.sort((a, b) => b.localeCompare(a))[0]
+
+  // 3. Get the content of the latest object
+  const getUrl = `https://${r2Host}/${R2_BUCKET_NAME}/${latestKey}`
+  const getResponse = await aws.fetch(getUrl)
+
+  if (!getResponse.ok) {
+    console.error(
+      `[API-ProxyImage] Failed to get object: ${getResponse.status} ${getResponse.statusText}`,
+    )
+    return null
+  }
+
+  return getResponse.arrayBuffer()
 }
 
 export async function GET(request: Request) {
-  // 1. Refererチェック
+  // 1. Referer check
   const referer = request.headers.get('referer')
   if (!isRefererAllowed(referer)) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
 
-  // 2. クエリパラメータから画像パスを取得
+  // 2. Get image path from query parameter
   const { searchParams } = new URL(request.url)
   const imagePath = searchParams.get('path')
 
@@ -110,43 +168,26 @@ export async function GET(request: Request) {
     )
   }
 
-  let imageData: ArrayBuffer | Uint8Array | null = null
-
   try {
-    // Cloudflare環境かどうかを判定
-    const { env } = getCloudflareContext<
-      CloudflareEnv & Record<string, unknown>
-    >()
-    const { PORTFOLIO_ASSETS } = env
+    // 3. Fetch image data from R2
+    const imageData = await getImageDataFromR2(imagePath)
 
-    if (!PORTFOLIO_ASSETS) {
-      throw new Error('R2 bucket binding not found in Cloudflare environment')
-    }
-
-    console.log(`Fetching latest version of image \"${imagePath}\" from R2...`)
-    const object = await getImageFromR2(imagePath, PORTFOLIO_ASSETS)
-
-    if (object === null) {
+    if (imageData === null) {
       return NextResponse.json({ error: 'Image not found' }, { status: 404 })
     }
 
-    imageData = await object.arrayBuffer()
-  } catch (_e) {
-    // getCloudflareContextが失敗した場合、ローカル開発環境とみなす
-    console.log(
-      `Cloudflare context not found, falling back to local file system for image \"${imagePath}\"...`,
+    // 4. Return the image data as a response
+    const headers = new Headers()
+    headers.set('Content-Type', getContentType(imagePath))
+    headers.set('Cache-Control', 'public, max-age=604800, immutable') // 7-day cache
+
+    return new Response(imageData, { headers })
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    console.error('[API-ProxyImage] Unhandled error:', errorMessage)
+    return NextResponse.json(
+      { error: 'Internal Server Error', details: errorMessage },
+      { status: 500 },
     )
-    const buffer = await getImageFromLocal(imagePath)
-    if (buffer === null) {
-      return NextResponse.json({ error: 'Image not found' }, { status: 404 })
-    }
-    imageData = buffer
   }
-
-  // レスポンスを返す
-  const headers = new Headers()
-  headers.set('Content-Type', getContentType(imagePath))
-  headers.set('Cache-Control', 'public, max-age=604800, immutable') // 7日間キャッシュ
-
-  return new Response(imageData, { headers })
 }

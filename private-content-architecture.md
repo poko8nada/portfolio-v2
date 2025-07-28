@@ -94,7 +94,6 @@
 
 ### 6. 旧コンテンツと不要コードの削除
 
-- [ ] `src/content/` ディレクトリを削除し、`.gitignore` に追加する。
 - [ ] 不要になった以下のファイル・関数・型定義を削除する。
   - `scripts/prepare-resume.js`
   - `src/lib/resume.ts` 内の `getBasicProfileInfo` 関数

@@ -2,10 +2,7 @@
   "main": ".open-next/worker.js",
   "name": "portfolio-v2",
   "compatibility_date": "2025-03-25",
-  "compatibility_flags": [
-    "nodejs_compat",
-    "global_fetch_strictly_public"
-  ],
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS"
@@ -13,7 +10,8 @@
   "r2_buckets": [
     {
       "binding": "PORTFOLIO_ASSETS",
-      "bucket_name": "portfolio-resume-assets"
+      "bucket_name": "portfolio-resume-assets",
+      "preview_bucket_name": "portfolio-resume-assets"
     }
   ]
 }
