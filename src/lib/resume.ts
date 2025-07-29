@@ -158,37 +158,3 @@ export async function getAllResumeData(): Promise<ResumeData[]> {
     return order[a.frontmatter.type] - order[b.frontmatter.type]
   })
 }
-
-/**
- * Get basic profile information from resume data (for use in other components)
- */
-export async function getBasicProfileInfo(): Promise<
-  | {
-      name?: string
-      title?: string
-      skills?: string[]
-    }
-  | undefined
-> {
-  const resumeData = await getResumeBySlug('resume')
-  if (!resumeData) return undefined
-
-  // Extract basic info from resume content
-  const content = resumeData.content
-
-  // Simple regex to extract basic information
-  const nameMatch = content.match(/\*\*氏名\*\*:\s*(.+)/)
-  const skillsSection = content.match(
-    /### プログラミング言語\n([\s\S]+?)(?=\n###|\n##|$)/,
-  )
-
-  return {
-    name: nameMatch?.[1]?.trim(),
-    title: resumeData.frontmatter.title,
-    skills:
-      skillsSection?.[1]
-        ?.split('\n')
-        .map(line => line.replace(/^-\s*/, '').trim())
-        .filter(Boolean) || [],
-  }
-}

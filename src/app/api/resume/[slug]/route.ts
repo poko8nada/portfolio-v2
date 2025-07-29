@@ -1,6 +1,5 @@
-import { type NextRequest, NextResponse } from 'next/server'
 import { AwsClient } from 'aws4fetch'
-
+import { type NextRequest, NextResponse } from 'next/server'
 export const dynamic = 'force-dynamic'
 
 /**
@@ -11,9 +10,11 @@ export const dynamic = 'force-dynamic'
 function getKeysFromXml(xmlText: string): string[] {
   const keys: string[] = []
   const keyRegex = /<Key>(.*?)<\/Key>/g
-  let match
-  while ((match = keyRegex.exec(xmlText)) !== null) {
+  let match: RegExpExecArray | null = keyRegex.exec(xmlText)
+
+  while (match !== null) {
     keys.push(match[1])
+    match = keyRegex.exec(xmlText)
   }
   return keys
 }
@@ -55,7 +56,6 @@ async function getResumeContent(slug: string): Promise<string | null> {
   console.log(`[API-aws4fetch] Listing objects with URL: ${listUrl}`)
 
   const listResponse = await aws.fetch(listUrl)
-
   if (!listResponse.ok) {
     console.error(
       `[API-aws4fetch] Failed to list objects: ${listResponse.status} ${listResponse.statusText}`,
@@ -80,7 +80,6 @@ async function getResumeContent(slug: string): Promise<string | null> {
   console.log(`[API-aws4fetch] Getting object with URL: ${getUrl}`)
 
   const getResponse = await aws.fetch(getUrl)
-
   if (!getResponse.ok) {
     console.error(
       `[API-aws4fetch] Failed to get object: ${getResponse.status} ${getResponse.statusText}`,
@@ -102,7 +101,6 @@ export async function GET(
     console.log(`[API] Processing request for slug: "${slug}"`)
 
     const body = await getResumeContent(slug)
-
     if (body === null) {
       console.log(`[API] Content not found for slug: "${slug}"`)
       return NextResponse.json({ error: 'Content not found' }, { status: 404 })
@@ -116,7 +114,7 @@ export async function GET(
     })
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error)
-    console.error(`[API] Unhandled error for slug:`, errorMessage)
+    console.error('[API] Unhandled error for slug:', errorMessage)
     return NextResponse.json(
       { error: 'Internal Server Error', details: errorMessage },
       { status: 500 },

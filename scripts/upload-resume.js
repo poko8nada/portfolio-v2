@@ -8,10 +8,8 @@ import 'dotenv/config'
 const SOURCE_DIR = path.join(process.cwd(), 'src/content/resume')
 const R2_DESTINATION_PREFIX = 'resume' // The root folder in the R2 bucket
 
-const R2_BUCKET_NAME = process.env.R2_BUCKET_NAME
-const R2_END_POINT = process.env.R2_END_POINT
-const R2_ACCESS_KEY_ID = process.env.R2_ACCESS_KEY_ID
-const R2_SECRET_ACCESS_KEY = process.env.R2_SECRET_ACCESS_KEY
+const { R2_BUCKET_NAME, R2_END_POINT, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY } =
+  process.env
 
 if (
   !R2_BUCKET_NAME ||
