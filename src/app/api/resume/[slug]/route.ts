@@ -67,18 +67,14 @@ async function getResumeContent(slug: string): Promise<string | null> {
   const objectKeys = getKeysFromXml(xmlText)
 
   if (objectKeys.length === 0) {
-    console.log(`[API-aws4fetch] No objects found with prefix: ${prefix}`)
     return null
   }
 
   // 2. Sort keys to find the most recent file
   const latestKey = objectKeys.sort((a, b) => b.localeCompare(a))[0]
-  console.log(`[API-aws4fetch] Found latest object: ${latestKey}`)
 
   // 3. Get the content of the latest object
   const getUrl = `https://${r2Host}/${R2_BUCKET_NAME}/${latestKey}`
-  console.log(`[API-aws4fetch] Getting object with URL: ${getUrl}`)
-
   const getResponse = await aws.fetch(getUrl)
   if (!getResponse.ok) {
     console.error(
@@ -88,7 +84,6 @@ async function getResumeContent(slug: string): Promise<string | null> {
   }
 
   const content = await getResponse.text()
-  console.log(`[API-aws4fetch] Successfully fetched object: ${latestKey}`)
   return content
 }
 
@@ -98,15 +93,11 @@ export async function GET(
 ) {
   try {
     const { slug } = await params
-    console.log(`[API] Processing request for slug: "${slug}"`)
-
     const body = await getResumeContent(slug)
     if (body === null) {
-      console.log(`[API] Content not found for slug: "${slug}"`)
       return NextResponse.json({ error: 'Content not found' }, { status: 404 })
     }
 
-    console.log(`[API] Successfully returning content for slug: "${slug}"`)
     return new Response(body, {
       headers: {
         'Content-Type': 'text/markdown; charset=utf-8',

@@ -14,27 +14,27 @@ export type PostFrontmatter = {
 }
 
 function getAssetsBinding() {
+  // pnpm dev環境では、@opennextjs/cloudflareのモックが不完全なため、
+  // 意図的にfsフォールバックを使用する
+  if (process.env.NODE_ENV === 'development') {
+    return null
+  }
+
   try {
     // OpenNext for Cloudflareの正しい方法
     const { getCloudflareContext } = require('@opennextjs/cloudflare')
     const { env } = getCloudflareContext()
-    console.log('Found Cloudflare context, ASSETS available:', !!env.ASSETS)
     return env.ASSETS
   } catch {
-    // 開発環境では @opennextjs/cloudflare が利用できない場合があります
-    console.log('Cloudflare context not available, using Node.js fs')
+    // 本番環境でコンテキストが取得できない場合
     return null
   }
 }
 
 // Cloudflare ASSETS用のベースURL取得
 function getAssetsBaseUrl(): string {
-  // Cloudflare環境では実際のホスト名は関係なく、パス部分のみが使用される
-  // 本番環境やwrangler devなど、どの環境でも動作する汎用的なURLを使用
-  if (typeof globalThis !== 'undefined' && globalThis.location) {
-    return globalThis.location.origin
-  }
-  // フォールバック: 実際には使用されないが、有効なURL形式である必要がある
+  // ASSETS.fetchは完全なURLを持つRequestオブジェクトを期待するため、
+  // ダミーのベースURLを生成する。パス部分のみが実際に使用される。
   return 'https://assets.local'
 }
 
@@ -93,6 +93,7 @@ async function fetchPostContent(slug: string): Promise<string | undefined> {
   const ASSETS = getAssetsBinding()
 
   if (ASSETS) {
+    // preview環境 (NODE_ENV=production)
     try {
       const baseUrl = getAssetsBaseUrl()
       const response = await ASSETS.fetch(
@@ -107,6 +108,7 @@ async function fetchPostContent(slug: string): Promise<string | undefined> {
       return undefined
     }
   } else {
+    // dev環境 (NODE_ENV=development)
     try {
       const postPath = path.join(process.cwd(), 'public/posts', `${slug}.md`)
       if (!fs.existsSync(postPath)) {
@@ -124,6 +126,7 @@ async function fetchPostsIndex(): Promise<PostIndex[] | undefined> {
   const ASSETS = getAssetsBinding()
 
   if (ASSETS) {
+    // preview環境 (NODE_ENV=production)
     try {
       const baseUrl = getAssetsBaseUrl()
       const response = await ASSETS.fetch(
@@ -139,6 +142,7 @@ async function fetchPostsIndex(): Promise<PostIndex[] | undefined> {
       return undefined
     }
   } else {
+    // dev環境 (NODE_ENV=development)
     try {
       const postsIndexPath = path.join(process.cwd(), 'public/posts/index.json')
       if (!fs.existsSync(postsIndexPath)) {

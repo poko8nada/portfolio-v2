@@ -129,7 +129,6 @@ async function getImageDataFromR2(
   const objectKeys = getKeysFromXml(xmlText)
 
   if (objectKeys.length === 0) {
-    console.log(`[API-ProxyImage] No objects found with prefix: ${prefix}`)
     return null
   }
 
