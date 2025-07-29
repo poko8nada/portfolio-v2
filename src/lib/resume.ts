@@ -1,14 +1,11 @@
 'use server'
 import matter from 'gray-matter'
-import careerContent from '@/content/resume/career.md'
-import resumeContent from '@/content/resume/resume.md'
-import technicalSkillsContent from '@/content/resume/skills/skills_01_technical.md'
-import skillsContent from '@/content/resume/skills.md'
+import { headers } from 'next/headers'
 
 // Resume frontmatter type
 type ResumeFrontmatter = {
   title: string
-  type: 'resume' | 'career' | 'skills' | 'technical-skills'
+  type: 'resume' | 'career' | 'skills'
   createdAt: string
   updatedAt: string
 }
@@ -29,10 +26,7 @@ function validateResumeData(data: unknown): data is ResumeFrontmatter {
   const obj = data as Record<string, unknown>
   return (
     typeof obj.title === 'string' &&
-    (obj.type === 'resume' ||
-      obj.type === 'career' ||
-      obj.type === 'skills' ||
-      obj.type === 'technical-skills') &&
+    (obj.type === 'resume' || obj.type === 'career' || obj.type === 'skills') &&
     typeof obj.createdAt === 'string' &&
     typeof obj.updatedAt === 'string'
   )
@@ -60,41 +54,85 @@ function processResumeContent(
 }
 
 /**
+ * Constructs the base URL from a host string.
+ * This function prioritizes the NEXT_PUBLIC_APP_URL environment variable
+ * for explicit overrides in special environments (e.g., complex proxy setups).
+ * Otherwise, it dynamically constructs the URL from the host header.
+ *
+ * @param {string | null} host - The host string from request headers.
+ * @returns {string} The full base URL.
+ */
+function constructBaseUrl(host: string | null): string {
+  // If an explicit URL is set in environment variables, use it.
+  // This is useful for overriding the URL in specific deployment environments
+  // where header-based detection might fail (e.g., behind multiple proxies).
+  // For normal local development (`pnpm dev`, `pnpm preview`) or standard deployments,
+  // this variable is typically not needed.
+  if (process.env.NEXT_PUBLIC_APP_URL) {
+    return process.env.NEXT_PUBLIC_APP_URL
+  }
+
+  if (!host) {
+    throw new Error('Could not determine host.')
+  }
+
+  const protocol = host.includes('localhost') ? 'http' : 'https'
+  return `${protocol}://${host}`
+}
+
+/**
+ * Fetch content from internal API with Basic auth
+ */
+async function fetchContentFromAPI(slug: string): Promise<string | null> {
+  try {
+    const requestHeaders = await headers()
+    const host =
+      requestHeaders.get('x-forwarded-host') || requestHeaders.get('host')
+    const baseUrl = constructBaseUrl(host)
+
+    // Basic認証の認証情報を取得
+    const username = process.env.BASIC_AUTH_USERNAME
+    const password = process.env.BASIC_AUTH_PASSWORD
+
+    if (!username || !password) {
+      throw new Error('Basic auth credentials not found')
+    }
+
+    const credentials = Buffer.from(`${username}:${password}`).toString(
+      'base64',
+    )
+
+    const response = await fetch(`${baseUrl}/api/resume/${slug}`, {
+      cache: 'no-store', // Always fetch fresh data
+      headers: {
+        Authorization: `Basic ${credentials}`,
+      },
+    })
+
+    if (!response.ok) {
+      if (response.status === 404) {
+        return null
+      }
+      throw new Error(`Failed to fetch content: ${response.status}`)
+    }
+
+    return await response.text()
+  } catch (error) {
+    console.error(`Error fetching content for ${slug}:`, error)
+    return null
+  }
+}
+
+/**
  * Get resume data by slug
  */
 export async function getResumeBySlug(
   slug: string,
 ): Promise<ResumeData | undefined> {
-  let content: string
+  const content = await fetchContentFromAPI(slug)
 
-  switch (slug) {
-    case 'resume':
-      content = resumeContent
-      break
-    case 'career':
-      content = careerContent
-      break
-    case 'skills':
-      content = skillsContent
-      break
-    case 'technical-skills':
-      // 整形処理を追加
-      content = technicalSkillsContent
-      // h1除去＆liのコロン以降カット
-      content = content
-        .split('\n')
-        .filter(line => !/^# /.test(line)) // h1除去
-        .map(line => {
-          if (/^- \*\*.+\*\*:/.test(line)) {
-            // liのコロン以降カット
-            return line.replace(/(:.*$)/, '')
-          }
-          return line
-        })
-        .join('\n')
-      break
-    default:
-      return undefined
+  if (content === null) {
+    return undefined
   }
 
   return processResumeContent(content, slug)
@@ -119,38 +157,4 @@ export async function getAllResumeData(): Promise<ResumeData[]> {
     const order: Record<string, number> = { resume: 0, career: 1, skills: 2 }
     return order[a.frontmatter.type] - order[b.frontmatter.type]
   })
-}
-
-/**
- * Get basic profile information from resume data (for use in other components)
- */
-export async function getBasicProfileInfo(): Promise<
-  | {
-      name?: string
-      title?: string
-      skills?: string[]
-    }
-  | undefined
-> {
-  const resumeData = await getResumeBySlug('resume')
-  if (!resumeData) return undefined
-
-  // Extract basic info from resume content
-  const content = resumeData.content
-
-  // Simple regex to extract basic information
-  const nameMatch = content.match(/\*\*氏名\*\*:\s*(.+)/)
-  const skillsSection = content.match(
-    /### プログラミング言語\n([\s\S]+?)(?=\n###|\n##|$)/,
-  )
-
-  return {
-    name: nameMatch?.[1]?.trim(),
-    title: resumeData.frontmatter.title,
-    skills:
-      skillsSection?.[1]
-        ?.split('\n')
-        .map(line => line.replace(/^-\s*/, '').trim())
-        .filter(Boolean) || [],
-  }
 }

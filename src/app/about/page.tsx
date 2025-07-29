@@ -5,7 +5,7 @@ import { ConfirmationDialog } from '@/components/ui/confirmation-dialog'
 import { getResumeBySlug } from '@/lib/resume'
 
 export default async function AboutPage() {
-  const resumeData = await getResumeBySlug('technical-skills')
+  const resumeData = await getResumeBySlug('skills')
 
   if (!resumeData) {
     return <div>Loading...</div>
