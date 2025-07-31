@@ -19,7 +19,8 @@ async function verifyTurnstile(token: string): Promise<boolean> {
       )}&response=${encodeURIComponent(token)}`,
     },
   )
-  const data = await response.json()
+  // biome-ignore lint/suspicious/noExplicitAny : ResendのAPIレスポンスはany型であるため
+  const data = (await response.json()) as any
   return data.success
 }
 

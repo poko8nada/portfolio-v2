@@ -1,8 +1,8 @@
 'use client'
 
+import { ShieldCheckIcon } from '@heroicons/react/24/solid'
 import { Turnstile } from '@marsidev/react-turnstile'
 import { useState } from 'react'
-import { ShieldCheckIcon } from '@heroicons/react/24/solid'
 
 type Props = {
   siteKey: string
@@ -10,7 +10,11 @@ type Props = {
   onErrorAction?: () => void
 }
 
-export function LazyTurnstile({ siteKey, onSuccessAction, onErrorAction }: Props) {
+export function LazyTurnstile({
+  siteKey,
+  onSuccessAction,
+  onErrorAction,
+}: Props) {
   const [shouldRender, setShouldRender] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 

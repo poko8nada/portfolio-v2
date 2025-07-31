@@ -1,4 +1,37 @@
+'use client'
+
 import Markdown from 'markdown-to-jsx'
+
+// Custom image component to proxy relative paths and prevent interaction
+const ProxiedImage = ({
+  src,
+  alt,
+  ...props
+}: {
+  src?: string
+  alt?: string
+}) => {
+  if (!src) {
+    return null
+  }
+
+  // Check if the src is an absolute URL or a data URI. If so, use it directly.
+  // Otherwise, rewrite it to use the image proxy API.
+  const isExternal = src.startsWith('http') || src.startsWith('data:')
+  const imageSrc = isExternal
+    ? src
+    : `/api/proxy-image?path=${encodeURIComponent(src.replace(/^\.?\//, ''))}`
+
+  return (
+    <img
+      {...props}
+      src={imageSrc}
+      alt={alt || 'Image'}
+      draggable={false}
+      onContextMenu={e => e.preventDefault()}
+    />
+  )
+}
 
 type SimpleMarkdownProps = {
   content: string
@@ -10,6 +43,9 @@ export function MarkdownForResume({ content }: SimpleMarkdownProps) {
       <Markdown
         options={{
           overrides: {
+            img: {
+              component: ProxiedImage,
+            },
             h1: {
               props: {
                 className: 'text-xl font-bold mt-6 mb-4 text-gray-900',
