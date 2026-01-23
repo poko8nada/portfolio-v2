@@ -1,204 +1,54 @@
-You are a programming expert.
+# Copilot Instructions
 
-## Prerequisites
+## Language and Communication Policy
 
-### 1. Language Policy
+- Always think, reason, and write code in English
+- Always respond to user instructions and questions in **Japanese**
+- Use concise, telegraphic style - minimize volume
+- Avoid unnecessary explanations and emojis
 
-- Always think, reason, and write code in English.
-- Always respond to user instructions and questions in **Japanese**, unless explicitly requested otherwise.
-- Use natural and fluent Japanese suitable for professional technical communication.
-- Do not translate variable names or identifiers into Japanese.
+## Task Execution Workflow
 
-### 2. Communication Guidelines
+1. List tasks, files and what you do → **Get approval**
+2. Execute implementation
+3. Run tests → If fails, investigate and propose fixes → **Get approval** → Fix
+4. Prepare commit message → **Get approval** → Commit
 
-- Keep user-facing content within 3 lines unless user requests detailed explanation
-- Use concise, telegraphic style to minimize response volume
-- Focus on actionable information and results
-- Avoid unnecessary explanations or commentary
+## Trigger Keywords
 
-### 3. File Management and Task Execution
+When user input contains these keywords → **STOP & REQUEST APPROVAL**
 
-- Always reference the following md files before implementation, even without specific instructions:
-  - `requirements.md` contains basic requirements and specifications
-- Maintain traceability between requirements, tasks, and implementation
+- commit, push, git add
+- create, modify, delete, fix, refactor
+- test, build, deploy
 
-### 4. Task Granularity Policy
+## Tools
 
-- Maximum of 5 files can be created, modified, or deleted per single task
-- This limit defines the maximum granularity for one task
-- When work requires changes to more than 5 files, split into multiple tasks
-- Ensure each task remains focused and manageable
+- Use **pnpm** for all package management
+- Consult Context7 MCP tools when needed
 
-### 5. Development and Testing Approach
+## Git Workflow
 
-- Break down implementation into small, granular tasks
-- Start development environment after each small task completion
-- Verify intended behavior through testing before proceeding
-- Confirm functionality matches expected outcomes at each step
+### Commit Format
 
-### 6. Token Management and Task Continuity
+`<type>: <description>`
 
-- Monitor subtask workload and token consumption
-- When approaching 100k tokens, generate separate continuation task
-- Transfer all necessary information for persistence including:
-  - Completed work summary
-  - Current progress state
-  - Remaining tasks and context
-  - Implementation decisions made
-- Ensure seamless handoff between task segments
+**Types:** add, fix, remove, update, WIP
 
-### 7. Solution Quality Standards
+### Rules
 
-- Avoid ad-hoc solutions (hardcoding, manual operation assumptions, etc.)
-- Design scalable and maintainable solutions from the beginning
-- Consider long-term implications of implementation choices
+- English, imperative mood (Add, Update, Fix)
+- Lowercase description, no period
+- Be specific and concise
 
-### 8. Error Response Protocol
+## Reference Skills
 
-- When user reports issues or unexpected errors occur during development:
-  - Do not immediately attempt fixes
-  - First analyze the situation thoroughly
-  - Present situation assessment and proposed solution options to user
-  - Wait for user confirmation before proceeding with implementation
+For detailed guidelines, the following skills are available and will be loaded automatically when needed:
 
-### 9. Documentation Creation Policy
-
-- Do not create implementation md files unless explicitly instructed by user
-- Do not ask user about documentation creation
-- Focus on code implementation over documentation unless specified
-
-### 10. Documentation Maintenance
-
-- Pause work at appropriate intervals to update project documentation
-- Update `tasks.md` and related documentation files in project root
-- Maintain current status and progress tracking
-- Document implementation decisions and rationale
-
----
-
-## Git Workflow Rules
-
-### Commit Message Format
-
-```
-<type>: <description>
-```
-
-### Commit Types
-
-- **feat**: Add new features
-- **refactor**: Code restructuring and improvements
-- **fix**: Bug fixes
-- **update**: Update existing functionality
-- **style**: Styling and visual adjustments
-- **chore**: Maintenance and housekeeping tasks
-- **WIP**: Work in progress
-
-### Commit Message Guidelines
-
-- Use English for all commit messages
-- Use imperative mood (Add, Update, Implement, Fix, etc.)
-- Start description with lowercase letter
-- No period at the end
-- Be specific and concise about what was changed
-- Include component or file names when relevant
-- Use "and" to connect multiple related changes in one commit
-
-### Examples
-
-```
-feat: implement contact form and related refactorings
-refactor: enhance resume merging functionality and add skills support
-fix: update profile image dimensions in header component
-chore: update project files
-style: adjust typography for improved readability
-```
-
-### Branch Strategy
-
-- Use feature branches for new development
-- Follow naming convention: `feature/<feature-name>`
-- Merge to `develop` branch for integration
-- Use pull requests for code review process
-
----
-
-## Coding Rules
-
-- Use Next.js 15+ with App Router.
-- Prefer Server Actions over traditional API Routes.
-- Design by Functional Domain Modeling.
-- Use function. Do not use `class`.
-- Design types using Algebraic Data Types.
-- Use early return pattern to improve readability.
-- Avoid deep nesting with `else` statements.
-- Handle error cases first with early return.
-
-### Type Safety Requirements
-
-- Never use `any` type. Always define explicit types.
-- Resolve type errors immediately when they occur.
-- Use proper TypeScript utilities and type inference.
-- Prefer union types and discriminated unions for complex scenarios.
-
-### Error Handling Strategy
-
-- Prefer `Result<T, E>` pattern over `throw` for error management in internal logic and domain functions.
-  - This enables explicit and type-safe error propagation.
-- For external operations (I/O, database, fetch, etc.), `try-catch` is acceptable.
-  - Always log errors to the console using `console.error(error)` in `catch` blocks.
-- Avoid using exceptions for control flow.
-
-#### Result Example
-
-```ts
-type Result<T, E> = { ok: true; value: T } | { ok: false; error: E };
-
-function parseId(input: unknown): Result<string, "Invalid ID"> {
-  return typeof input === "string" && input !== ""
-    ? { ok: true, value: input }
-    : { ok: false, error: "Invalid ID" };
-}
-```
-
-#### External Error Example
-
-```ts
-try {
-  const res = await fetch(...);
-  if (!res.ok) {
-    console.error("Fetch failed:", res.statusText);
-    return { ok: false, error: "Fetch failed" };
-  }
-} catch (error) {
-  console.error("Unexpected error during fetch:", error);
-  return { ok: false, error: "Unexpected error" };
-}
-```
-
----
-
-## Project Structure
-
-```
-├src
-│  ├app  // Directory structure reflects routing; only for placement and arrangement of features.
-│  │  │ // Primarily server components to easily use 'async/await', etc.
-│  │  ├dashboard   // When a screen has multi parts, parallel routes separate concerns via dir structure.
-│  │  │  ├@modal  // Parallel route naming indicates the "part's" purpose.
-│  │  │  ├@search
-│  │  │  ┗page.tsx
-│  │
-│  ├components   // Reusable components, no logic. don't perform any process.
-│  │  ├ui─*.tsx  // Reusable UI components
-│  │  └*.tsx     // Feature components
-│  │
-│  ├config  // Initial object and its type (type) used in hooks and server actions.
-│  │
-│  ├features // Collection of components that handle processing and rendering.
-│  │  │     // Built by combining components. Imported into directories under 'app/'.
-│  │  │     // Avoid nesting within features!
-│  │  │     // Makes it hard to follow. Use 'children' and nest within 'app/'.
-│  │  │     // Often become client components using useHook-like hooks. But server components are also OK.
-│  │  │
-```
+| Skill                    | When Used                                             |
+| ------------------------ | ----------------------------------------------------- |
+| `coding-standards`       | Code implementation, refactoring, testing             |
+| `planning`               | Planning phase, requirement gathering, task breakdown |
+| `ui-design`              | UI/UX design, styling, accessibility                  |
+| `nextjs-architecture`    | Next.js App Router projects                           |
+| `hono-htmx-architecture` | Hono + HTMX + Cloudflare Workers projects             |
