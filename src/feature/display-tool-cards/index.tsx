@@ -19,7 +19,7 @@ const cardsConfig = [
     title: 'Time Call Web',
     description:
       'シンプルで軽量の時報通知アプリ。時報は音声でお知らせ。1分〜60分間隔で設定が可能。',
-    img: '/images/TimeCallWeb.png',
+    img: '/images/timeCallWeb.png',
     link: 'https://time-call-web-v1.vercel.app',
   },
   {
