@@ -26,7 +26,7 @@ const toolsCard = ({
           alt=''
           width={60}
           height={60}
-          className='rounded-md bg-[#fff] w-[60px] h-[60px] group-hover:brightness-110 transition-all duration-200'
+          className='object-cover rounded-md bg-[#fff] w-[60px] h-[60px] group-hover:brightness-110 transition-all duration-200'
         />
       </a>
       <div className='p-2 flex flex-col'>

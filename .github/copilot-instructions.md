@@ -24,7 +24,7 @@ When user input contains these keywords → **STOP & REQUEST APPROVAL**
 
 ## Tools
 
-- Use pnpm for all package management
+- Use **pnpm** for all package management
 - Consult Context7 MCP tools when needed
 
 ## Git Workflow

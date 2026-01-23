@@ -15,6 +15,20 @@ const cardsConfig = [
     img: '/images/BCMlogo.png',
     link: 'https://link-card-generator-v2.vercel.app',
   },
+  {
+    title: 'Time Call Web',
+    description:
+      'シンプルで軽量の時報通知アプリ。時報は音声でお知らせ。1分〜60分間隔で設定が可能。',
+    img: '/images/TimeCallWeb.png',
+    link: 'https://time-call-web-v1.vercel.app',
+  },
+  {
+    title: 'Tiny Calc',
+    description:
+      'ミニマルなターミナルスタイルの電卓。計算履歴の保存と再利用ができます。',
+    img: '/images/tinyCalc.png',
+    link: 'https://tiny-calc-894742994238.asia-northeast1.run.app/',
+  },
 ]
 
 export default function DisplayToolCards() {
