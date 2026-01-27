@@ -34,8 +34,8 @@ description: "Generate and proofread Markdown blog posts for the PokoHanada port
 ```markdown
 ---
 title: ここに記事タイトル
-createdAt: MMMM-YY-DD
-updatedAt: MMMM-YY-DD
+createdAt: YYYY-MM-DD
+updatedAt: YYYY-MM-DD
 version: 1
 thumbnail: /images/posts/pencil01.svg
 isPublished: false
