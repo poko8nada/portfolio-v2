@@ -1,5 +1,21 @@
 [
   {
+    "slug": "2026-01-28",
+    "title": "ちょっとレトロな計算機「Tiny Calc」の開発：Cloud Run",
+    "createdAt": "2026-01-28",
+    "updatedAt": "2026-01-28",
+    "thumbnail": "/images/posts/pencil01.svg",
+    "version": 1
+  },
+  {
+    "slug": "2026-01-27",
+    "title": "ミニマルな「時報の読み上げサービス」の開発：Next.js と Web Speech API",
+    "createdAt": "2026-01-27",
+    "updatedAt": "2026-01-27",
+    "thumbnail": "/images/posts/clock.svg",
+    "version": 1
+  },
+  {
     "slug": "2025-07-31",
     "title": "ポートフォリオサイトのコンテンツをCloudflare R2へ移行しました",
     "createdAt": "2025-07-31",

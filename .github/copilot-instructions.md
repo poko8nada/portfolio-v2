@@ -52,3 +52,4 @@ For detailed guidelines, the following skills are available and will be loaded a
 | `ui-design`              | UI/UX design, styling, accessibility                  |
 | `nextjs-architecture`    | Next.js App Router projects                           |
 | `hono-htmx-architecture` | Hono + HTMX + Cloudflare Workers projects             |
+| `blog-writing`           | Blog writing and content creation                     |
